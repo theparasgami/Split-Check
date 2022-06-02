@@ -1,0 +1,136 @@
+.newGroup{
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    justify-content: center;
+    text-align: center;
+    margin-top: 5%;
+    
+    .imageSection{
+        width: 20%;
+    }
+
+    .detailSection{
+        margin-left: 20px;
+        width: 20%;
+        text-align: left;
+        
+        .simpleHead{
+            color: rgb(120, 15, 218);
+            font-size: 20px;
+            font-weight:200;
+        }
+        .hiddenDiv{
+            height: 1;
+        }
+        
+        .nameLabel{
+            color: rgb(7, 35, 87);
+            font-size: 30px;
+            font-weight:300;
+        }
+        
+        .groupNameInput{
+            height: 50px;
+            width:  340px;
+            font-size: 30px;
+            border: 2px solid black ;
+            outline-color:rgb(39, 109, 156);
+            border-radius: 5px;
+        }
+        .groupNameInput::placeholder{
+            opacity: 0.4;
+        }
+        .groupNameInput:focus{
+            border: 3px;
+            opacity:1;
+        }
+
+        .hr{
+            margin-top: 7%;
+            color: gray;
+            opacity: 0.4;
+        }
+
+
+        .addBtn{
+            margin-top: 5%;
+            border: none;
+            background: none;
+            color: rgb(27, 134, 221);
+            font-size: 17px;
+
+        }
+        .addBtn:hover{
+            text-decoration: underline;
+        }
+        
+        .HelpIcon{
+            margin: 0 0 0 10%;
+            color: black;
+        }
+
+        .saveBtn{
+            cursor: pointer;
+            margin-top: 2%;
+            margin-bottom: 10%;
+            height: 45px;
+            width: 90px;
+            border-radius: 5%;
+            background-color: rgb(230, 97, 8);
+            border: none;
+            color: rgb(255, 254, 254);
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+    }
+}
+
+.NewMember{
+    display:flex;
+    margin: 4%;
+    .memberphoto{
+        border-radius: 50%;
+        border: 1px solid black;
+        height: 40px;
+        width : 40px;
+    }
+    .rightPart{
+        display: flex;
+        margin-left: 20px;
+        width: 300px;
+        .InputAndName{
+            width:340px ;
+            .VerfiedName{
+               // width: 80%;
+                letter-spacing: 1px;
+                font-family: cursive;
+                font-size: 17px;
+                font-style: italic;
+            }
+            .inputSection{
+                margin-top: 7%;
+                font-size: 15px;
+                outline: 0;
+                border-width: 0 0 2px;
+                border-color: rgb(23, 23, 24)
+            }
+            .inputSection:focus {
+                border-color: green
+            }
+        }
+        .CrossIcon{
+            margin-left: 20%;
+            margin-right:0 ;
+            .clearIcon{
+                padding-top: 10px ;
+                color: red;
+            }
+            .clearIcon:hover{
+                cursor: pointer;
+                outline: 0;
+                border-bottom:2px solid red;
+            }
+        }
+    }  
+}

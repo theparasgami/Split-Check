@@ -1,0 +1,84 @@
+.profile{
+    
+    margin:0 20%;
+    font-family: 'Monospace';
+
+    .AccountSection{
+        
+        .heading{
+            font-size: 2.5rem;
+        }
+
+        .generalSettings{
+            display: flex;
+
+            .imageSection{
+                 width: 26%;
+            }
+
+            .details{
+                width:80%;
+                
+                .ulistcontents{
+                    margin: 0.4rem 0 0 4rem;
+                    width: 100%;
+                    list-style-type: none;
+                    
+                    .listrows{
+                        display: flex;
+                        margin-top: 1.3rem;
+                        .listHeads{
+                            width: 17%;
+                            text-align: right;
+                            font-size: 1.6rem;
+                            font-weight: 500 ;
+                            margin-top: 0.1rem;
+                        }
+                        .listContentData{
+                            font-size: 1rem;
+                            display: flex;
+                            margin: 0.1rem 0 0 4rem;
+                            width: 55%;
+                            border-bottom: 1px solid black;
+                             
+                            .inputData{
+                                border: none;
+                                font-size: 1rem;
+                                outline: none;
+                            }
+                            .EditIcon{
+                                margin-left: auto;
+                                margin-right: 0;
+                                :hover{
+                                    cursor: pointer;
+                                }
+                            }
+                            
+                       }
+                    }
+                }
+                .saveBtn{
+                    text-align: right;
+                    margin-top: 0.2rem;
+                }
+                
+            }
+        }
+    }
+
+    .Viewgroups{
+        .heading{
+            font-size: 2.5rem;
+        }
+
+        .Allgroups{ 
+            margin:auto;
+            width: 80%;
+            .List{
+                 width:100%;
+                 max-width: 360;
+                 background-color:'background.paper'; 
+            }
+        }                                                                                                                                                                   
+    }
+}

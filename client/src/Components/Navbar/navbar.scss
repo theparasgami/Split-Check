@@ -1,0 +1,26 @@
+.navbar{
+
+    .appbar{
+        background-color: rgb(34, 36, 33);
+    }
+    .logoName{
+            margin-right: 2;
+            display: flex;
+            font-family:monospace;
+            font-weight: 700;
+            letter-spacing: .3rem;
+            color: white;
+            text-decoration: none;
+    }
+
+
+    .userName{
+            margin-left:  12px;
+            display: flex;
+            font-family:monospace;
+            font-weight: 700;
+            letter-spacing: .1rem;
+            color: white;
+            text-decoration: none;
+    }
+}
