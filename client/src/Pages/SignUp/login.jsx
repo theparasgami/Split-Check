@@ -2,7 +2,7 @@ import React, { useContext, useState ,useEffect } from "react";
 import {Grid,Paper, Avatar,TextField} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {Button} from "../../Components/Constants/Buttons/Button"
-// import Logo from  "../Constants/Logo"
+import Logo from  "./Split-Check-black.png"
 import loginImg from "./login3.jpg";
 import PasswordInput from "../../Components/Constants/Inputs/PasswordInput";
 import "./style.scss";
@@ -13,7 +13,7 @@ import { AuthContext } from "../../Context/AuthContext";
 
 
 const avatarStyle={backgroundColor:"#49a6bf"}
-const paperStyle={padding:50 ,width:"60%"}
+const paperStyle={padding:50 ,paddingTop:0,paddingBottom:0,width:"60%"}
 
 
 function Login(props)
@@ -90,6 +90,7 @@ function Login(props)
 
             <Paper elevation={10} style={paperStyle} className="paper">
                   
+                    <img src={Logo} className="Logo"/>
                     <div className="blocks">
                         
                         <div className="pic">

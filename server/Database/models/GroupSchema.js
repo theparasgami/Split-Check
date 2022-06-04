@@ -8,8 +8,8 @@ const member={
     }],
     currTotalExpense:{
         type:Number,
-        default:0
-    }  
+        default:0   
+    }     
 }
 
 const GroupSchema=new mongoose.Schema({

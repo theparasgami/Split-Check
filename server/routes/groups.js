@@ -26,7 +26,7 @@ router.post("/saveGroup",(req,res)=>{
         groupImage:req.body.image,
         simplifyDebts:req.body.simplifyDebts,
     }
-    console.log(group);
+    //console.log(group);
 
     const newGroup=new Group(group);
     newGroup.save();
@@ -67,11 +67,10 @@ router.post("/getGroups",(req,res)=>{
     const user=req.body;
    
     var response=[];
-    var letTryFirst=true;
     try{
         user.groups.forEach(e=>{
+           // console.log("Hi",e);
             Group.findOne({_id:e},(err,group)=>{
-               // console.log("Hi",group);
                 group.groupMembers.forEach(member=>{
                     (member.user_id===user._id)&&
                             (response.push(
@@ -92,7 +91,24 @@ router.post("/getGroups",(req,res)=>{
         console.log(err);
         return res.status(422).json(err);
     }
+});
 
+router.get("/group/:id/:user_id",(req,res)=>{
+    const groupID=req.params.id;
+    const uID=req.params.user_id;
+    console.log("request for group ",groupID);
+    try{
+    Group.findById(groupID,(err,group)=>{
+       
+        if(err)return res.status(422).json(err);
+        group.groupMembers.forEach((userData)=>{
+            if(userData.user_id===uID)return res.status(201).json({group,userData});
+        }) 
+    });
+    }
+    catch(err){
+        console.log(err);
+    }
 })
 
 

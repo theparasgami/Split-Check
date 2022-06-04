@@ -1,4 +1,5 @@
 import React, { useState,useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import  axios from "axios";
 import EditIcon from '@mui/icons-material/Edit';
 import List from '@mui/material/List';
@@ -117,12 +118,8 @@ const Profile=()=>{
         window.alert(err);
       });
     }
-    useEffect(()=>getGroups(),[]);
-    
-    const deleteGroup=(e)=>{
-           
-    }
-
+    useEffect(()=>{getGroups();},[]);// eslint-disable-line react-hooks/exhaustive-deps
+  
 
 
     return (
@@ -242,9 +239,11 @@ const Profile=()=>{
                          <>
                           <ListItem alignItems="flex-start">
                               
-                              <ListItemAvatar>
-                                <Avatar alt="GG" src={gdata.group.groupImage} />
-                              </ListItemAvatar>
+                                <ListItemAvatar>
+                              <Link to={"../group/"+gdata.group._id}>
+                                  <Avatar alt="GG" src={gdata.group.groupImage} />
+                              </Link>
+                                </ListItemAvatar>
 
                               <ListItemText
                                 primary={gdata.group.groupName}
@@ -261,13 +260,13 @@ const Profile=()=>{
                                     <div className="oweDatail">
                                       {gdata.totAmnt===0&&"All Settle up"}
                                       {gdata.totAmnt>0&&"You Owe Money"}
-                                      {gdata.totAmnt<0&&"Yow Borrowed"}
+                                      {gdata.totAmnt<0&&"Yow Should pay"}
                                     </div>
                                   </React.Fragment>
                                 }
                               />
                           </ListItem>
-                          <Divider variant="inset" component="li" />
+                          <Divider className="Divider" variant="inset" component="li" />
                          </>
                         )
                        )

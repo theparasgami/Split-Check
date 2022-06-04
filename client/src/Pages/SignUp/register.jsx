@@ -1,7 +1,7 @@
 import React, {  useState } from "react";
 import {Grid,Paper, Avatar, TextField} from '@mui/material';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-
+import Logo from  "./Split-Check-black.png"
 import {Button} from '../../Components/Constants/Buttons/Button'
 import PasswordInput from "../../Components/Constants/Inputs/PasswordInput"
 import regImg from "./register.jpg";
@@ -15,7 +15,7 @@ function emailCheck(email){
 }
 
 const avatarStyle={backgroundColor:"#49a6bf"}
-const paperStyle={padding:50}
+const paperStyle={padding:50,paddingTop:0 ,paddingBottom:0}
 
 function Register(props)
 {
@@ -75,6 +75,7 @@ function Register(props)
         <div className="blocks">
             <div className="form">
               <Grid align="center">
+                  <img src={Logo} className="Logo"/>
                   <Avatar style={avatarStyle}><AppRegistrationIcon /></Avatar>
                   <h2>Register</h2>
               </Grid>

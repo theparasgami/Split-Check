@@ -6,6 +6,7 @@ import Home from "./Pages/Home/Home";
 import NewGroup from "./Pages/AddGroup/NewGroup"
 import { AuthContext } from "./Context/AuthContext";
 import Profile from "./Pages/Profile/profile";
+import ViewGroup from "./Pages/ViewGroup/Viewgroup";
 
 
 function App() {
@@ -14,9 +15,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-           <Route  path="/" element= { (user) ? < Home /> : < AuthenticationPage /> } /> 
-           <Route  path="new-group" element= { (user) ? < NewGroup /> : < AuthenticationPage /> }/>
-           <Route  path="profile"   element= { (user) ? < Profile /> : < AuthenticationPage />  }/>
+           <Route  path="/"         element= { (user) ? < Home />      : < AuthenticationPage />  }/> 
+           <Route  path="new-group" element= { (user) ? < NewGroup />  : < AuthenticationPage />  }/>
+           <Route  path="profile"   element= { (user) ? < Profile />   : < AuthenticationPage />  }/>
+           <Route  path="group/:id" element= { (user) ? < ViewGroup /> : < AuthenticationPage />  }/>
       </Routes>
      </BrowserRouter>
     

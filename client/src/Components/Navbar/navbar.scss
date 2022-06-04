@@ -1,7 +1,7 @@
 .navbar{
-
+     
     .appbar{
-        background-color: rgb(34, 36, 33);
+        background-color: rgb(112, 34, 3);
     }
     .logoName{
             margin-right: 2;
@@ -9,8 +9,14 @@
             font-family:monospace;
             font-weight: 700;
             letter-spacing: .3rem;
-            color: white;
+            color:white;
             text-decoration: none;
+    }
+
+    .logojpg{
+        margin-right: 10px;
+        width: 50px;
+        height: 50px;
     }
 
 
@@ -20,7 +26,7 @@
             font-family:monospace;
             font-weight: 700;
             letter-spacing: .1rem;
-            color: white;
+            color:white;
             text-decoration: none;
     }
 }

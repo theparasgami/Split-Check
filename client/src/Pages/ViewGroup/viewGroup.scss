@@ -1,0 +1,87 @@
+.ViewGroup{
+    margin: auto;
+    font-family: monospace;
+    
+    .userSection{
+        height: 37vh;
+        width:  100%;
+        background-color: rgba(73, 126, 194,0.2);
+        display: flex;
+        
+
+        .groupdetails{
+            width: 67%;
+            display: flex;
+            .groupImg{
+                margin: auto 2rem auto 4rem;
+                border-radius: 10%;
+                border: 1px solid black;    
+                width :  30vh;
+                height:  30vh;
+            }
+            .groupInfo{
+
+                margin: auto auto auto 1rem;
+                .groupName{
+                    max-width: 30%;
+                    color: #3c9af3;//#5b89d1;
+                    font-size: 5rem; 
+                }
+                .simplifydebts{
+                    font-size: 1.5rem;
+                    margin-top:10% ;
+                    color:#5b89d1;
+
+                    .HelpIcon{
+                        color: black;
+                    }
+                    .HelpIcon:hover{
+                        cursor:help;
+                    }
+                }
+                
+            }
+
+        }
+        
+        .divider{
+            border-right:1px solid grey ;
+            margin: 2rem;
+        }
+        
+        .ourdetails{
+             min-width:  30vh;
+             height: 30vh;
+             border-radius: 10%;
+             margin: auto 10rem auto auto;
+             margin-right:10rem;
+             background-color:rgb(204, 226, 205);
+             border: 1px solid black;
+             text-align: center;
+             
+             .name{
+                 margin: 3rem 0rem auto 0rem ;
+                 color:rgb(20, 155, 245);
+                 font-size: 2.5rem;
+                 font-weight: 900;
+             }
+
+             .amount{
+                 margin: 2rem 0rem 1rem 0rem;
+                 font-size: 3rem;
+             }
+
+             .status{
+                 margin: 2rem 0rem 1rem 0rem;
+                 font-size: 1.5rem;
+                 font-weight: 500;
+                 color: #5b89d1;
+             }
+        }
+        .ourdetails:hover{
+                border: 1px solid rgb(200, 184, 38);
+
+        }
+    }
+    
+}
