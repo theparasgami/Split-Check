@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Collapse from '@mui/material/Collapse';
 
 import Login from "./login";
 import Register from "./register";

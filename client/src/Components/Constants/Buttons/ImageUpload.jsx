@@ -20,7 +20,7 @@ const ImageUpload=(props)=>{
         <div className="ImageUpload">
 
             <div className="uploaded_file_view show" >
-                <img src={props.imgSrc} alt="Image" />
+                <img src={props.imgSrc} alt="you" />
             </div>
 
             <div className="button_outer">

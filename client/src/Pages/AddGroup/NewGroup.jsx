@@ -73,7 +73,7 @@ function NewGroup(){
   //if a entry is there for a groupName then the hidden attribute will be removed 
   useEffect(()=>{
     group.groupName.length&&document.querySelector(".hiddenDiv").removeAttribute("hidden");
-  },[group.groupName]);
+  },[group.groupName]);// eslint-disable-line react-hooks/exhaustive-deps
  
 
   const handleChange=(event)=>{
@@ -109,7 +109,7 @@ function NewGroup(){
                     window.location.reload();
                })
       }
-  },[group.groupMembers])
+  },[group.groupMembers])// eslint-disable-line react-hooks/exhaustive-deps
   
 /*----------------------------------------------------------------*/
  
@@ -122,7 +122,7 @@ function NewGroup(){
 
   useEffect(()=>{
     setGroupData(()=>({...group,image:imgSrc}));
-  },[imgSrc])
+  },[imgSrc])// eslint-disable-line react-hooks/exhaustive-deps
   
   /*----------------------------------------------------------------*/
 

@@ -39,7 +39,7 @@ const ViewGroup=()=>{
                         <section className="userSection">
                            
                            <div className="groupdetails">
-                                <img className="groupImg" src={Data.group.groupImage} />
+                                <img className="groupImg" src={Data.group.groupImage} alt="grp" />
                                 <div className="groupInfo">
                                     <div className="groupName">{Data.group.groupName} </div>
                                     <p className="simplifydebts" >Simplify  Debts 

@@ -90,7 +90,7 @@ function Login(props)
 
             <Paper elevation={10} style={paperStyle} className="paper">
                   
-                    <img src={Logo} className="Logo"/>
+                    <img src={Logo} className="Logo" alt="Logo"/>
                     <div className="blocks">
                         
                         <div className="pic">

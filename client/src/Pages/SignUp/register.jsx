@@ -75,7 +75,7 @@ function Register(props)
         <div className="blocks">
             <div className="form">
               <Grid align="center">
-                  <img src={Logo} className="Logo"/>
+                  <img src={Logo} className="Logo" alt="logo"/>
                   <Avatar style={avatarStyle}><AppRegistrationIcon /></Avatar>
                   <h2>Register</h2>
               </Grid>
