@@ -1,7 +1,9 @@
 .navbar{
-     
     .appbar{
-        background-color: rgb(112, 34, 3);
+        position: fixed;
+        top:0;
+        z-index: 100;
+        background-color: #0b2741;//rgba(17, 9, 85, 0.945);
     }
     .logoName{
             margin-right: 2;

@@ -19,6 +19,7 @@ passport.use(new GoogleStrategy({
     clientID:GOOGLE_CLIENT_ID , 
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:8000/auth/google/split-check",
+    // callbackURL: "http://split-check.herokuapp.com/auth/google/split-check",
     passReqToCallback:true
   },
   async (request,accessToken, refreshToken, profile, done) => {
@@ -62,6 +63,7 @@ router.get("/auth/google/split-check",
                                        ),
                   (req, res) =>{
                       // Successful authentication, redirect home.
+                      // res.redirect("https://split-check.netlify.app/");
                       res.redirect("http://localhost:3000/");
                   }
 );

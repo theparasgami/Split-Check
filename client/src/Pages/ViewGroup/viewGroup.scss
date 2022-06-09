@@ -1,87 +1,372 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500&display=swap');
+
 .ViewGroup{
     margin: auto;
+    margin-top: 4.4rem;
     font-family: monospace;
+    min-height: 150vh;
     
-    .userSection{
-        height: 37vh;
+    .generalSection{
+        height: 36vh;
         width:  100%;
         background-color: rgba(73, 126, 194,0.2);
-        display: flex;
+        
+        
+        .forFlex{
+            display: flex;
+            padding-top: 1.5%;
+            .groupdetails{
+                width: 67%;
+                display: flex;
+                .groupImg{
+                    margin: auto 2rem auto 4rem;
+                    border-radius: 10%;
+                    border: 1px solid black;    
+                    width :  25vh;
+                    height:  25vh;
+                }
+                .groupInfo{
+
+                    margin: auto auto auto 1rem;
+                    .groupName{
+                        max-width: 30%;
+                        color: #03042c;//#5b89d1;
+                        font-size: 4rem; 
+                    }
+                    .simplifydebts{
+                        font-size: 1.5rem;
+                        margin-top:10% ;
+                        color:#252c2a;
+
+                        .HelpIcon{
+                            color: black;
+                        }
+                        .HelpIcon:hover{
+                            cursor:help;
+                        }
+                    }
+                    
+                }
+
+            }
+            
+            .divider{
+                border-right:1px solid grey ;
+                margin: 2rem;
+            }
+            
+            .ourdetails{
+                min-width:  30vh;
+                height: 30vh;
+                border-radius: 10%;
+                margin: auto 10rem auto auto;
+                margin-right:10rem;
+                background-color:#E9F4FB;
+                border: 1px solid black;
+                text-align: center;
+                
+                .name{
+                    margin: 3rem 0rem auto 0rem ;
+                    color:rgb(39, 27, 90);
+                    font-size: 2.5rem;
+                    font-weight: 900;
+                }
+
+                .amount{
+                    margin: 2rem 0rem 1rem 0rem;
+                    font-size: 3rem;
+                }
+
+                .status{
+                    margin: 2rem 0rem 1rem 0rem;
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                    color: #5b89d1;
+                }
+                .totalgSpend{
+                    margin: 2.5rem 0rem auto 0rem ;   
+                    color:rgb(39, 27, 90);
+                    font-size: 1.2rem;
+                    font-weight: 900;
+                }
+                .gamount{
+                    margin: 1.5rem 0rem 1rem 0rem;
+                    font-size: 2rem;
+                }
+            }
+        
+            .ourdetails:hover{
+                    border: 1px solid rgb(200, 184, 38);
+
+            }
+
+            .arrowForward{
+                width: 1%;
+                margin-right: 2rem;
+                margin-top: 8rem;
+            }
+            .arrowForward:hover{
+                background-color: rgb(232, 250, 250);
+                border-radius: 40%;
+                font-size: 2.4rem;
+                cursor: pointer;
+                background-size:40px ;
+
+            }
+        }
+        
+    }
+
+    .ListofLinks{
+        position: sticky;
+        top:4.4rem;
+        background-color:#D9E4F3 ;
+        margin: auto;
+        
+        .Tab{
+            font-size: 1rem;
+            font-weight: 540 ;
+            font-family:monospace;
+            color: #3c0272;
+            width: 13%;
+            display: inline;
+        }   
+    }
+
+    .RequiredList{
+        width: 100%;
+        margin: 1.5rem 0 10rem 0 ;
+
+        .paper{
+            width: 40rem;
+            margin: auto;
+            background-color: #e9f4fb;
+        }
+        .heading{
+            color: gray;
+            font-weight:100;
+            font-size:1rem;
+            padding: 20px;
+        }
+
+        .transaction{
+            cursor: pointer;
+            .transactionDate{
+                margin: 10px 10px 5px 0;
+            }
+            .transDetail{
+                .name{
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    max-width: 20rem;
+                    font-weight: 900;
+                }
+            }
+            .OurPart{
+                text-align: right;
+               // color: rgb(189, 77, 37);
+                font-weight: bolder;
+            }
+        }
         
 
-        .groupdetails{
-            width: 67%;
-            display: flex;
-            .groupImg{
-                margin: auto 2rem auto 4rem;
-                border-radius: 10%;
-                border: 1px solid black;    
-                width :  30vh;
-                height:  30vh;
-            }
-            .groupInfo{
-
-                margin: auto auto auto 1rem;
-                .groupName{
-                    max-width: 30%;
-                    color: #3c9af3;//#5b89d1;
-                    font-size: 5rem; 
+        .AllPayments{
+            cursor: pointer; 
+            .statement{
+                color: #03042c;
+                font-weight: 400;
+                .amount{
+                    color: rgb(185, 90, 46);
+                    font-weight:  bold;
                 }
-                .simplifydebts{
-                    font-size: 1.5rem;
-                    margin-top:10% ;
-                    color:#5b89d1;
+            }   
+        }
+        .SettledUp{
+            font-size: 1rem;
+            color: rgb(8, 26, 87);
+            margin: 20px;
+        }
 
-                    .HelpIcon{
-                        color: black;
-                    }
-                    .HelpIcon:hover{
-                        cursor:help;
-                    }
+
+        .AllBalances{
+            .accordion{
+                background: none;
+                width: 100%;
+                .AccordionDetails{
+                    background-color: #beced8;
+                    max-height: 30rem;
+                    overflow: auto;
                 }
                 
+
+                .priceg0{
+                   color: rgb(23, 185, 9);
+                }
+                .pricel0{
+                    color: orange;
+                }
+                .SettleUpBtn{
+                    background: none;
+                    margin:10px 0 10px 13rem;
+                    font-weight: 200;
+                }
             }
-
+            
         }
-        
-        .divider{
-            border-right:1px solid grey ;
-            margin: 2rem;
-        }
-        
-        .ourdetails{
-             min-width:  30vh;
-             height: 30vh;
-             border-radius: 10%;
-             margin: auto 10rem auto auto;
-             margin-right:10rem;
-             background-color:rgb(204, 226, 205);
-             border: 1px solid black;
-             text-align: center;
-             
-             .name{
-                 margin: 3rem 0rem auto 0rem ;
-                 color:rgb(20, 155, 245);
-                 font-size: 2.5rem;
-                 font-weight: 900;
-             }
 
-             .amount{
-                 margin: 2rem 0rem 1rem 0rem;
-                 font-size: 3rem;
-             }
-
-             .status{
-                 margin: 2rem 0rem 1rem 0rem;
-                 font-size: 1.5rem;
-                 font-weight: 500;
-                 color: #5b89d1;
-             }
+        .Recents{
+            .payDate{
+                margin: 10px 10px 5px 0;
+            }
+            .statement{
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                max-width: 30rem;
+            }
         }
-        .ourdetails:hover{
-                border: 1px solid rgb(200, 184, 38);
+    }
 
-        }
+    .LastButton{
+        position: fixed;
+        z-index: 100;
+        margin: auto;
+        bottom: 3rem;
+        left: 45%; 
     }
     
 }
+
+
+.popup-box{
+    position: fixed;
+    background: #00000050;
+    width: 100%;
+    height: 100vh;
+    font-family: 'Baloo Bhaijaan 2', cursive;
+    z-index: 1 ;
+    top:0;
+    left:0;
+
+    .box{
+        background: #0b2741;//#1C1F59;
+        position:relative;
+        width: 30%;
+        margin: 0 auto;
+        min-height: 45vh;
+        max-height: 50vh;
+        overflow: auto;
+        border-radius: 2%;
+        top: 50%;
+        transform: translateY(-50%);
+
+    }    
+    .close-icon{
+        cursor: pointer;
+        position:fixed;
+        background: hsl(0, 100%, 100%);
+        width: 25px;
+        height: 25px;
+        color: black;
+        border-radius: 50%;
+        text-align: center;
+        border: 1px solid #999;
+        font-size: 20px;
+        
+    }
+}
+
+.popupTransaction{
+    .box{
+        width: 25%;
+       
+        .close-icon{
+            margin-left: 94%;
+        }
+        .head{
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:1rem 0 0 0;
+        }
+        .amount{
+            font-size: 2rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+        }
+        .description{
+            text-align: center;
+            font-size: 1.2rem;
+            color: rgb(165, 163, 163);
+        }
+        .payers,.allSplitting{
+             word-spacing: 10px;
+             text-align: center;
+             margin-top: 1rem;
+             color: #edf1f7;
+             font-size: 1.1rem;
+        }
+        .allSplitting{
+            margin-bottom:1rem;
+        }
+    }
+}
+.popupSettleUp{
+    .box{
+        text-align: center;
+        width: 25%;
+        color: rgb(165, 163, 163);
+        .close-icon{
+            margin-left: 94%;
+        }
+        .head{
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:2rem 0 0 0;
+        }
+        .payer{
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            .payerImg{
+                border-radius: 50%;
+                width: 4rem;
+                height: 4rem;
+            }
+            .payerName{
+                letter-spacing: 2px;
+                font-size: 1.7rem;
+                padding: 10px;
+                color: #D9E4F3;
+            }
+        }
+        .howMuch{
+            color: #edf1f7;
+            font-size: 2rem;
+            padding: 10px;
+            .InputMoney{
+                margin-left:10px ;
+                border: 1px solid orange;
+                color: whitesmoke;
+                font-size: 2rem;
+                background:none;
+                height: 3.5rem;
+                padding: 20px;
+                width:7rem;
+            }
+        }
+        .receiver{
+            font-size: 1.7rem;
+            color: #ebe7ee;
+            letter-spacing: 2px;
+        }
+        .submitBtn{margin-bottom: 10px;}
+    }
+}
+

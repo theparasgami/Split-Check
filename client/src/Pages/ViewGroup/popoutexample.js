@@ -3,7 +3,7 @@ import { Button } from "../Constants/Button";
 import "./newGroup.scss";
 
 
-function NewGroup(props){
+const NewGroup=(props)=>{
   
   return (
     <div className="popup-box">
@@ -18,6 +18,7 @@ function NewGroup(props){
   );
 }
 
+export default NewGroup;
 css
 .popup-box{
     position: fixed;

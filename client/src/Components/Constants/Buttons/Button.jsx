@@ -12,7 +12,7 @@ text-align: center;
 font-size: 20px;
 padding: 12px;
 max-height:3rem;
-max-width: 8rem;
+max-width: 12rem;
 min-width:6rem;
 transition: all 0.5s;
 cursor: pointer; 

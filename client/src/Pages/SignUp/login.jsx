@@ -52,7 +52,8 @@ function Login(props)
 
   const googleLogin = async (e) => {
     e.preventDefault();
-    const LoginUrl = "http://localhost:8000/auth/google";
+    const LoginUrl= "http://split-check.herokuapp.com/auth/google"
+    // const LoginUrl = "http://localhost:8000/auth/google";
     window.location.href = LoginUrl;
   };
 

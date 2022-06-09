@@ -56,7 +56,7 @@ const NavBar = () => {
 
 
   return (
-   <div className="navbar">
+   <div className="navbar navbar-default navbar-static-top">
           <AppBar position="static" className="appbar" >
               <Container maxWidth="xl">
                   <Toolbar disableGutters>

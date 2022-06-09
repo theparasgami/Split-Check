@@ -2,13 +2,7 @@ import React, { useState,useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import  axios from "axios";
 import EditIcon from '@mui/icons-material/Edit';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import {List,ListItem,Divider,ListItemText,ListItemAvatar,Avatar,Typography} from '@mui/material';
 
 import ImageUpload from "../../Components/Constants/Buttons/ImageUpload";
 import NavBar from "../../Components/Navbar/NavBar";
@@ -240,9 +234,9 @@ const Profile=()=>{
                           <ListItem alignItems="flex-start">
                               
                                 <ListItemAvatar>
-                              <Link to={"../group/"+gdata.group._id}>
-                                  <Avatar alt="GG" src={gdata.group.groupImage} />
-                              </Link>
+                                  <Link to={"../group/"+gdata.group._id}>
+                                      <Avatar alt="GG" src={gdata.group.groupImage} />
+                                  </Link>
                                 </ListItemAvatar>
 
                               <ListItemText
@@ -255,7 +249,7 @@ const Profile=()=>{
                                       variant="body2"
                                       color="text.primary"
                                     >
-                                      ₹ {gdata.totAmnt} 
+                                      ₹ {gdata.totAmnt.toFixed(2)} 
                                     </Typography>
                                     <div className="oweDatail">
                                       {gdata.totAmnt===0&&"All Settle up"}

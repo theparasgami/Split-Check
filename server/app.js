@@ -19,11 +19,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
 //DATABASE
 require("./Database/conn");
-
-
-app.get("/",(req,res)=>{res.send("hi form")});
 
 //routes
 app.use(require("./routes/auth"));
