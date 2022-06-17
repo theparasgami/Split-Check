@@ -29,13 +29,14 @@
 
                     margin: auto auto auto 1rem;
                     .groupName{
-                        max-width: 30%;
+                        max-height: 9rem;
+                        overflow:hidden;
                         color: #03042c;//#5b89d1;
                         font-size: 4rem; 
                     }
                     .simplifydebts{
                         font-size: 1.5rem;
-                        margin-top:10% ;
+                        margin-top:5% ;
                         color:#252c2a;
 
                         .HelpIcon{
@@ -118,9 +119,10 @@
     }
 
     .ListofLinks{
-        position: sticky;
+        position:sticky;
+        z-index: 1;
         top:4.4rem;
-        background-color:#D9E4F3 ;
+        background-color:#DAE5F3 ;
         margin: auto;
         
         .Tab{
@@ -140,7 +142,7 @@
         .paper{
             width: 40rem;
             margin: auto;
-            background-color: #e9f4fb;
+            background-color:white// #e9f4fb;
         }
         .heading{
             color: gray;
@@ -172,7 +174,7 @@
         
 
         .AllPayments{
-            cursor: pointer; 
+            cursor:default; 
             .statement{
                 color: #03042c;
                 font-weight: 400;
@@ -230,10 +232,10 @@
 
     .LastButton{
         position: fixed;
-        z-index: 100;
+        z-index: 2;
         margin: auto;
         bottom: 3rem;
-        left: 45%; 
+        left: 45%;
     }
     
 }
@@ -245,12 +247,13 @@
     width: 100%;
     height: 100vh;
     font-family: 'Baloo Bhaijaan 2', cursive;
-    z-index: 1 ;
+    z-index: 10;
     top:0;
     left:0;
 
     .box{
         background: #0b2741;//#1C1F59;
+        z-index: 200;
         position:relative;
         width: 30%;
         margin: 0 auto;
@@ -265,15 +268,9 @@
     .close-icon{
         cursor: pointer;
         position:fixed;
-        background: hsl(0, 100%, 100%);
-        width: 25px;
-        height: 25px;
-        color: black;
-        border-radius: 50%;
-        text-align: center;
-        border: 1px solid #999;
-        font-size: 20px;
-        
+        width: 35px;
+        height: 35px;
+        color: white;
     }
 }
 
@@ -282,7 +279,7 @@
         width: 25%;
        
         .close-icon{
-            margin-left: 94%;
+            right: 0;
         }
         .head{
             font-size: 1.5rem;
@@ -320,7 +317,7 @@
         width: 25%;
         color: rgb(165, 163, 163);
         .close-icon{
-            margin-left: 94%;
+           right: 0;
         }
         .head{
             font-size: 1.5rem;
@@ -360,6 +357,11 @@
                 padding: 20px;
                 width:7rem;
             }
+            .InputMoney::-webkit-outer-spin-button,
+            .InputMoney::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+            }
         }
         .receiver{
             font-size: 1.7rem;
@@ -370,3 +372,146 @@
     }
 }
 
+.popupAddExpense{
+    .box{
+        color: rgb(165, 163, 163);
+        font-size: 1.2rem;
+        text-align: center;
+        .close-icon{
+            left:0;
+        }
+        .close-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .save-icon{
+            cursor: pointer;
+            position:fixed;
+            width: 35px;
+            height: 35px;
+            color: white;
+            right: 1px;
+        }
+        .save-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .head{
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:2rem 0 0 0;
+        }
+        .description{
+            margin: 2rem 0 0 0;
+            display: flex;
+            justify-content: center;
+            .billIcon{
+                background-color: #2b4062;
+                width: 50px;
+                height:50px;
+                border:1px solid white;
+                color: white;
+            }
+            .inputDescr{
+               background: none;
+               border: none;
+               width: 15rem;
+               border-bottom: 2px solid rgb(82, 226, 82);
+               margin:0 0 0 20px ;
+               font-size:1.5rem;
+               color: white;
+               outline: none;
+               height: 3rem;
+            }
+            .inputDescr::placeholder{
+                color: #DAE5F3;
+                font-size: 1rem;
+            }
+            .inputDescr::-webkit-outer-spin-button,
+            .inputDescr::-webkit-inner-spin-button {
+             -webkit-appearance: none;
+              margin: 0;
+            } 
+        }
+        .payment{
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            color: whitesmoke;
+            .text{
+                margin-top: 7px;
+            }
+            .accords{
+                margin: 0 1rem;
+                height: 3rem;
+                
+            }
+            
+            
+        }
+    }
+}
+
+.popupAddMember{
+
+    .box{
+        
+        color: rgb(165, 163, 163);
+        font-size: 1.2rem;
+        text-align: center;
+
+        .close-icon{
+            left:0;
+        }
+        .close-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .save-icon{
+            cursor: pointer;
+            position:fixed;
+            width: 35px;
+            height: 35px;
+            color: white;
+            right: 1px;
+            
+        }
+        .save-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .head{
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:4rem 0 0 0;
+            letter-spacing: 1.6px;
+        }
+
+        .emailAddress{
+            height: 3rem;
+            width: 20rem;
+            margin: 2rem;
+            outline: none;
+            font-size: 1.5rem;
+            padding: 10px;
+            text-align: center;
+        }
+        .emailAddress::placeholder{
+            font-size: 1rem;
+        }
+        
+        .bottomImg{
+            height: 5rem;
+            width: 35.5rem;
+            margin-top: 3.1rem;
+            margin-bottom: 0;
+            overflow: none;
+        }
+        
+    }
+}

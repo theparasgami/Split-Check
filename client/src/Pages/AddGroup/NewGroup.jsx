@@ -86,9 +86,14 @@ function NewGroup(){
         setGroupData({...group,
                        ["simplifyDebts"]:simpledebts,
                        ["groupMembers"]:(member.filter((dataa)=>(dataa.userd))
-                                               .map((data)=>({user_id:data.userd._id,expenses:[]})))
+                                               .map((data)=>({user_id:data.userd._id,
+                                                              user_name:data.userd.name,
+                                                              expenses:[]
+                                                             })
+                                                    )
+                                        )
                      });
-        console.log(group);
+        console.log(group); 
   }
   
   //Now if save button is pressed then post request {useEffect worl because 
@@ -98,10 +103,11 @@ function NewGroup(){
   
   useEffect(()=>{
       if(group.groupMembers.length){
-               axios.post("/saveGroup",group)
+               axios.post("/saveGroup",{group,user})
                .then((res)=>{
+                   console.log("ff",res.data);
                    window.alert("Group Saved");
-                   dispatch({type:"SUCCESS",payload:res.data.ouruser});
+                   dispatch({type:"SUCCESS",payload:res.data});
                    window.location.href="/";
                })
                .catch((err)=>{
@@ -134,15 +140,18 @@ function NewGroup(){
       <NavBar />
 
       <div className="newGroup">
+        
           <div className="imageSection">
-            <ImageUpload imgSrc={imgSrc} imageChange={handleImageChange} />
+            <ImageUpload imgSrc={imgSrc} 
+                         imageChange={handleImageChange} 
+            />
           </div>
 
           <div className="detailSection">
              
-              <p className="simpleHead"> Start a New Group</p>
-             
+              <p className="simpleHead"> Start a New Group </p>
               <p className="nameLabel"> By What name Your group called ? </p>
+
               <input type="text"
                      name="groupName"
                      className="groupNameInput" 
@@ -153,9 +162,13 @@ function NewGroup(){
               <hr className="hr"/>
               
               <div className="hiddenDiv"> 
-                <Collapse in={group.groupName.length} timeout={1000} >             
+                <Collapse in={group.groupName.length} 
+                          timeout={1000}
+                >             
                  
-                  <p className="simpleHead">Group Members</p>
+                  <p className="simpleHead">
+                     Group Members
+                  </p>
                   {
                     member.map((data,index)=> < NewMember 
                                                  userr={data.userd} 
@@ -166,13 +179,21 @@ function NewGroup(){
                                                  onVerified={updateMember}
                                              />)
                   }
-                  <button onClick={addMember} className="addBtn" > + Add a Person</button>
+                  <button onClick={addMember} 
+                          className="addBtn" > 
+                          + Add a Person
+                  </button>
                   <hr className="hr" />
                 
-                  <p className="simpleHead" >Simplify Group Debts 
-                     <Switch checked={simpledebts} onChange={handleDebts}/>
-                     <BootstrapTooltip className="tooltip" title={toolTipText} >
-                       <HelpIcon className="HelpIcon" />
+                  <p className="simpleHead" >
+                     Simplify Group Debts 
+                     <Switch checked={simpledebts} 
+                             onChange={handleDebts}
+                      />
+                     <BootstrapTooltip 
+                            className="tooltip" 
+                            title={toolTipText} >
+                            <HelpIcon className="HelpIcon" />
                      </BootstrapTooltip>
                   </p>
                   <hr className="hr" />

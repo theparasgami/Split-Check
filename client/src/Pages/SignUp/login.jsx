@@ -11,16 +11,11 @@ import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 
 
-
-const avatarStyle={backgroundColor:"#49a6bf"}
-const paperStyle={padding:50 ,paddingTop:0,paddingBottom:0,width:"60%"}
-
-
 function Login(props)
 {
  
-  const [loading,setLoading]=useState(1);
-  setTimeout(async()=>setLoading(0),100);
+  const [loading,setLoading]=useState(true);
+  setTimeout(async()=>setLoading(false),100);
 
   const [user,setValues]=useState({
     email:"",password:""
@@ -34,53 +29,53 @@ function Login(props)
   const {dispatch} = useContext(AuthContext);
 
   const fetchAuthUser = async ()=>{
-    console.log("Hi fetchAuthUSer");
+      console.log("Hi fetchAuthUSer");
       await axios.get("/user")
-       .then((res)=>{
+          .then((res)=>{
               console.log(res.data);
               dispatch({type:"SUCCESS",payload:res.data});
-      })
-      .catch((err)=>{
+          })
+          .catch((err)=>{
               console.log(err);
-      })
+          })
   }
 
   useEffect(()=>{
-    fetchAuthUser();
+       fetchAuthUser();
   },[]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const googleLogin = async (e) => {
-    e.preventDefault();
-    const LoginUrl= "http://split-check.herokuapp.com/auth/google"
-    // const LoginUrl = "http://localhost:8000/auth/google";
-    window.location.href = LoginUrl;
+           e.preventDefault();
+           const LoginUrl= "http://split-check.herokuapp.com/auth/google"
+           // const LoginUrl = "http://localhost:8000/auth/google";
+           window.location.href = LoginUrl;
   };
 
   
 
 
   const PostData=async (e)=>{
-    e.preventDefault();
-    axios.post("/login",{username:user.email,password:user.password})
-      .then((res)=>{
-        console.log(res);
-         if(res)
-         {
-           console.log("Login Succesfull",res.data.user);
-           window.alert(res.data.message);
-           dispatch({type:"SUCCESS",payload:res.data.user});
-           window.location.reload();
-         }
-      }).catch((err)=>{
-          console.log(err);
-          if(err.response)
-          {
-            window.alert(err.response.data.error);
-          }
-          window.location.reload();
-      })
-    
+      
+      e.preventDefault();
+      axios.post("/login",{username:user.email,password:user.password})
+        .then((res)=>{
+          console.log(res);
+           if(res)
+           {
+             console.log("Login Succesfull",res.data.user);
+             window.alert(res.data.message);
+             dispatch({type:"SUCCESS",payload:res.data.user});
+             window.location.reload();
+           }
+        }).catch((err)=>{
+            console.log(err);
+            if(err.response)
+            {
+              window.alert(err.response.data.error);
+            }
+            window.location.reload();
+        })
   }
   
   return (
@@ -89,59 +84,72 @@ function Login(props)
           (
           <div className="login">
 
-            <Paper elevation={10} style={paperStyle} className="paper">
-                  
-                    <img src={Logo} className="Logo" alt="Logo"/>
-                    <div className="blocks">
-                        
-                        <div className="pic">
-                            <img className="loginImg" src={loginImg} alt="login" ></img>
-                        </div>
-
-                        <div className="form">
-                            
-                            <Grid align="center">
-                                <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
-                                <h2>Sign In</h2>
-                            </Grid>
-
-                            <form method="post">
-                                <TextField type="email" 
-                                           label="Username" 
-                                           name="email" 
-                                           value={user.email} 
-                                           onChange={handleInputs} 
-                                           placeholder="for eg: abc@gmail.comm" 
-                                           variant="standard" 
-                                           fullWidth
-                                 />
-                                <PasswordInput name="password" 
-                                               value={user.password} 
-                                               onChange={handleInputs} 
-                                               placeholder="Password" 
-                                />
-                                <Button onClick={PostData}>
-                                   <span>Sign in</span>
-                                </Button>
-                            </form>
-
-                            <div className="orGoogle">Or</div>
-                            
-                            <button type="button" 
-                                    onClick={googleLogin} 
-                                    className="login-with-google-btn"
-                            >
-                               Sign in with Google
-                            </button>
-
-                            <h3>New to Split-Check,
-                                 <span className="link" onClick={props.Register}> 
-                                   Register 
-                                 </span>
-                                 here
-                            </h3>
-                        </div>
+            <Paper elevation={10}
+                   sx={ {paddingRight:10} }
+                   className="paper"
+            >      
+                <img src={Logo} 
+                     className="Logo" 
+                     alt="Logo"
+                />
+                <div className="blocks">
+                    
+                    <div className="pic">
+                        <img className="loginImg" 
+                             src={loginImg} 
+                             alt="login" 
+                        />
                     </div>
+
+                    <div className="form">
+                            
+                        <Grid align="center">
+                            <Avatar sx={{backgroundColor:"#49a6bf"}}>
+                              <LockOutlinedIcon />
+                             </Avatar>
+                            <h2>Sign In</h2>
+                        </Grid>
+
+                        <form method="post">
+                           <TextField type="email" 
+                                      label="Username" 
+                                      name="email" 
+                                      value={user.email} 
+                                      onChange={handleInputs} 
+                                      placeholder="for eg: abc@gmail.comm" 
+                                      variant="standard" 
+                                      fullWidth
+                            />
+                           <PasswordInput name="password" 
+                                          value={user.password} 
+                                          onChange={handleInputs} 
+                                          placeholder="Password" 
+                           />
+                           <Button onClick={PostData}>
+                                   <span>Sign in</span>
+                           </Button>
+                        </form>
+
+                        <div className="orGoogle">
+                             Or
+                        </div>
+                            
+                        <button type="button" 
+                                onClick={googleLogin} 
+                                className="login-with-google-btn">
+                                Sign in with Google
+                        </button>
+
+                        <h3>New to Split-Check,
+                            <span className="link" 
+                                  onClick={props.Register}> 
+                                  Register 
+                            </span>
+                            here
+                        </h3>
+                    </div>
+                    
+                </div>
             </Paper>
 
           </div>)

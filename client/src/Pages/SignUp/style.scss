@@ -9,9 +9,7 @@
     text-align: center;
     min-height:  98vh;
     
-    .paper{
-        min-width: 60%;
-    }
+    
     .form{  
         max-width: 20rem;
         margin: auto;
@@ -48,6 +46,7 @@
 .register{
     
     .paper{
+        min-width: 60%;
         margin-top: 0.4%;
     }
     .loginImg{
@@ -126,6 +125,10 @@
 
 }
 .login{
+       
+    .paper{
+        width:"60%";
+    }
 
     @media only screen and (max-device-width: 230px ) { 
         .loginImg{

@@ -8,58 +8,36 @@ const User=require("../Database/models/UserSchema");
 
 // For Groups
 
-router.post("/verifyMember",(req,res)=>{
-    const {userName}=req.body;
-    console.log(userName);  
-    
-      User.findOne({username:userName},(err,response)=>{
+router.get("/verifyMember/:email",(req,res)=>{
+   
+    const userName=req.params.email;
+    console.log(userName); 
+
+    User.findOne({username:userName},(err,response)=>{
           if(response)return res.status(201).json(response);
-      });
-      return res.status(422);
+    });
+    return res.status(422);
 })
 
 
-router.post("/saveGroup",(req,res)=>{
-    var group={
-        groupName:req.body.groupName,
-        groupMembers:req.body.groupMembers,
-        groupImage:req.body.image,
-        simplifyDebts:req.body.simplifyDebts,
-    }
-    //console.log(group);
+router.post("/saveGroup",async(req,res)=>{
+    const {group,user}=req.body;
+    
+    console.log(group)
 
     const newGroup=new Group(group);
-    newGroup.save();
+    await newGroup.save();
 
-    var OurMainCreater=false;
-    var ouruser;
-
-    group.groupMembers.forEach(e => {
-
-        
-        var groupsarray=[];
-        User.findOne({_id:e.user_id},(err,user)=>{
-            
-            if(!OurMainCreater){
-                OurMainCreater=true;
-                ouruser=user;
-            }
-
-            if(err){console.log(err);return res.status(422).json(err);}
-
-            // console.log(user);  
-            groupsarray=user.groups;
-            groupsarray.push(newGroup._id.toString());
-           
-            User.updateOne({_id:e.user_id},{groups:groupsarray},(err,userv)=>{
-                if(err){console.log(err);return res.status(422).json(err);}
-               // console.log(userv);
-            });
-        })
-        
+    await group.groupMembers.forEach(async(data) => {
+        await User.updateOne({_id:data.user_id},
+                             {$push:{"groups":newGroup._id.toString()}});
     });
 
-    return res.status(201).json(newGroup,ouruser);
+    const ourUser=await User.findOne({_id:user._id});
+    console.log(ourUser); 
+    if(ourUser) return res.status(201).json(ourUser);
+    
+    return res.status(422);
 });
 
 
@@ -109,6 +87,27 @@ router.get("/group/:id/:user_id",(req,res)=>{
     catch(err){
         console.log(err);
     }
+});
+
+router.post("/group/addMember",async(req,res)=>{
+   const {group,user}=req.body;
+   const member={
+       user_id:user._id,
+       expenses:[]
+   }
+   await group.groupMembers.forEach((data)=>{
+       if(data.user_id===user._id)return res.status(406).json("Already a Group Member");
+   });
+   
+   await Group.updateOne({_id:group._id},
+                   {$push:{"groupMembers":member}}
+                  );
+   await User.updateOne({_id:user._id},
+                   {$push:{"groups":group._id}}
+                  );
+                
+   return res.status(200).json("Successfully added member");
+
 })
 
 

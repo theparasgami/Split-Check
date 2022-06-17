@@ -18,8 +18,8 @@ const GOOGLE_CLIENT_SECRET=process.env.CLIENT_SECRET;
 passport.use(new GoogleStrategy({
     clientID:GOOGLE_CLIENT_ID , 
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:8000/auth/google/split-check",
-    // callbackURL: "http://split-check.herokuapp.com/auth/google/split-check",
+    // callbackURL: "http://localhost:8000/auth/google/split-check",
+    callbackURL: "http://split-check.herokuapp.com/auth/google/split-check",
     passReqToCallback:true
   },
   async (request,accessToken, refreshToken, profile, done) => {
@@ -59,12 +59,13 @@ router.get("/auth/google",
 
 router.get("/auth/google/split-check", 
                   passport.authenticate("google",
-                                        { failureRedirect: "http://localhost:3000/" }
+                                        { failureRedirect: "https://split-check.netlify.app" }
                                        ),
                   (req, res) =>{
+                       console.log(res);
                       // Successful authentication, redirect home.
-                      // res.redirect("https://split-check.netlify.app/");
-                      res.redirect("http://localhost:3000/");
+                      res.redirect("https://split-check.netlify.app");
+                      // res.redirect("http://localhost:3000/");
                   }
 );
 
@@ -140,6 +141,7 @@ router.post("/updateprofile",(req,res)=>{
       } 
   }); 
 }); 
+
 
 router.get("/user", (req, res, next) => {
   if (req.user) {

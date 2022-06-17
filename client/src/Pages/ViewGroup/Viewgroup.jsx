@@ -12,7 +12,7 @@ import { Accordion,AccordionSummary,AccordionDetails } from "@mui/material";
 import BootstrapTooltip from "../../Components/Constants/ToolTip/tooltip"
 import {Button}  from "../../Components/Constants/Buttons/Button";
 import NavBar from "../../Components/Navbar/NavBar";
-import { PopupTransaction ,PopupSettleUp } from "./popups";
+import { PopupTransaction ,PopupSettleUp,AddExpense, AddMember } from "./popups";
 import "./viewGroup.scss";
 import { AuthContext } from "../../Context/AuthContext";
 import bill from "./billl.jpg"
@@ -32,7 +32,7 @@ const ViewGroup=()=>{
    useEffect(()=>{
        axios.get(("/group/"+params.id+"/"+user._id))
        .then((res)=>{
-           console.log(res.data);
+        //    console.log(res.data);
            setData({group:res.data.group,user:res.data.userData});
         })
         .catch((err)=>{
@@ -42,26 +42,25 @@ const ViewGroup=()=>{
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     
     
-    //For Tabs
-    const [currList,setcurrList]=useState("Balances")
-    const handlelinksChange=(e,value)=>{ 
-            setcurrList(()=>value);
-    }
+   
    
    const sampleArr=[1,1,1,1,1,1,1];
    
+   const [popUpTrans,setPopUpTrans]=useState(false);
    const AllTransactions=()=>{
        return (<>
         <h1 className="heading">Transactions</h1>
         <List>
          {
           sampleArr.map(()=><>
-                    <ListItem alignItems="flex-start" className="transaction">
+                    <ListItem alignItems="flex-start" 
+                              className="transaction" 
+                              onClick={()=>(setPopUpTrans(true))} >
                        
                        <div className="transactionDate">
                            Jun <br/>10
                        </div>
-                       
+                
                        <ListItemAvatar>
                            <Avatar alt="GG" src={bill} variant="square"/>
                        </ListItemAvatar>
@@ -81,22 +80,24 @@ const ViewGroup=()=>{
                            </React.Fragment>
                            }
                            className="transDetail"
-                       />
-                       <ListItemText className="OurPart"
+                        />
+                        <ListItemText className="OurPart"
                            primary={"You Borrowed"}
                            secondary={"₹ 200"}
                            sx={{color:"rgb(189, 77, 37)"}}
-                       />
+                        />
+                      
                    </ListItem>
                    <Divider component="li" />
          </>)
          }
        </List>
-       {/* <PopupTransaction /> */}
+       {popUpTrans&&(<PopupTransaction cross={()=>setPopUpTrans(false)}/>)}
        </>
        )
    }
-
+   
+   const [popUpPayment,setPopUpPayment]=useState(false);
    const AllPayments=()=>{
        return (<>
            <h1 className="heading">Settle Debts</h1>         
@@ -104,7 +105,7 @@ const ViewGroup=()=>{
                 {
                  (sampleArr.length!==0)?(
                  sampleArr.map(()=><>
-                    <ListItem className="AllPayments">
+                    <ListItem className="AllPayments" >
                         <ListItemAvatar>
                            <Avatar alt="GG" src={money} variant="square"/>
                         </ListItemAvatar>
@@ -113,7 +114,7 @@ const ViewGroup=()=>{
                           <span className="amount"> &nbsp;  ₹ 100 &nbsp;</span>
                           to This user  
                         </ListItemText>
-                        <Mbutton>
+                        <Mbutton onClick={()=>(setPopUpPayment(true))}>
                             Settle Up..
                         </Mbutton>
                     </ListItem>
@@ -122,18 +123,20 @@ const ViewGroup=()=>{
                  <div className="SettledUp">You are all settled Up..</div>)
                  }
            </List>
-           {/* <PopupSettleUp /> */}
+           {popUpPayment&&(<PopupSettleUp cross={()=>setPopUpPayment(false)}/>)}
        </>)
    }
    
+   const [popUpsettleUp,setPopupSettleUp]=useState(null);
    const AllBalances=()=>{
-
-       const samplePrice= 900;
+        
+       const groupMembers=Data.group.groupMembers;
+    
        return(<>
           <h1 className="heading">All Balances</h1>
           <List>
                 {
-                 sampleArr.map(()=><>
+                 groupMembers.map((member)=><>
                     <ListItem className="AllBalances">
                         <Accordion className="accordion">
                             <AccordionSummary
@@ -142,21 +145,44 @@ const ViewGroup=()=>{
                                 id="panel1a-header"
                             >
                                 <Typography >
-                                {(samplePrice===0)&&"Mr Wann is all settled Up. "}
-                                {(samplePrice>0)&&(<><b>Mr Wann</b> gets back <b className="priceg0">&nbsp; ₹ 100 &nbsp;</b> in Total.</>)}
-                                {(samplePrice<0)&&(<><b>Mr Wann</b> owes  <b className="pricel0">&nbsp; ₹ 100 &nbsp;</b> in Total.</>)}
+                                    {(member.currTotalExpense===0)&&(<>
+                                         <b>{member.user_name}</b>
+                                         &nbsp;is all settled Up.
+                                    </>)}
+                                    {(member.currTotalExpense>0)&&(<>
+                                            <b>{member.user_name}</b> 
+                                            &nbsp;gets back 
+                                            <b className="priceg0">
+                                                &nbsp; ₹ {member.currTotalExpense} &nbsp;
+                                            </b> in Total.
+                                    </>)}
+                                    {(member.currTotalExpense<0)&&(<>
+                                                <b>{member.user_name}</b> owes
+                                                <b className="pricel0">
+                                                    &nbsp; ₹ {-member.currTotalExpense} &nbsp;
+                                                </b> in Total.
+                                    </>)}
                                 </Typography>
                             
                             </AccordionSummary>
                             <AccordionDetails className="AccordionDetails">
-                                 {sampleArr.map(()=><>
+                                 {member.expenses.map((expense_detail)=><>
                                      <Typography>
                                          Mr Smith owes ₹ 100. to Mr Wann 
-                                         <Mbutton className="SettleUpBtn" >SettleUp</Mbutton>
+                                         {expense_detail.amount>0&&(<>
+                                            {member.user_name} owes ₹ {expense_detail.amount} to {expense_detail.user_name} 
+                                         </>)} 
+                                         {expense_detail.amount<0&&(<>
+                                            {expense_detail.user_name} owes ₹ {expense_detail.amount} to {member.user_name} 
+                                         </>)} 
+                                         <Mbutton className="SettleUpBtn" 
+                                                  onClick={()=>setPopupSettleUp(null)} >
+                                                  SettleUp
+                                         </Mbutton>
                                          <Divider className="Divider" component="li" />
                                      </Typography>
-                                    {/* {<PopupSettleUp />} */}
                                  </>)}
+                                 {popUpsettleUp&&<PopupSettleUp cross={()=>setPopupSettleUp(null)} />}
                             </AccordionDetails>
                         </Accordion>
                     </ListItem>
@@ -192,6 +218,37 @@ const ViewGroup=()=>{
     </>)
     }
 
+   const [addExpense,setAddExpense]=useState(true);
+   const [addMember,setAddMember]=useState(false);
+   
+   const handleAddExpense=async()=>{
+         
+   }
+
+   const handleAddMember=async(Email)=>{
+       await axios.get ("/verifyMember/"+Email)
+                  .then(async(res)=>{
+                        await axios.post("/group/addMember",
+                                       {group:Data.group,
+                                        user:res.data}
+                             ).then((res)=>{
+                                 window.alert(res.data);
+                                 setAddMember(false);
+                             }).catch((err)=>{
+                                 window.alert(err,"User can't be added");
+                             })
+
+                  }).catch((err)=>{
+                      window.alert("Invalid Usename");
+                  });
+       await axios.post("/group/"+Data.group._id+"/addMember",{email:Email});
+   }
+
+    //For Tabs
+    const [currList,setcurrList]=useState("Transaction")
+    const handlelinksChange=(e,value)=>{ 
+            setcurrList(()=>value);
+    }
 
    return(
        <>
@@ -204,13 +261,22 @@ const ViewGroup=()=>{
                            <div className="forFlex">
                                 <div className="groupdetails">
 
-                                        <img className="groupImg" src={Data.group.groupImage} alt="grp" />
+                                        <img className="groupImg" 
+                                             src={Data.group.groupImage} 
+                                             alt="grp" 
+                                        />
                                         <div className="groupInfo">
-                                            <div className="groupName">{Data.group.groupName} </div>
-                                            <p className="simplifydebts" >Simplify  Debts 
-                                                <Switch checked={!Data.group.simplifyDebts} disabled />
-                                                <BootstrapTooltip className="tooltip" title={toolTipText} >
-                                                <HelpIcon className="HelpIcon" />
+                                            <div className="groupName">
+                                                {Data.group.groupName}
+                                            </div>
+                                            <p className="simplifydebts" >
+                                                Simplify  Debts 
+                                                <Switch checked={!Data.group.simplifyDebts} 
+                                                        disabled 
+                                                />
+                                                <BootstrapTooltip className="tooltip" 
+                                                                  title={toolTipText} >
+                                                       <HelpIcon className="HelpIcon" />
                                                 </BootstrapTooltip>
                                             </p>
                                         </div>
@@ -221,8 +287,12 @@ const ViewGroup=()=>{
                                 
                                 <div className="ourdetails">
                                   {!userAndGroupspend&&(<>
-                                      <div className="name">{user.name}</div>
-                                      <div className="amount"> ₹ {Data.user.currTotalExpense.toFixed(2)}</div>
+                                      <div className="name">
+                                           {user.name}
+                                      </div>
+                                      <div className="amount">
+                                           ₹ {Data.user.currTotalExpense.toFixed(2)}
+                                      </div>
                                       <div className="status"> 
                                               {Data.user.currTotalExpense===0&&"All Settle up"}
                                               {Data.user.currTotalExpense>0&&"You Owe Money"}
@@ -237,7 +307,9 @@ const ViewGroup=()=>{
                                       
                                   </>)}
                                 </div>
-                                <ArrowForwardIosIcon onClick={()=>setUserandGroupSpend(!userAndGroupspend)} className="arrowForward"/>
+                                <ArrowForwardIosIcon onClick={()=>setUserandGroupSpend(!userAndGroupspend)} 
+                                                     className="arrowForward"
+                                 />
                            </div>
 
                         </section>
@@ -275,11 +347,28 @@ const ViewGroup=()=>{
                         </section>
                         
                         <div className="LastButton">
-                            {currList==="Balances" ?
-                               <Button>Add Member</Button> :
-                               <Button>Add an Expense</Button>
-                            }
+                            {currList==="Balances" ?(
+                                                    <Button bgColor="#bf2d9a" 
+                                                        onClick={()=>setAddMember(true)}>
+                                                        Add Member
+                                                    </Button>) :(
+                                                    <Button bgColor="#bf2d9a" 
+                                                            onClick={()=>setAddExpense(true)}>
+                                                            Add an Expense
+                                                    </Button>
+                            )}
                         </div>
+                        {addExpense&&(
+                             <AddExpense add={()=>handleAddExpense()} 
+                                         cross={()=>setAddExpense(false)} 
+                                         members={Data.group.groupMembers}
+                             />
+                        )}
+                        {addMember&&(
+                             <AddMember save={(e)=>handleAddMember(e)} 
+                                        cross={()=>setAddMember(false)}
+                            />
+                        )}
 
                  </div> )
         }

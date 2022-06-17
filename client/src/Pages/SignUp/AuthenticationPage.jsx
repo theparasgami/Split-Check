@@ -14,7 +14,10 @@ const AuthenticationPage =()=>{
     return (
        <> 
          {currPageLogin ? <Login Register={handleChangePage}/>
-                        : <Register Login={handleChangePage} openpage={currPageLogin} />}
+                        : <Register Login={handleChangePage} 
+                                    openpage={currPageLogin} 
+                          />
+         }
        </>
     );
 }

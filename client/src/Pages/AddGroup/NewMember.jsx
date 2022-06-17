@@ -17,7 +17,7 @@ const NewMember=(props)=>{
 
    const verifyUsername=async()=>{
          if(emailCheck(props.username)){
-            axios.post("/verifyMember",{"userName":props.username})
+            axios.get("/verifyMember/"+props.username)
             .then((res)=>{
                console.log("Email Verified", props.username);
                setVerified(res);
@@ -38,7 +38,12 @@ const NewMember=(props)=>{
     return (
        <div className="NewMember">
 
-          <img src={props.userr?props.userr.profilePicture:defaultProfile} className="memberphoto" alt="member" />
+          <img src={props.userr?props.userr.profilePicture
+                               :defaultProfile
+                   }
+               className="memberphoto" 
+               alt="member" 
+          />
 
           <div className="rightPart">
 

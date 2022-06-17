@@ -2,14 +2,16 @@ const mongoose =require("mongoose");
 
 const member={
     user_id:String,
+    user_name:String,
     expenses:[{
         user_id:String,
+        user_name:String,
         amount:Number 
     }],
     currTotalExpense:{
         type:Number,
         default:0   
-    }     
+    },   
 }
 const transaction={
     name:String,
