@@ -6,9 +6,10 @@ import BootstrapTooltip from "../../Components/Constants/ToolTip/tooltip"
 import {AuthContext} from "../../Context/AuthContext"
 import "./newGroup.scss";
 import ImageUpload from "../../Components/Constants/Buttons/ImageUpload";
-import NewMember from "./NewMember";
+import NewMember from "../../Components/NewMember/NewMember";
 import axios from "axios";
 import NavBar from "../../Components/Navbar/NavBar";
+import { rootShouldForwardProp } from "@mui/material/styles/styled";
 
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
 
@@ -88,7 +89,6 @@ function NewGroup(){
                        ["groupMembers"]:(member.filter((dataa)=>(dataa.userd))
                                                .map((data)=>({user_id:data.userd._id,
                                                               user_name:data.userd.name,
-                                                              expenses:[]
                                                              })
                                                     )
                                         )
@@ -105,10 +105,10 @@ function NewGroup(){
       if(group.groupMembers.length){
                axios.post("/saveGroup",{group,user})
                .then((res)=>{
-                   console.log("ff",res.data);
+                   console.log("User:",res.data.ourUser);
                    window.alert("Group Saved");
-                   dispatch({type:"SUCCESS",payload:res.data});
-                   window.location.href="/";
+                   dispatch({type:"SUCCESS",payload:res.data.ourUser});
+                   window.location.href="/group/"+res.data.id;
                })
                .catch((err)=>{
                     window.alert(err);

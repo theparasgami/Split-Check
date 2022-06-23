@@ -3,36 +3,29 @@ const mongoose =require("mongoose");
 const member={
     user_id:String,
     user_name:String,
-    expenses:[{
+    payments:[{
         user_id:String,
         user_name:String,
         amount:Number 
     }],
-    currTotalExpense:{
+    TotalExpense:{//It will include all the payments which are splitted currently 
+        type:Number,
+        default:0
+    },
+    currTotalExpense:{//This will store the current payments which are not splitted
         type:Number,
         default:0   
-    },   
-}
-const transaction={
-    name:String,
-    paid_by:String,
-    involved:{
-        type:[String],
-        default:[]
     },
-    img:{
-        type:String,
-        default:"https://png.pngtree.com/png-clipart/20200701/original/pngtree-consumer-bill-png-image_5408121.jpg"
+    TotalAllTimeExpense:{
+        type:Number,
+        default:0
+    },
+    TotalYouPaid:{
+        type:Number,
+        default:0
     }
 }
-const payment={
-     paid_by:String,
-     paid_to:String,
-     img:{
-        type:String,
-        default:"https://png.pngtree.com/png-clipart/20190612/original/pngtree-a-wad-of-dollar-bills-png-image_3326543.jpg" 
-     }
-}   
+   
 
 
 const GroupSchema=new mongoose.Schema({
@@ -50,14 +43,21 @@ const GroupSchema=new mongoose.Schema({
         default:"https://wc.wallpaperuse.com/wallp/77-777508_s.jpg",
     },
     simplifyDebts:Boolean,
-    transactions:{
+    expenses:{
         type:[{
             date:Date,
-            transaction:transaction,
-            payment:payment
+            amount:Number,
+            name:String,
+            paidBy:Array,
+            paidTo:Array,
+            whoUpdated:String
         }],
         default:[]
     },
+    totalGroupExpense:{
+        type:Number,
+        default:0
+    }
 })
 
 const Group=new mongoose.model("Group",GroupSchema);

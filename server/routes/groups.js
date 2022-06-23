@@ -1,3 +1,4 @@
+const { default: axios } = require("axios");
 const express=require("express")
 const router =express.Router();
 
@@ -35,35 +36,35 @@ router.post("/saveGroup",async(req,res)=>{
 
     const ourUser=await User.findOne({_id:user._id});
     console.log(ourUser); 
-    if(ourUser) return res.status(201).json(ourUser);
+    if(ourUser) return res.status(201).json({id:newGroup._id,ourUser});
     
     return res.status(422);
 });
 
 
-router.post("/getGroups",(req,res)=>{
-    const user=req.body;
-   
+router.get("/getGroups/:id",async(req,res)=>{
+    const user_id=req.params.id;
     var response=[];
     try{
+        const user = await User.findOne({_id:user_id});
         user.groups.forEach(e=>{
-           // console.log("Hi",e);
-            Group.findOne({_id:e},(err,group)=>{
-                group.groupMembers.forEach(member=>{
-                    (member.user_id===user._id)&&
-                            (response.push(
-                                {   group:group,
-                                    totAmnt:member.currTotalExpense
-                                })
-                            );
-                })
-            });
-        })
+              Group.findOne({_id:e},(err,group)=>{
+                     group.groupMembers.forEach(member=>{
+                         if(member.user_id===user_id){
+                                 (response.push(
+                                     {   group:group,
+                                         totAmnt:member.currTotalExpense
+                                     }
+                                 ));
+                         }
+                     })
+              });
+        });
+        
 
         setTimeout(() => {
-            //console.log(response);
             return res.status(201).json(response);
-        }, 100);
+        }, 1000);
     }
     catch(err){
         console.log(err);
@@ -71,7 +72,7 @@ router.post("/getGroups",(req,res)=>{
     }
 });
 
-router.get("/group/:id/:user_id",(req,res)=>{
+router.get("/getGroup/:id/:user_id",(req,res)=>{
     const groupID=req.params.id;
     const uID=req.params.user_id;
     console.log("request for group ",groupID);
@@ -89,26 +90,47 @@ router.get("/group/:id/:user_id",(req,res)=>{
     }
 });
 
-router.post("/group/addMember",async(req,res)=>{
-   const {group,user}=req.body;
+router.post("/group/:group_id/addMember",async(req,res)=>{
+   const {user}=req.body;
+   const group = await Group.findOne({_id:req.params.group_id});
    const member={
        user_id:user._id,
+       user_name:user.name,         
        expenses:[]
    }
-   await group.groupMembers.forEach((data)=>{
-       if(data.user_id===user._id)return res.status(406).json("Already a Group Member");
-   });
-   
-   await Group.updateOne({_id:group._id},
-                   {$push:{"groupMembers":member}}
-                  );
-   await User.updateOne({_id:user._id},
-                   {$push:{"groups":group._id}}
-                  );
-                
-   return res.status(200).json("Successfully added member");
+   try{
+        var flag=false;
+        await group.groupMembers.forEach((data)=>{
+            if(data.user_id===user._id){
+                flag=true;
+                console.log(data.user_id);
+                return res.status(422).json({error:"Already a Group Member"});
+            }
+        });
+        if(!flag){
+            await Group.updateOne({_id:group._id},
+                            {$push:{"groupMembers":member}},
+                            );
+            await User.updateOne({_id:user._id},
+                            {$push:{"groups":JSON.stringify(req.params.group_id)}},
+                            );
+            
+            return  res.status(200).json("Successfully added member");
+        }
+   }
+   catch(err){
+       console.log(err);
+       return  res.status(422).json("Can't Add");
+   }
+
+});
+
+router.get("/group/:id/getExpenses",async(req,res)=>{
+    console.log('called');
+    const group = await Group.findOne({_id:req.params.id});
+    console.log(group.expenses);
+    return res.status(201).json(group.expenses);
 
 })
-
 
 module.exports=router;

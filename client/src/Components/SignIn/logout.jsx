@@ -1,5 +1,5 @@
 import React from "react";
-import {Button} from "../../Components/Constants/Buttons/Button"
+import {Button} from "../Constants/Buttons/Button"
 import axios from "axios"
     
 

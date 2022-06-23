@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import Login from "./login";
-import Register from "./register";
+import Login from "../../Components/SignIn/login";
+import Register from "../../Components/SignIn/register";
 
 const AuthenticationPage =()=>{
     

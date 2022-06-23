@@ -2,8 +2,8 @@ import React, {  useState } from "react";
 import {Grid,Paper, Avatar, TextField} from '@mui/material';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import Logo from  "./Split-Check-black.png"
-import {Button} from '../../Components/Constants/Buttons/Button'
-import PasswordInput from "../../Components/Constants/Inputs/PasswordInput"
+import {Button} from "../Constants/Buttons/Button"
+import PasswordInput from "../Constants/Inputs/PasswordInput"
 import regImg from "./register.jpg";
 import "./style.scss";
 import axios from "axios";

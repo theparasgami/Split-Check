@@ -1,21 +1,24 @@
-import React, { useContext, useState ,useEffect } from "react";
+import React, { useContext, useState ,useEffect, forwardRef } from "react";
 import {Grid,Paper, Avatar,TextField} from "@mui/material";
+import Alert from '@mui/material/Alert';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import {Button} from "../../Components/Constants/Buttons/Button"
+import {Button} from "../Constants/Buttons/Button"
 import Logo from  "./Split-Check-black.png"
 import loginImg from "./login3.jpg";
-import PasswordInput from "../../Components/Constants/Inputs/PasswordInput";
+import PasswordInput from "../Constants/Inputs/PasswordInput";
 import "./style.scss";
-import LottieAnimation  from "../../Components/Constants/Lotties/lottie";
+import LottieAnimation  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
-
 
 function Login(props)
 {
  
   const [loading,setLoading]=useState(true);
   setTimeout(async()=>setLoading(false),100);
+
+  const [AlertOpen, setAlertOpen] = useState(false);
+
 
   const [user,setValues]=useState({
     email:"",password:""
@@ -64,9 +67,8 @@ function Login(props)
            if(res)
            {
              console.log("Login Succesfull",res.data.user);
-             window.alert(res.data.message);
+             window.alert('Login Success')
              dispatch({type:"SUCCESS",payload:res.data.user});
-             window.location.reload();
            }
         }).catch((err)=>{
             console.log(err);
@@ -74,7 +76,6 @@ function Login(props)
             {
               window.alert(err.response.data.error);
             }
-            window.location.reload();
         })
   }
   
@@ -152,6 +153,7 @@ function Login(props)
                 </div>
             </Paper>
 
+            {AlertOpen&&<Alert severity="success">This is a success alert — check it out!</Alert>}
           </div>)
           :( 
             <LottieAnimation />  

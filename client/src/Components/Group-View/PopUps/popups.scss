@@ -1,0 +1,416 @@
+.popup-box{
+    position: fixed;
+    background: #00000050;
+    width: 100%;
+    height: 100vh;
+    font-family: 'Baloo Bhaijaan 2', cursive;
+    z-index: 10;
+    top:0;
+    left:0;
+
+    .box{
+        background: #0b2741;//#1C1F59;
+        z-index: 200;
+        position:relative;
+        width: 30%;
+        margin: 0 auto;
+        min-height: 45vh;
+        max-height: 50vh;
+        overflow: auto;
+        border-radius: 2%;
+        top: 50%;
+        transform: translateY(-50%);
+
+    }    
+    .close-icon{
+        cursor: pointer;
+        position:fixed;
+        width: 35px;
+        height: 35px;
+        color: white;
+    }
+}
+.popupTransaction{
+    .box{
+        width: 25%;
+       
+        .close-icon{
+            right: 0;
+        }
+        .head{
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:1rem 0 0 0;
+        }
+        .amount{
+            font-size: 2rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+        }
+        .description{
+            text-align: center;
+            font-size: 1.2rem;
+            color: rgb(165, 163, 163);
+        }
+        .payers,.allSplitting{
+             word-spacing: 10px;
+             text-align: center;
+             margin-top: 1rem;
+             color: #edf1f7;
+             font-size: 1.1rem;
+        }
+        .allSplitting{
+            margin-bottom:1rem;
+        }
+    }
+}
+.popupSettleUp{
+    .box{
+        text-align: center;
+        width: 25%;
+        color: rgb(165, 163, 163);
+        .close-icon{
+           right: 0;
+        }
+        .head{
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:2rem 0 0 0;
+        }
+        .payer{
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            .payerImg{
+                border-radius: 50%;
+                width: 4rem;
+                height: 4rem;
+            }
+            .payerName{
+                letter-spacing: 2px;
+                font-size: 1.7rem;
+                padding: 10px;
+                color: #D9E4F3;
+            }
+        }
+        .howMuch{
+            color: #edf1f7;
+            font-size: 2rem;
+            padding: 10px;
+            .InputMoney{
+                margin-left:10px ;
+                border: 1px solid orange;
+                color: whitesmoke;
+                font-size: 2rem;
+                background:none;
+                height: 3.5rem;
+                padding: 20px;
+                width:7rem;
+            }
+            .InputMoney::-webkit-outer-spin-button,
+            .InputMoney::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+               margin: 0;
+            }
+        }
+        .receiver{
+            font-size: 1.7rem;
+            color: #ebe7ee;
+            letter-spacing: 2px;
+        }
+        .submitBtn{margin-bottom: 10px;}
+    }
+}
+
+.popupAddExpense{
+
+    .box{
+        min-height: 45vh;
+        max-height: 60vh;
+        color: rgb(165, 163, 163);
+        font-size: 1.2rem;
+        text-align: center;
+        .close-icon{
+            left:0;
+        }
+        .close-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .save-icon{
+            cursor: pointer;
+            position:fixed;
+            width: 35px;
+            height: 35px;
+            color: white;
+            right: 1px;
+        }
+        .save-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .head{
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:2rem 0 0 0;
+        }
+        .description{
+            margin: 2rem 0 0 0;
+            display: flex;
+            justify-content: center;
+            .billIcon{
+                background-color: #2b4062;
+                width: 50px;
+                height:50px;
+                border:1px solid white;
+                color: white;
+            }
+            .inputDescr{
+               background: none;
+               border: none;
+               width: 15rem;
+               border-bottom: 2px solid rgb(82, 226, 82);
+               margin:0 0 0 20px ;
+               font-size:1.5rem;
+               color: white;
+               outline: none;
+               height: 3rem;
+            }
+            .inputDescr::placeholder{
+                color: #DAE5F3;
+                font-size: 1rem;
+            }
+            .inputDescr::-webkit-outer-spin-button,
+            .inputDescr::-webkit-inner-spin-button {
+             -webkit-appearance: none;
+              margin: 0;
+            } 
+        }
+        .payment{
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            color: whitesmoke;
+            .text{
+                margin-top: 7px;
+            }
+            .accords{
+                margin: 0.5rem 1.5rem;
+                height: 2rem;
+                min-width: 4rem;
+                max-width: 7rem;
+                padding:0 5px;
+                border-radius: 10%;
+                color: black;
+                cursor: pointer;
+                background-color:rgb(255, 255, 255);
+
+            }
+        }
+        .AddBtn{
+            margin: 0 0 10px 0;
+            background-color: #4c9536;
+        }
+    }
+}
+.popupAddMember{
+
+    .box{
+        
+        color: rgb(165, 163, 163);
+        font-size: 1.2rem;
+        text-align: center;
+
+        .close-icon{
+            left:0;
+        }
+        .close-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .save-icon{
+            cursor: pointer;
+            position:fixed;
+            width: 35px;
+            height: 35px;
+            color: white;
+            right: 1px;
+            
+        }
+        .save-icon:hover{
+            width: 37px;
+            height: 37px;
+        }
+        .head{
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ebe7ee;
+            margin:4rem 0 0 0;
+            letter-spacing: 1.6px;
+        }
+
+        .emailAddress{
+            height: 3rem;
+            width: 20rem;
+            margin: 2rem;
+            outline: none;
+            font-size: 1.5rem;
+            padding: 10px;
+            text-align: center;
+        }
+        .emailAddress::placeholder{
+            font-size: 1rem;
+        }
+        
+        .bottomImg{
+            height: 5rem;
+            width: 35.5rem;
+            margin-top: 3.1rem;
+            margin-bottom: 0;
+            overflow: none;
+        }
+        
+    }
+}
+
+.popupHowMuchPaid{
+    background: #000000c5;
+    z-index: 1000;
+    
+    .box{
+        width: 20%;
+        background: white;
+        min-height: auto;
+        .close-icon{
+            color: black;
+            top:1px
+        }
+        .save-icon{
+            cursor: pointer;
+            position:fixed;
+            width: 35px;
+            height: 35px;
+            color: black;
+            right: 1px;
+        }
+        .heading{
+            color: #2b4062;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+        .members{
+            color: #0b2741;
+            margin:1rem 1rem 2rem 0;
+            
+            .member{
+                display:flex;
+                height: 2rem;
+                
+                .userName{ 
+                   width: 60%;
+                   text-align: left;
+                   margin:0px 14px;
+                   overflow:hidden;
+                }
+                input{
+                    width: 40%;
+                    border: none;
+                    font-size: 1.5rem;
+                    background: rgb(243, 242, 242);
+                    outline: none; 
+                }
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                .checkbox{
+                    margin-left: auto;
+                    margin-right: 0;
+                }
+            }
+            
+        }
+        .multiplePayer{
+            color:  #2b4062;
+            cursor: pointer;
+        }
+        
+    }
+}
+.popupHowMuchSplits{
+    background: #000000c5;
+    z-index: 1000;
+    
+    .box{
+        width: 20%;
+        background: white;
+        min-height: auto;
+        .close-icon{
+            color: black;
+            top:1px
+        }
+        .save-icon{
+            cursor: pointer;
+            position:fixed;
+            width: 35px;
+            height: 35px;
+            color: black;
+            right: 1px;
+        }
+        .Tab{
+           color: black;
+        }
+        .members{
+            color: #0b2741;
+            margin:1rem 1rem 2rem 0;
+            
+            .member{
+                display:flex;
+                height: 2rem;
+                
+                .userName{ 
+                   width: 60%;
+                   text-align: left;
+                   margin:0px 14px;
+                   overflow:hidden;
+                }
+                input[type="number"]{
+                    width: 40%;
+                    border: none;
+                    font-size: 1.5rem;
+                    background: rgb(243, 242, 242);
+                    outline: none; 
+                }
+                input[type="number"]::-webkit-outer-spin-button,
+                input[type="number"]::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                .checkbox{
+                    margin-left: auto;
+                    margin-right: 10px;
+                    width: 10%;
+                    input{
+                        width: 100%;
+                        cursor: pointer;
+                    }
+                }
+            }
+            
+        }
+        .otherDetails{
+            color:  #2b4062;
+        }
+    }
+}

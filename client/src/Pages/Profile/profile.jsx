@@ -103,16 +103,16 @@ const Profile=()=>{
 
     const getGroups=()=>{
   
-      axios.post("/getGroups",user)
+      axios.get("/getGroups/"+user._id)
       .then((res)=>{
-           console.log(groups);
+           //console.log(groups);
            setGroups(res.data);
       })
       .catch((err)=>{
         window.alert(err);
       });
     }
-    useEffect(()=>{getGroups();},[]);// eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(()=>{getGroups()},[]);// eslint-disable-line react-hooks/exhaustive-deps
   
 
 
@@ -128,7 +128,9 @@ const Profile=()=>{
                 <div className="generalSettings">
                      
                      <div className="imageSection">
-                        <ImageUpload imgSrc={imgSrc} imageChange={handleImageChange} />
+                        <ImageUpload imgSrc={imgSrc} 
+                                     imageChange={handleImageChange} 
+                        />
                      </div>
                      
                      <div className="details">
@@ -145,8 +147,12 @@ const Profile=()=>{
                                           value={profileValues.name} 
                                           name="name" 
                                     />:
-                                   <><div >{user.name}</div>
-                                   <EditIcon onClick={()=>OnEditClick("name") } className="EditIcon"/></>
+                                   <>
+                                     <div >{user.name}</div>
+                                     <EditIcon onClick={()=>OnEditClick("name") } 
+                                             className="EditIcon
+                                     "/>
+                                   </>
                                }
                              </div>
                            </li>
@@ -161,8 +167,12 @@ const Profile=()=>{
                                               value={profileValues.username} 
                                               name="username" 
                                        />:
-                                       <><div >{user.username}</div>
-                                       <EditIcon onClick={()=>OnEditClick("username") } className="EditIcon"/></>
+                                       <>
+                                          <div >{user.username}</div>
+                                          <EditIcon onClick={()=>OnEditClick("username") } 
+                                                    className="EditIcon"
+                                          />
+                                       </>
                                  }
                              </div>
                            </li>
@@ -177,8 +187,11 @@ const Profile=()=>{
                                               value={profileValues.phone} 
                                               name="phone" 
                                        /> :
-                                       <><div >{user.phone?user.phone:"XXXXXXXXXX"}</div>
-                                          <EditIcon onClick={() => OnEditClick("phone")} className="EditIcon" /></>
+                                       <>
+                                          <div >{user.phone?user.phone:"XXXXXXXXXX"}</div>
+                                          <EditIcon onClick={() => OnEditClick("phone")} 
+                                                    className="EditIcon" />
+                                       </>
                                     }
                              </div>
                            </li>
@@ -195,7 +208,11 @@ const Profile=()=>{
                                                           value={profileValues.password} 
                                                           name="password"
                                                    />:
-                                                   <>*******<EditIcon onClick={()=>OnEditClick("password") } className="EditIcon"/></>):
+                                                   <>*******
+                                                     <EditIcon onClick={()=>OnEditClick("password") } 
+                                                     className="EditIcon"/>
+                                                   </>
+                                                ):
                                                 "LoggedIn through Google"
                                 }     
                              </div>
@@ -204,14 +221,22 @@ const Profile=()=>{
                            <li className="listrows" style={cnfPswrdD}>
                              <div className="listHeads">Confirm</div>
                              <div className="listContentData">
-                                 <input type="password" className="inputData" onChange={handlevalueChange} value={profileValues.cnfpasswrd} name="cnfpasswrd" />
+                                 <input type="password" 
+                                        className="inputData" 
+                                        onChange={handlevalueChange} 
+                                        value={profileValues.cnfpasswrd} 
+                                        name="cnfpasswrd" 
+                                 />
                              </div>
                            </li>
 
                          </ul>
 
                          <div className="saveBtn">
-                            <Button bgColor={"rgb(232, 39, 39)"} onClick={updateChange}>Save</Button>
+                            <Button bgColor={"rgb(232, 39, 39)"} 
+                                    onClick={updateChange}>
+                                    Save
+                            </Button>
                          </div>
 
                      </div>
@@ -230,14 +255,16 @@ const Profile=()=>{
                       
                      {
                        groups.map((gdata,index)=>(
-                         <>
+                         <div key={index}>
                           <ListItem alignItems="flex-start">
                               
-                                <ListItemAvatar>
-                                  <Link to={"../group/"+gdata.group._id}>
-                                      <Avatar alt="GG" src={gdata.group.groupImage} />
-                                  </Link>
-                                </ListItemAvatar>
+                              <ListItemAvatar>
+                                <Link to={"../group/"+gdata.group._id}>
+                                    <Avatar alt="GG" 
+                                            src={gdata.group.groupImage} 
+                                     />
+                                </Link>
+                              </ListItemAvatar>
 
                               <ListItemText
                                 primary={gdata.group.groupName}
@@ -260,9 +287,12 @@ const Profile=()=>{
                                 }
                               />
                           </ListItem>
-                          <Divider className="Divider" variant="inset" component="li" />
-                         </>
-                        )
+                          <Divider className="Divider" 
+                                   variant="inset" 
+                                   component="div" 
+                          />
+                         </div>
+                       )
                        )
                      }
                       

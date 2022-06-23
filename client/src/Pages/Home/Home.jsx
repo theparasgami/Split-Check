@@ -1,5 +1,5 @@
 import React from "react";
-import Logout from "../SignUp/logout";
+import Logout from "../../Components/SignIn/logout";
 import { Button } from "../../Components/Constants/Buttons/Button";
 import NavBar from "../../Components/Navbar/NavBar";
 import "./Home.scss"

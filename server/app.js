@@ -27,6 +27,8 @@ require("./Database/conn");
 app.use(require("./routes/auth"));
 app.use(require("./routes/user"));
 app.use(require("./routes/groups"));
+app.use(require("./routes/expenses"));
+
 
 //connection
 const PORT = process.env.PORT || 8000;
