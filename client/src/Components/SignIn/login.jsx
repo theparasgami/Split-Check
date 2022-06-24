@@ -6,7 +6,7 @@ import Logo from  "./Split-Check-black.png"
 import loginImg from "./login3.jpg";
 import PasswordInput from "../Constants/Inputs/PasswordInput";
 import "./style.scss";
-import {LottieAnimation1}  from "../Constants/Lotties/lottie";
+import {LottieAnimation2}  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 
@@ -151,7 +151,7 @@ function Login(props)
 
           </div>)
           :( 
-            <LottieAnimation1/>  
+            <LottieAnimation2/>  
           )
      }
     </>
