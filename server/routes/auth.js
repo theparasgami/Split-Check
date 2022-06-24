@@ -4,7 +4,6 @@ const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 
-const Group = require("../Database/models/GroupSchema");
 const User  = require("../Database/models/UserSchema");
 
 passport.use(User.createStrategy());
@@ -59,12 +58,12 @@ router.get("/auth/google",
 
 router.get("/auth/google/split-check", 
                   passport.authenticate("google",
-                                        { failureRedirect: "https://split-check.netlify.app" }
+                                        { failureRedirect: "https://split-check.netlify.app/" }
                                        ),
                   (req, res) =>{
                        console.log(res);
                       // Successful authentication, redirect home.
-                      res.redirect("https://split-check.netlify.app");
+                      res.redirect("https://split-check.netlify.app/");
                       // res.redirect("http://localhost:3000/");
                   }
 );

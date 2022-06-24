@@ -29,7 +29,7 @@ function Login(props)
 
   const fetchAuthUser = async ()=>{
       console.log("Hi fetchAuthUSer");
-      await axios.get("/user")
+      await axios.get("http://split-check.herokuapp.com/user")
           .then((res)=>{
               console.log(res.data);
               dispatch({type:"SUCCESS",payload:res.data});
