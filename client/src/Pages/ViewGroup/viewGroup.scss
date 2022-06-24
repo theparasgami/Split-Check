@@ -199,6 +199,16 @@
                     background-color: #beced8;
                     max-height: 30rem;
                     overflow: auto;
+                    .SettleUpBtn{
+                        background: none;
+                        float: right;
+                        margin:0 0 10px 15 px;
+                        font-weight: 200;
+                    }
+                    .typography{
+                        min-height: 2rem;
+                        margin: 20px 0px;
+                    }
                 }
                 
 
@@ -207,11 +217,6 @@
                 }
                 .pricel0{
                     color: orange;
-                }
-                .SettleUpBtn{
-                    background: none;
-                    margin:10px 0 10px 13rem;
-                    font-weight: 200;
                 }
             }
             

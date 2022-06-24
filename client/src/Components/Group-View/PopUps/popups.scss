@@ -40,6 +40,7 @@
         .head{
             font-size: 1.5rem;
             text-align: center;
+            letter-spacing: 1.3px;
             font-weight: 600;
             color: #ebe7ee;
             margin:1rem 0 0 0;
@@ -60,10 +61,14 @@
              text-align: center;
              margin-top: 1rem;
              color: #edf1f7;
-             font-size: 1.1rem;
+             font-size: 1.3rem;
         }
         .allSplitting{
             margin-bottom:1rem;
+        }
+        hr{
+            opacity: 0.8;
+            margin: 1rem 5rem;
         }
     }
 }

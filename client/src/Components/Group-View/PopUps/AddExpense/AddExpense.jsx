@@ -5,40 +5,52 @@ import {Button} from "../../../Constants/Buttons/Button";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+
+import {LottieAnimation2} from "../../../Constants/Lotties/lottie"
 import HowMuchPaid from "./HowMuchPaid";
 import HowMuchSplits from "./HowMuchSplits";
 import "../popups.scss";
 
 const AddExpense=(props)=>{
-   
-    const [expense,setExpense]=useState({descr:"",amount:0});
+    
+    
+    const [loading,setLoading]=useState(false);
 
+    const [expense,setExpense]=useState({descr:"",amount:0});
     const [TotalCurrPaidBy,setTotalCurrPaidBy]=useState(0);
     const [singlePayer,setsinglePayer]=useState(1);
     const [TotalCurrPaidTo,setTotalCurrPaidTo]=useState(0);
-    const [equally,setequally]=useState(props.members.map((member)=>
-                                                   ({id:member.user_id,
-                                                     included:true,
-                                                     name:member.user_name})
+    const [equally,setequally]=useState(props.members.map((member)=>({
+                                              id: member.user_id,
+                                              included: true,
+                                              name: member.user_name
+                                             })
                                         ));
     const [Isequally,setIsequally]=useState(1);
     const [countOfequallySplitting,setcntState]=useState(props.members.length);
 
+    const [paidBy,setpaidBy]=useState(props.members.map((member)=>({
+                                            id:member.user_id,
+                                            name:member.user_name,
+                                            amount:0
+                                          })
+                                      ));
+    const [paidTo,setpaidTo]=useState(props.members.map((member)=>({
+                                            id:member.user_id,
+                                            name:member.user_name,
+                                            amount:0
+                                          })
+                                      ));
 
-    const [paidBy,setpaidBy]=useState(props.members.map((member )=>(
-                                       {id:member.user_id,
-                                        name:member.user_name,
-                                        amount:0})
-                                     ));
-    const [paidTo,setpaidTo]=useState(props.members.map((member)=>(
-                                                {id:member.user_id,
-                                                 name:member.user_name,
-                                                 amount:0})
-                                           ));
     const [paidByPopup,setpaidByPopup]=useState(false);
     const [paidToPopup,setpaidToPopup]=useState(false);
 
 
+    useEffect(()=>{
+      setLoading(true);
+      setTimeout(() =>setLoading(false), 1000);
+    },[]) // eslint-disable-line react-hooks/exhaustive-deps
+  
     const handlePaidByChange=async(e)=>{
        e.preventDefault();
        setpaidBy(
@@ -54,7 +66,7 @@ const AddExpense=(props)=>{
         paidBy.reduce((total, currentValue) => 
                           total = total + parseFloat(currentValue.amount),0)
        );
-    }, [paidBy])
+    }, [paidBy]);// eslint-disable-line react-hooks/exhaustive-deps
     
 
     const handlePaidToChange=(e)=>{
@@ -72,7 +84,7 @@ const AddExpense=(props)=>{
         paidTo.reduce((total, currentValue) => 
                           total = total + parseFloat(currentValue.amount),0)
        );
-    }, [paidTo]); 
+    }, [paidTo]); // eslint-disable-line react-hooks/exhaustive-deps
 
     
     const handleEquallyChange=(id)=>{ 
@@ -85,7 +97,6 @@ const AddExpense=(props)=>{
       )
     }
     const handleCountOfEquallySplitting=()=>{
-        
         setcntState(equally.reduce((tot,curr)=>
                           tot=tot+curr.included,0)
         );
@@ -111,18 +122,10 @@ const AddExpense=(props)=>{
                                                            countOfequallySplitting,
                                                            user_name
                   }).then((res)=>{
-                    setTimeout(() => {
-                      axios.get("/group/"+props.group_id+"/distributeAmount")
-                      .then((response)=>{
-                        window.alert(res.data);
-                        console.log(res.data);
-                      })
-                      .catch((err)=>{
-                          window.alert(err.response.data);
-                      });
-                    }, 1000);
+                     window.alert(res.data);
+                     window.location.reload();
                   }).catch((err)=>{
-                    window.alert(err.response.data);
+                     window.alert(err.response.data);
                   })
     }
 
@@ -136,11 +139,11 @@ const AddExpense=(props)=>{
          <div className="box" >
  
              <CancelIcon className="close-icon" onClick={props.cross} />
-             
+            {loading?<LottieAnimation2/> :<>
              <div className="head">
                Add an Expense
              </div>
- 
+  
              <div className="description">
                 <div className="billImg">
                     <ReceiptLongIcon className="billIcon"/>
@@ -201,6 +204,7 @@ const AddExpense=(props)=>{
                      onClick={PostData}>
                      Add
              </Button>
+          </>}
          </div>
          {paidByPopup&&<HowMuchPaid key={1}
                                     cross={()=>setpaidByPopup(false)}

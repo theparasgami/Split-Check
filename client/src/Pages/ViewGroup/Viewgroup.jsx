@@ -30,24 +30,39 @@ const ViewGroup=()=>{
    const [userAndGroupspend,setUserandGroupSpend]=useState(false);
 
    useEffect(()=>{
-       axios.get(("/getGroup/"+params.id+"/"+user._id))
-       .then((res)=>{
-           setData({group:res.data.group,user:res.data.userData});
-        })
-        .catch((err)=>{
-            window.alert("No Such Group");
-            window.location.href="/";
-        });
+
+       axios.get("/group/"+params.id+"/distributeAmount")
+            .then((response)=>{
+              axios.get("/group/"+params.id+"/removeZeroPayments");
+              axios.get(("/getGroup/"+params.id+"/"+user._id))
+                   .then((res)=>{
+                       setData({group:res.data.group,user:res.data.userData});
+                   })
+                   .catch((err)=>{
+                       window.alert("No Such Group");
+                       window.location.href="/";
+                   })
+            })
+            .catch((err)=>{
+                window.alert(err.response.data);
+            })  
+  
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     
     
 
-   const [addExpense,setAddExpense]=useState(false);
+   const [addExpense,setAddExpense]=useState([]);
    const [addMember,setAddMember]=useState(false);
   
+    const getGroupMembers=()=>{
+        
+        axios.get("/group/"+params.id+"/getGroupMembers")
+             .then((res)=>setAddExpense(res.data));
+    
+    }
 
     //For Tabs
-    const [currList,setcurrList]=useState("Expenses")
+    const [currList,setcurrList]=useState("Balances")
     const handlelinksChange=(e,value)=>{ 
             setcurrList(()=>value);
     }
@@ -92,13 +107,13 @@ const ViewGroup=()=>{
                                       <div className="name">
                                            {user.name}
                                       </div>
-                                      <div className="amount">
-                                           ₹ {Math.abs(Data.user.currTotalExpense).toFixed(2)}
-                                      </div>
                                       <div className="status"> 
-                                              {Data.user.currTotalExpense===0&&"All Settle up"}
-                                              {Data.user.currTotalExpense<0&&"You Get "}
-                                              {Data.user.currTotalExpense>0&&"Yow Shoud Pay"}
+                                              {Data.user.TotalExpense===0&&"All Settle up"}
+                                              {Data.user.TotalExpense<0&&"You Get "}
+                                              {Data.user.TotalExpense>0&&"Yow Shoud Pay"}
+                                      </div>
+                                      <div className="amount">
+                                           ₹ {Math.abs(Data.user.TotalExpense).toFixed(2)}
                                       </div>
                                   </>)}
                                   {userAndGroupspend&&(<>
@@ -136,16 +151,27 @@ const ViewGroup=()=>{
                         <section className="RequiredList">
                               <Paper elevation={10} className="paper">
                                  <Collapse in={currList==="Expenses"} timeout={2000}>
-                                    {currList==="Expenses"&&<AllExpenses gid={params.id}/>}
+                                    {currList==="Expenses"&&
+                                         <AllExpenses group_id={params.id} 
+                                                      user_id={user._id}
+                                         />
+                                    }
                                  </Collapse>    
                                 <Collapse in={currList==="yourPayments"} timeout={2000}>
-                                    {currList==="yourPayments"&&<AllPayments key={1}/>}
+                                    {currList==="yourPayments"&&
+                                            <AllPayments group_id={params.id}
+                                                         ourUser={{user_id:user._id,user_name:user.name}}
+                                            />
+                                    }            
                                 </Collapse>
                                 <Collapse in={currList==="Balances"} timeout={2000}>
-                                    {currList==="Balances"&&<AllBalances key={1} Data={Data}/>}
+                                    {currList==="Balances"&&
+                                             <AllBalances group_id={params.id}
+                                             />
+                                    }  
                                 </Collapse>
                                 <Collapse in={currList==="Recent"} timeout={2000}>
-                                    {currList==="Recent"&&<RecentPayment key={1}/>}
+                                    {currList==="Recent"&&<RecentPayment group_id={params.id}/>}
                                 </Collapse>
                               </Paper>  
                         </section>
@@ -157,17 +183,17 @@ const ViewGroup=()=>{
                                                         Add Member
                                                     </Button>) :(
                                                     <Button bgColor="#bf2d9a" 
-                                                            onClick={()=>setAddExpense(true)}>
+                                                            onClick={getGroupMembers}>
                                                             Add an Expense
                                                     </Button>
                             )}
                         </div>
-                        {addExpense&&(
+                        {addExpense.length!==0&&(
                              <AddExpense 
-                                         cross={()=>setAddExpense(false)}
+                                         cross={()=>setAddExpense([])}
                                          group_id={params.id} 
-                                         members={Data.group.groupMembers}
                                          user_name={user.name}
+                                         members={addExpense}
                              />
                         )}
                         {addMember&&(

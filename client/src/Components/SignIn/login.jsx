@@ -1,13 +1,12 @@
-import React, { useContext, useState ,useEffect, forwardRef } from "react";
+import React, { useContext, useState ,useEffect } from "react";
 import {Grid,Paper, Avatar,TextField} from "@mui/material";
-import Alert from '@mui/material/Alert';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {Button} from "../Constants/Buttons/Button"
 import Logo from  "./Split-Check-black.png"
 import loginImg from "./login3.jpg";
 import PasswordInput from "../Constants/Inputs/PasswordInput";
 import "./style.scss";
-import LottieAnimation  from "../Constants/Lotties/lottie";
+import {LottieAnimation1}  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 
@@ -16,9 +15,6 @@ function Login(props)
  
   const [loading,setLoading]=useState(true);
   setTimeout(async()=>setLoading(false),100);
-
-  const [AlertOpen, setAlertOpen] = useState(false);
-
 
   const [user,setValues]=useState({
     email:"",password:""
@@ -153,10 +149,9 @@ function Login(props)
                 </div>
             </Paper>
 
-            {AlertOpen&&<Alert severity="success">This is a success alert — check it out!</Alert>}
           </div>)
           :( 
-            <LottieAnimation />  
+            <LottieAnimation1/>  
           )
      }
     </>

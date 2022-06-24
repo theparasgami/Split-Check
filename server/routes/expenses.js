@@ -65,7 +65,7 @@ router.post("/group/:group_id/addExpense",async(req,res)=>{
         transaction.paidBy.push({...paidBy[singlePayer-1],amount:(expense.amount)});
     }else{
          paidBy.forEach((member,ind)=>{
-             if(member.amount>0)transaction.paidBy.push({...member,amount:(member.amount)});
+             if(member.amount>0)transaction.paidBy.push({...member,amount:(member.amount).toFixed(2)});
          })
     }
 
@@ -74,21 +74,21 @@ router.post("/group/:group_id/addExpense",async(req,res)=>{
     try{
 
         await Group.findOneAndUpdate({_id:req.params.group_id},
-                                     { $push:{"expenses":transaction},
+                                     { $push:{"expenses":{$each:[transaction],$position:0}},
                                        $inc:{"totalGroupExpense":expense.amount}}
                 );
        
         transaction.paidBy.forEach(async(member)=>{
             await Group.updateOne({_id:req.params.group_id,"groupMembers.user_id":member.id},
-                            {$inc:{"groupMembers.$.currTotalExpense":-member.amount,
-                                   "groupMembers.$.TotalYouPaid":member.amount}
+                            {$inc:{"groupMembers.$.currTotalExpense":-(member.amount),
+                                   "groupMembers.$.TotalYouPaid":(member.amount)}
             })
           
         });
         transaction.paidTo.forEach(async(member)=>{
             await Group.updateOne({_id:req.params.group_id,"groupMembers.user_id":member.id},
-                                  {$inc:{"groupMembers.$.currTotalExpense":member.amount,
-                                         "groupMembers.$.TotalAllTimeExpense":member.amount}
+                                  {$inc:{"groupMembers.$.currTotalExpense":(member.amount),
+                                         "groupMembers.$.TotalAllTimeExpense":(member.amount)}
             })
         });
         //Now  we only have to arrange the payments which is done in //distributeAmount
@@ -101,31 +101,30 @@ router.post("/group/:group_id/addExpense",async(req,res)=>{
 })
 
 router.get("/group/:group_id/distributeAmount",async(req,res)=>{
-
-    var Gid=req.params.group_id;
-    var group= await Group.find({_id:Gid});
-        
+    const Gid=req.params.group_id;
+    let group;  
     while(true){
         let flag=false;
-        console.log(flag);
-        group=await Group.find({_id:Gid});
+        group=await Group.findOne({_id:Gid});
         
+        if(!group){return res.status(422).json("No such group");}
        // if someone who is currently getting but overall he has to pay then we will decrease from his payments first
-        for(let index=0;index<group[0].groupMembers.length;index++){
-            const moneyOwner=group[0].groupMembers[index];    
-            if(Math.abs(moneyOwner.currTotalExpense).toFixed(2)>0.01){
+        for(let index=0;index<group.groupMembers.length;index++){
+            const moneyOwner=group.groupMembers[index];    
+            if(moneyOwner.currTotalExpense.toFixed(2)<=(-0.99)){
              
              for(let jindex=0;jindex<moneyOwner.payments.length;jindex++){
 
                 if(moneyOwner.currTotalExpense===0)break;
                 const user=moneyOwner.payments[jindex];
 
-                if(Math.abs(user.amount).toFixed(2)>0.01){
+                if((user.amount).toFixed(2)<=(-0.99)){
                     let howMuchcangive=moneyOwner.currTotalExpense;
                     let howMuchcantake=user.amount;
                     let givenAmount=Math.max(howMuchcangive,howMuchcantake);
             
                     flag=true;
+                    console.log("1:givenAmoune:",givenAmount);
                     await Group.updateOne({_id:Gid},
                         {
                             $inc:{
@@ -157,7 +156,7 @@ router.get("/group/:group_id/distributeAmount",async(req,res)=>{
                         }
                     );
                     if(flag)break;
-                    moneyOwner.currTotalExpense-=givenAmount;
+                   
                 }
              }
             }
@@ -168,20 +167,20 @@ router.get("/group/:group_id/distributeAmount",async(req,res)=>{
     // if someone who is currently paying but overall he will get then we will decrease from his payments first
        
         
-        for(let index=0;index<group[0].groupMembers.length;index++){   
-            const moneyTaker=group[0].groupMembers[index];
-            if(moneyTaker.currTotalExpense>0.01){
+        for(let index=0;index<group.groupMembers.length;index++){   
+            const moneyTaker=group.groupMembers[index];
+            if(moneyTaker.currTotalExpense>=0.01){
               
              for(let jindex=0;jindex<moneyTaker.payments.length;jindex++){
 
                 if(moneyTaker.currTotalExpense===0)break;
                 const user=moneyTaker.payments[jindex];
 
-                if(user.amount>0.01){
+                if(user.amount>=0.01){
 
                     let howMuchcantake=moneyTaker.currTotalExpense;
                     let howMuchcangive=user.amount;
-                    let takenAmount=Math.max(howMuchcangive,howMuchcantake);
+                    let takenAmount=Math.min(howMuchcangive,howMuchcantake);
                     flag=true;
                     console.log("2:takenAmount:",takenAmount);
                     await Group.updateOne({_id:Gid},
@@ -202,9 +201,9 @@ router.get("/group/:group_id/distributeAmount",async(req,res)=>{
                     await Group.updateOne({_id:Gid},
                         {
                             $inc:{
-                                "groupMembers.$[groupMembers].currTotalExpense":-takenAmount,
-                                "groupMembers.$[groupMembers].TotalExpense":takenAmount,
-                                "groupMembers.$[groupMembers].payments.$[payments].amount":-takenAmount
+                                "groupMembers.$[groupMembers].currTotalExpense":takenAmount,
+                                "groupMembers.$[groupMembers].TotalExpense":-takenAmount,
+                                "groupMembers.$[groupMembers].payments.$[payments].amount":takenAmount
                             }
                         },
                         {
@@ -215,7 +214,7 @@ router.get("/group/:group_id/distributeAmount",async(req,res)=>{
                         }
                     );
                     if(flag)break;
-                    moneyTaker.currTotalExpense-=takenAmount;
+
                 }
              }
             }
@@ -227,23 +226,24 @@ router.get("/group/:group_id/distributeAmount",async(req,res)=>{
     
     try{
         var whoGet=[],whoOwe=[];
-        await group[0].groupMembers.forEach((member,ind)=>{
-            if(member.currTotalExpense<(-0.99)){
+        await group.groupMembers.forEach((member,ind)=>{
+            if(member.currTotalExpense<=(-0.99)){
                 whoGet.push({member,ind});
             }
         });
-        await group[0].groupMembers.forEach((member,ind)=>{
-            if(member.currTotalExpense>0.01){
+        await group.groupMembers.forEach((member,ind)=>{
+            if(member.currTotalExpense>=0.01){
                 whoOwe.push({member,ind});
             }
         });
-        console.log("In try ",whoGet);
+       
         while(true){
             if(whoGet.length===0||whoOwe.length===0)break;
             if(whoGet.length>1)whoGet.sort((a,b)=>a.member.currTotalExpense-b.member.currTotalExpense);
             if(whoOwe.length>1)whoOwe.sort((a,b)=>b.member.currTotalExpense-a.member.currTotalExpense);
             if(whoOwe[0].member.currTotalExpense.toFixed(2)<0.01)break;
-            
+            if(whoGet[0].member.currTotalExpense.toFixed(2)>(-0.99))break;
+
             if(Math.abs(whoGet[0].member.currTotalExpense)>whoOwe[0].member.currTotalExpense){    
                 //check if this members are already paying to each other or not
                 
@@ -380,27 +380,85 @@ router.get("/group/:group_id/distributeAmount",async(req,res)=>{
             }
         }
 
-        //Now remove all the payments with zeroes;
-        group=await Group.find({_id:Gid});
-        await group[0].groupMembers.forEach((member)=>{
-            
-            member.payments.forEach((payment)=>{
-                if(payment.amount>=(-0.99)&&(payment.amount<=0.01)){
-                    Group.updateOne({_id:Gid,"groupMembers.user_id":member.user_id},
-                           {$pull:{
-                               "groupMembers.$.payments":{user_id:payment.user_id}
-                           }}
-                         )
-                }
-            })
-        });
-
         return res.status(201).json("Cool Expenses are now distributed among all");
     }
     catch(err){
         console.log(err);
         return res.status(422).json(err);
     }
+});
+
+router.get("/group/:id/removeZeroPayments",async(req,res)=>{
+ //Now remove all the payments with zeroes;
+ const group= await Group.findOne({_id:req.params.id});
+
+ group.groupMembers.forEach((member)=>{
+     
+     member.payments.forEach((payment)=>{ 
+        
+         if(payment.amount.toFixed(2)>(-0.99)&&(payment.amount.toFixed(2)<0.01)){
+           
+             Group.updateOne({_id:req.params.id,"groupMembers.user_id":member.user_id},
+                    {
+                      $pull:
+                       {"groupMembers.$.payments":payment}
+                    },
+                    ((err,status)=>{
+                        if(err)console.error(err);
+                    })
+                
+            )
+         }
+     })
+ });
+ return res.status(200).json("Successfully removed zero payments");
+});
+
+
+router.post("/group/:id/settleDebt",async(req,res)=>{
+    const {payer,receiver,amount}=req.body;
+    const group_id=req.params.id;
+    console.log(group_id);
+    await Group.updateOne({_id:group_id},
+        {$inc:
+           {
+              "groupMembers.$[groupMembers].TotalExpense":-parseFloat(amount).toFixed(2),
+              "groupMembers.$[groupMembers].payments.$[payments].amount":parseFloat(amount).toFixed(2)
+           },
+         $push:
+           {
+              "recentPayments":{$each:[{
+                                     date:new Date(),
+                                     payerName:payer.user_name,
+                                     receiverName:receiver.user_name,
+                                     amount:amount}],
+                                $position:0
+                               }
+           }
+        },
+        {
+            arrayFilters:[
+               {"groupMembers.user_id":payer.user_id},
+               {"payments.user_id":receiver.user_id}
+            ]
+        }
+    );
+    await Group.updateOne({_id:group_id},
+        {$inc:
+           {
+              "groupMembers.$[groupMembers].TotalExpense":parseFloat(amount).toFixed(2),
+              "groupMembers.$[groupMembers].payments.$[payments].amount":-parseFloat(amount).toFixed(2)
+           }
+        },
+        {
+            arrayFilters:[
+               {"groupMembers.user_id":receiver.user_id},
+               {"payments.user_id":payer.user_id}
+            ]
+        }
+    );
+
+    return res.status(200).json("Ok settled up");
 })
 
 module.exports=router;

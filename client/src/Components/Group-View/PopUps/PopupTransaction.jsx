@@ -1,8 +1,7 @@
 import React from "react";
 import CancelIcon from '@mui/icons-material/Cancel';
 import "./popups.scss"
-
-const sampleArr=[1,1,1,1]
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const PopupTransaction=(props)=>{
     
@@ -13,32 +12,38 @@ const PopupTransaction=(props)=>{
                             onClick={props.cross} 
                 />
                 <div className="head">
-                     Canteen
+                    {props.expense.name}
                 </div>
                 <div className="amount">
-                     ₹ 200
+                    ₹ {props.expense.amount}
                 </div>
                 <div className="description">
-                     Added by Mark Wood on June 8, 2022
+                     Added by {props.expense.whoUpdated} on &nbsp;
+                     {months[((new Date(props.expense.date)).getMonth())]}&nbsp;
+                     {((new Date(props.expense.date)).getDate())}&nbsp;,&nbsp; 
+                     {((new Date(props.expense.date)).getFullYear())}&nbsp;
                 </div>
+                <hr/>     
                 <div className="payers">
                     {
-                        sampleArr.map(()=><>
+                        props.expense.paidBy.map((payer,ind)=><div key={ind}>
                           <div className="payerdetail">
-                            Stark paid ₹ 10
+                            {payer.name}&nbsp;paid ₹&nbsp;{payer.amount}
                           </div>
-                        </>)
+                        </div>)
                      }
                 </div>
+                <hr/>
                 <div className="allSplitting">
                      {
-                        sampleArr.map(()=><>
+                        props.expense.paidTo.map((taker,ind)=><div key={ind}>
                           <div className="splittedDetails">
-                               Steve owe ₹ 10
+                               {taker.name}&nbsp;owe ₹&nbsp;{taker.amount}
                           </div>
-                        </>)
+                        </div>)
                      }
                 </div>
+                <hr/>
             </div>
        </div>
     )

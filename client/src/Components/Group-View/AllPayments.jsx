@@ -1,23 +1,42 @@
-import React, {useState } from "react";
+import React, {useState ,useEffect} from "react";
+import axios from "axios";
 
-import Mbutton from "@mui/material/Button/Button";
 import {List,ListItem,Divider,ListItemText,ListItemAvatar,Avatar} from '@mui/material';
+import Mbutton from "@mui/material/Button/Button";
 
+import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 
 import money from "./money.jpg"
 
-const sampleArr=[1,1,1,1,1,1,1];
-   
 
-const AllPayments=()=>{
-       const [popUpPayment,setPopUpPayment]=useState(false);
-       return (<>
+const AllPayments=(props)=>{
+       const [popUpPayment,setPopUpPayment]=useState({payer:null,receiver:null});
+       const [loading,setLoading]=useState(false);
+       const [payments,setPayments]=useState([]);
+
+       useEffect(() => {
+            setLoading(true);
+            axios.get("/group/"+props.group_id+"/"+props.ourUser.user_id+"/getPaymentsofUser")
+                 .then((res)=>{
+                     setPayments(res.data);
+                }
+            );
+            setTimeout(() => {
+                setLoading(false);
+            }, 1500);
+
+       }, []) // eslint-disable-line react-hooks/exhaustive-deps
+       
+
+       return (
+        loading? <div style={{height:"30vh"}}><LottieAnimation1/></div>
+        :<>
            <h1 className="heading">Settle Debts</h1>         
            <List>
                 {
-                 (sampleArr.length!==0)?(
-                    sampleArr.map((val,ind)=><div key={ind}>
+                 (payments.length!==0)?(
+                    payments.map((payment,ind)=><div key={ind}>
 
                         <ListItem className="AllPayments" >
                             <ListItemAvatar>
@@ -27,13 +46,24 @@ const AllPayments=()=>{
                             />
                             </ListItemAvatar>
                             <ListItemText className="statement">
-                                Paras Gami owes
-                                <span className="amount"> 
-                                   &nbsp;  ₹ 100 &nbsp;
-                                </span>
-                                to This user  
+                               {payment.amount>0?<> 
+                                  {payment.user_name} owes
+                                  <span className="amount"> 
+                                     &nbsp;  ₹ {payment.amount.toFixed(2)} &nbsp;
+                                  </span>
+                                  to {props.ourUser.user_name} 
+                                </>:<>
+                                  {props.ourUser.user_name} owes
+                                  <span className="amount"> 
+                                     &nbsp;  ₹ {-payment.amount.toFixed(2)} &nbsp;
+                                  </span>
+                                  to {payment.user_name}
+                                </>} 
                             </ListItemText>
-                            <Mbutton onClick={()=>(setPopUpPayment(true))}>
+                            <Mbutton onClick={()=>(setPopUpPayment(()=>payment.amount>0?
+                                                              {payer:payment,receiver:props.ourUser}:
+                                                              {payer:props.ourUser,receiver:payment}
+                                                   ))}>
                                 Settle Up..
                             </Mbutton>
                         </ListItem>
@@ -46,7 +76,13 @@ const AllPayments=()=>{
                     )
                 }
            </List>
-           {popUpPayment&&(<PopupSettleUp key={1} cross={()=>setPopUpPayment(false)}/>)}
+           {popUpPayment.receiver&&
+                        (<PopupSettleUp cross={()=>setPopUpPayment({payer:null,receiver:null})}
+                                        payer={popUpPayment.payer}
+                                        receiver={popUpPayment.receiver}
+                                        group_id={props.group_id}
+                        />)
+            }
        </>)
 }
 

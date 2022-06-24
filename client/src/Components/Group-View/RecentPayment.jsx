@@ -1,24 +1,43 @@
-import React from "react";
+import React, {useState ,useEffect} from "react";
+import axios from "axios";
 import {List,ListItem,Divider,ListItemText,ListItemAvatar,Avatar} from '@mui/material';
+import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import bill from "./billl.jpg"
 
-const sampleArr=[1,1,1,1,1,1,1];
+const months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const RecentPayment=()=>{
-    return (<>
+
+const RecentPayment=(props)=>{
+    
+    const [recents,setRecents]=useState([]);
+    const [loading,setLoading]=useState(false);
+
+    useEffect(() => {
+        setLoading(true);
+        axios.get("/group/"+props.group_id+"/recentPayments")
+             .then(res=>setRecents(res.data));
+        setTimeout(()=>setLoading(false),1500);
+    }, [])// eslint-disable-line react-hooks/exhaustive-deps
+    
+     
+    return (loading?<div style={{height:"30vh"}}><LottieAnimation1/></div>
+        :<>
         <h1 className="heading">Recent Payment</h1>         
         <List>
              {
-              sampleArr.map((val,ind)=><div key={ind}>
+              recents.map((payment,ind)=><div key={ind}>
                  <ListItem className="Recents">
                         <div className="payDate">
-                           Jun <br/>10
+                           {((new Date(payment.date)).getDate())} <br/>
+                           {months[((new Date(payment.date)).getMonth())]}
                         </div>
                        <ListItemAvatar>
                            <Avatar alt="GG" src={bill} variant="square"/>
                        </ListItemAvatar>
                      <ListItemText className="statement">
-                         This User Paid ₹ 100 to This User 
+                        <b> {payment.payerName} </b>
+                        &nbsp;paid ₹  <b>{parseFloat(payment.amount).toFixed(2)}</b> 
+                        &nbsp;to <b>{payment.receiverName} .</b>
                      </ListItemText>
         
                  </ListItem>

@@ -31,7 +31,7 @@ router.post("/saveGroup",async(req,res)=>{
 
     await group.groupMembers.forEach(async(data) => {
         await User.updateOne({_id:data.user_id},
-                             {$push:{"groups":newGroup._id.toString()}});
+                             {$push:{"groups":{$each:[newGroup._id.toString()],$position:0}}});
     });
 
     const ourUser=await User.findOne({_id:user._id});
@@ -52,8 +52,8 @@ router.get("/getGroups/:id",async(req,res)=>{
                      group.groupMembers.forEach(member=>{
                          if(member.user_id===user_id){
                                  (response.push(
-                                     {   group:group,
-                                         totAmnt:member.currTotalExpense
+                                     {   group:{_id:group._id,groupName:group.groupName,groupImage:group.groupImage},
+                                         totAmnt:member.TotalExpense
                                      }
                                  ));
                          }
@@ -81,7 +81,20 @@ router.get("/getGroup/:id/:user_id",(req,res)=>{
        
         if(err)return res.status(422).json(err);
         group.groupMembers.forEach((userData)=>{
-            if(userData.user_id===uID)return res.status(201).json({group,userData});
+            if(userData.user_id===uID)return res.status(201).json(
+                                   {
+                                       group:{
+                                           groupName:group.groupName,
+                                           groupImage:group.groupImage,
+                                           simplifyDebts:group.simplifyDebts,
+                                           totalGroupExpense:group.totalGroupExpense
+                                       },
+                                       userData:{
+                                           TotalExpense:userData.TotalExpense,
+                                           TotalAllTimeExpense:userData.TotalAllTimeExpense,
+                                           TotalYouPaid:userData.TotalYouPaid
+                                       }
+                                   });
         }) 
     });
     }
@@ -126,11 +139,29 @@ router.post("/group/:group_id/addMember",async(req,res)=>{
 });
 
 router.get("/group/:id/getExpenses",async(req,res)=>{
-    console.log('called');
+    console.log('GetExpense ');
     const group = await Group.findOne({_id:req.params.id});
-    console.log(group.expenses);
     return res.status(201).json(group.expenses);
+});
 
-})
+router.get("/group/:group_id/:user_id/getPaymentsofUser",async(req,res)=>{
+    console.log("getPaymentsofUser");
+    const group=await Group.findOne({_id:req.params.group_id});
+    const response=group.groupMembers.find((member)=>member.user_id===req.params.user_id).payments;
+    return res.status(200).json(response);
+});
+
+router.get("/group/:id/getGroupMembers",async(req,res)=>{
+    console.log('GetGroupMembers ');
+    const group = await Group.findOne({_id:req.params.id});
+    // console.log(group.groupMembers);
+    return res.status(201).json(group.groupMembers);
+});
+
+router.get("/group/:id/recentPayments",async(req,res)=>{
+    console.log('Recent Payment ');
+    const group = await Group.findOne({_id:req.params.id});
+    return res.status(201).json(group.recentPayments);
+});
 
 module.exports=router;

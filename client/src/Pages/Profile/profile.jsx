@@ -9,6 +9,7 @@ import NavBar from "../../Components/Navbar/NavBar";
 import { AuthContext } from "../../Context/AuthContext";
 import "./profile.scss"
 import {Button} from "../../Components/Constants/Buttons/Button"
+import { LottieAnimation1 } from "../../Components/Constants/Lotties/lottie";
 
 
 
@@ -100,17 +101,16 @@ const Profile=()=>{
 
     // Groups
     const [groups,setGroups]=useState([]);
+    const [loading,setLoading]=useState(false);
 
     const getGroups=()=>{
-  
+      setLoading(true);
       axios.get("/getGroups/"+user._id)
-      .then((res)=>{
-           //console.log(groups);
-           setGroups(res.data);
-      })
-      .catch((err)=>{
-        window.alert(err);
-      });
+           .then(res=>setGroups(res.data))
+           .catch((err)=>{
+               window.alert(err);
+           });
+       setTimeout(()=>setLoading(false),1500);
     }
     useEffect(()=>{getGroups()},[]);// eslint-disable-line react-hooks/exhaustive-deps
   
@@ -251,10 +251,10 @@ const Profile=()=>{
 
                   <div className="Allgroups">
 
+                   {loading?<LottieAnimation1/>:<>
                     <List className="List">
                       
-                     {
-                       groups.map((gdata,index)=>(
+                       {groups.map((gdata,index)=>(
                          <div key={index}>
                           <ListItem alignItems="flex-start">
                               
@@ -272,16 +272,14 @@ const Profile=()=>{
                                   <React.Fragment>
                                     <Typography
                                       sx={{ display: 'inline' }}
-                                      component="span"
-                                      variant="body2"
                                       color="text.primary"
                                     >
-                                      ₹ {gdata.totAmnt.toFixed(2)} 
+                                      ₹ {Math.abs(gdata.totAmnt).toFixed(2)} 
                                     </Typography>
                                     <div className="oweDatail">
                                       {gdata.totAmnt===0&&"All Settle up"}
-                                      {gdata.totAmnt>0&&"You Owe Money"}
-                                      {gdata.totAmnt<0&&"Yow Should pay"}
+                                      {gdata.totAmnt<0&&"You Owe Money from others"}
+                                      {gdata.totAmnt>0&&"Yow Should pay"}
                                     </div>
                                   </React.Fragment>
                                 }
@@ -292,12 +290,11 @@ const Profile=()=>{
                                    component="div" 
                           />
                          </div>
-                       )
-                       )
+                       ))
                      }
                       
                     </List>
-
+                   </>}
                   </div>
 
            </div>

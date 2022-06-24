@@ -57,6 +57,15 @@ const GroupSchema=new mongoose.Schema({
     totalGroupExpense:{
         type:Number,
         default:0
+    },
+    recentPayments:{
+        type:[{
+            date:Date,
+            payerName:String,
+            receiverName:String,
+            amount:Number
+        }],
+        default:[]
     }
 })
 

@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import axios from "axios";
+
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Mbutton from "@mui/material/Button/Button";
 import {List,ListItem,Divider,Typography} from '@mui/material';
 import { Accordion,AccordionSummary,AccordionDetails } from "@mui/material";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
-
+import {LottieAnimation1} from "../Constants/Lotties/lottie";
 
 const AllBalances=(props)=>{
     
     
-    const [popUpsettleUp,setPopupSettleUp]=useState(null);
-    const groupMembers=props.Data.group.groupMembers;
+    const [popUpsettleUp,setPopupSettleUp]=useState({receiver:null,payer:null});
+    const [groupMembers,setGroupmembers]=useState([]);
+    const [loading,setLoading]=useState(false);
+
+    useEffect(()=>{
+        setLoading(true);
+        axios.get("/group/"+props.group_id+"/getGroupMembers")
+                  .then(res=>setGroupmembers(res.data))
+                  .catch((err)=>{
+                      console.log(err);
+                  }) 
+        setTimeout(() => {
+            setLoading(false);
+        }, 1500);
+    },[])//eslint-disable-line react-hooks/exhaustive-deps
     
-    return(<>
+    
+    return(
+      loading? <div style={{height:"30vh"}}><LottieAnimation1/></div>
+      :<>
        <h1 className="heading">All Balances</h1>
        <List>
              {
@@ -20,57 +38,68 @@ const AllBalances=(props)=>{
                  <ListItem className="AllBalances">
                      <Accordion className="accordion">
                          <AccordionSummary
-                             expandIcon={<ExpandMoreIcon />}
-                             aria-controls="panel1a-content"
-                             id="panel1a-header"
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
                          >
-                             <Typography >
-                                 {(member.currTotalExpense===0)&&(<>
+                            <Typography >
+                                 {(member.TotalExpense>(-0.99)&&member.TotalExpense<0.01)&&(<>
                                       <b>{member.user_name}</b>
                                       &nbsp;is all settled Up.
                                  </>)}
-                                 {(member.currTotalExpense>0)&&(<>
+                                 {(member.TotalExpense<=(-0.99))&&(<>
                                          <b>{member.user_name}</b> 
                                          &nbsp;gets back 
                                          <b className="priceg0">
-                                             &nbsp; ₹ {member.currTotalExpense} &nbsp;
+                                             &nbsp; ₹ {-member.TotalExpense.toFixed(2)} &nbsp;
                                          </b> in Total.
                                  </>)}
-                                 {(member.currTotalExpense<0)&&(<>
+                                 {(member.TotalExpense>=0.01)&&(<>
                                              <b>{member.user_name}</b> owes
                                              <b className="pricel0">
-                                                 &nbsp; ₹ {-member.currTotalExpense} &nbsp;
+                                                 &nbsp; ₹ {member.TotalExpense.toFixed(2)} &nbsp;
                                              </b> in Total.
                                  </>)}
-                             </Typography>
-                         
+                            </Typography>
                          </AccordionSummary>
-                         <AccordionDetails className="AccordionDetails">
-                              {member.payments.map((expense_detail,ind)=><div key={ind}>
-                                  <Typography>
 
-                                      {expense_detail.amount<0&&(<>
+                         <AccordionDetails className="AccordionDetails">
+                              {member.payments.map((payment,ind)=><div key={ind}>
+                                  <Typography className="typography">
+                                   
+                                      {payment.amount<0&&(<>
                                          <b>{member.user_name}</b>
                                          &nbsp; owes ₹&nbsp; 
-                                         {Math.abs(expense_detail.amount).toFixed(2)} 
+                                         {Math.abs(payment.amount).toFixed(2)} 
                                          &nbsp; to &nbsp; 
-                                         <b>{expense_detail.user_name}</b>
+                                         <b>{payment.user_name}</b>
+                                         <Mbutton className="SettleUpBtn" 
+                                               onClick={()=>setPopupSettleUp({payer:member,receiver:payment})} >
+                                               Settle Up
+                                          </Mbutton>
                                       </>)} 
-                                      {expense_detail.amount>0&&(<>
-                                         <b>{expense_detail.user_name}</b>
+                                      {payment.amount>0&&(<>
+                                         <b>{payment.user_name}</b>
                                          &nbsp; owes ₹ &nbsp; 
-                                         {Math.abs(expense_detail.amount).toFixed(2)}
+                                         {Math.abs(payment.amount).toFixed(2)}
                                          &nbsp;to &nbsp; 
                                          <b> {member.user_name}</b>
+                                         <Mbutton className="SettleUpBtn" 
+                                               onClick={()=>setPopupSettleUp({payer:payment,receiver:member})} >
+                                               Settle Up
+                                         </Mbutton>
                                       </>)} 
-                                      <Mbutton className="SettleUpBtn" 
-                                               onClick={()=>setPopupSettleUp(null)} >
-                                               SettleUp
-                                      </Mbutton>
+                                      
                                       <Divider className="Divider" component="li" />
                                   </Typography>
                               </div>)}
-                              {popUpsettleUp&&<PopupSettleUp cross={()=>setPopupSettleUp(null)} />}
+                              {popUpsettleUp.payer&&
+                                        <PopupSettleUp cross={()=>setPopupSettleUp({payer:null,receiver:null})}
+                                                       payer={popUpsettleUp.payer} 
+                                                       receiver={popUpsettleUp.receiver} 
+                                                       group_id={props.group_id}
+                                        />
+                              }
                          </AccordionDetails>
                      </Accordion>
                  </ListItem>

@@ -25,7 +25,6 @@ require("./Database/conn");
 
 //routes
 app.use(require("./routes/auth"));
-app.use(require("./routes/user"));
 app.use(require("./routes/groups"));
 app.use(require("./routes/expenses"));
 
