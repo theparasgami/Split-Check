@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/"
-  to = "https://split-check.herokuapp.com/"
+  to = "https://split-check.herokuapp.com/*"
   status = 200
   force = true
   headers = {X-From = "Netlify"}
