@@ -1,9 +1,6 @@
 [[redirects]]
-  from = "/*"
-  to = "/"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
+  /api/* https://split-check.herokuapp.com/:splat 200
+  /* /index.html 200
 [[headers]]
   for = "/*"
   [headers.values]
