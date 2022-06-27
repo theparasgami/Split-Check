@@ -1,7 +1,7 @@
   # Split-Check
 
 Split-Check is a desktop web-application , which can be used to split the expenses done by the people in groups , in whichever way they want.
-Split-Chck keep tracks of all the expenses of a person in a group so that it will be easier for them to identify their expenses.
+Split-Check keep tracks of all the expenses of a person in a group so that it will be easier for them to identify their expenses.
 In this app a person can send reminder to the person who owes money to him/her. If the payment is done then they can settle up the payment.
 
 
