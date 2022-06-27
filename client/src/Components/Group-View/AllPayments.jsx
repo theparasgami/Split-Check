@@ -30,7 +30,7 @@ const AllPayments=(props)=>{
        }, []) // eslint-disable-line react-hooks/exhaustive-deps
       
        const RemindUser=(e)=>{
-           axios.get("/remindPayment",{ params: {
+           axios.get(Backend+"/remindPayment",{ params: {
                                             payer_id:e.payer.user_id,
                                             receiver_id:e.receiver.user_id,
                                             amount:e.amount}

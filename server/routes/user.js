@@ -107,7 +107,7 @@ router.get("/remindPayment",async(req,res)=>{
      try{
           const payer = await User.findOne({_id:req.query.payer_id});
           const receiver = await User.findOne({_id:req.query.receiver_id});
-
+          
           sendEmail(payer.username, 
             "Hello "+payer.name+" from "+receiver.name, 
             "This is a remider that you owes "+receiver.name+" ₹ "+req.query.amount+" for expenses in your"+
