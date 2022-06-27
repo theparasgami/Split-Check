@@ -1,9 +1,7 @@
-const { default: axios } = require("axios");
 const express=require("express")
 const router =express.Router();
-
-const Group=require("../Database/models/GroupSchema");
-const User=require("../Database/models/UserSchema");
+const Group=require("../Database/models/Group");
+const User=require("../Database/models/User");
 
 
 
@@ -44,10 +42,12 @@ router.post("/saveGroup",async(req,res)=>{
 
 router.get("/getGroups/:id",async(req,res)=>{
     const user_id=req.params.id;
+   
     var response=[];
     try{
         const user = await User.findOne({_id:user_id});
         user.groups.forEach(e=>{
+           
               Group.findOne({_id:e},(err,group)=>{
                      group.groupMembers.forEach(member=>{
                          if(member.user_id===user_id){
@@ -125,7 +125,7 @@ router.post("/group/:group_id/addMember",async(req,res)=>{
                             {$push:{"groupMembers":member}},
                             );
             await User.updateOne({_id:user._id},
-                            {$push:{"groups":JSON.stringify(req.params.group_id)}},
+                            {$push:{"groups":req.params.group_id}},
                             );
             
             return  res.status(200).json("Successfully added member");

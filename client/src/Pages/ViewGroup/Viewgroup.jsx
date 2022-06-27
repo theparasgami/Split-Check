@@ -11,6 +11,7 @@ import NavBar from "../../Components/Navbar/NavBar";
 import "./viewGroup.scss";
 import { AuthContext } from "../../Context/AuthContext";
 
+import RandomSettleUp from "../../Components/Group-View/PopUps/RandomSettleUp"
 import AddExpense  from "../../Components/Group-View/PopUps/AddExpense/AddExpense"
 import AddMember from "../../Components/Group-View/PopUps/AddMember"
 import AllExpenses from "../../Components/Group-View/AllExpenses";
@@ -19,6 +20,8 @@ import AllBalances from "../../Components/Group-View/AllBalances";
 import RecentPayment from "../../Components/Group-View/RecentPayment";
 
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
+
+const Backend="https://split-check.herokuapp.com"
 
 
 const ViewGroup=()=>{
@@ -31,10 +34,10 @@ const ViewGroup=()=>{
 
    useEffect(()=>{
 
-       axios.get("/group/"+params.id+"/distributeAmount")
+       axios.get(Backend+"/group/"+params.id+"/distributeAmount")
             .then((response)=>{
-              axios.get("/group/"+params.id+"/removeZeroPayments");
-              axios.get(("/getGroup/"+params.id+"/"+user._id))
+              axios.get(Backend+"/group/"+params.id+"/removeZeroPayments");
+              axios.get(( Backend+"/getGroup/"+params.id+"/"+user._id))
                    .then((res)=>{
                        setData({group:res.data.group,user:res.data.userData});
                    })
@@ -52,13 +55,23 @@ const ViewGroup=()=>{
     
 
    const [addExpense,setAddExpense]=useState([]);
+   const [settleUp,setSettleUp]=useState([]);
    const [addMember,setAddMember]=useState(false);
   
     const getGroupMembers=()=>{
         
-        axios.get("/group/"+params.id+"/getGroupMembers")
+        axios.get(Backend+"/group/"+params.id+"/getGroupMembers")
              .then((res)=>setAddExpense(res.data));
     
+    }
+    const getGroupMembersForSettleUp=()=>{
+        
+        axios.get(Backend+"/group/"+params.id+"/getGroupMembers")
+             .then((res)=>{
+                 setSettleUp(res.data.map((member)=>({user_id:member.user_id,
+                                                      user_name:member.user_name})
+                                          ));
+             });
     }
 
     //For Tabs
@@ -96,6 +109,23 @@ const ViewGroup=()=>{
                                                        <HelpIcon className="HelpIcon" />
                                                 </BootstrapTooltip>
                                             </p>
+                                        </div>
+                                        <div className="buttons">
+                                            <Button bgColor="hsl(219deg 58% 24%)" 
+                                                    onClick={getGroupMembersForSettleUp}>
+                                                Settle Up   
+                                            </Button>
+                                            <br/>  
+                                            <Button bgColor="hsl(219deg 58% 24%)"
+                                                    onClick={getGroupMembers}>
+                                                Add Expense
+                                            </Button>
+                                            <br/>
+                                            <Button bgColor="hsl(219deg 58% 24%)"
+                                                    onClick={()=>setAddMember(true)}>
+                                                Add Member
+                                            </Button>
+
                                         </div>
 
                                 </div>
@@ -150,13 +180,13 @@ const ViewGroup=()=>{
                        
                         <section className="RequiredList">
                               <Paper elevation={10} className="paper">
-                                 <Collapse in={currList==="Expenses"} timeout={2000}>
+                                <Collapse in={currList==="Expenses"} timeout={2000}>
                                     {currList==="Expenses"&&
                                          <AllExpenses group_id={params.id} 
                                                       user_id={user._id}
                                          />
                                     }
-                                 </Collapse>    
+                                </Collapse>    
                                 <Collapse in={currList==="yourPayments"} timeout={2000}>
                                     {currList==="yourPayments"&&
                                             <AllPayments group_id={params.id}
@@ -194,6 +224,13 @@ const ViewGroup=()=>{
                                          group_id={params.id} 
                                          user_name={user.name}
                                          members={addExpense}
+                             />
+                        )}
+                        {settleUp.length!==0&&(
+                             <RandomSettleUp 
+                                         cross={()=>setSettleUp([])}
+                                         group_id={params.id} 
+                                         members={settleUp}
                              />
                         )}
                         {addMember&&(

@@ -91,7 +91,7 @@
         .payer{
             display: flex;
             justify-content: center;
-            padding: 20px;
+            padding: 20px 0 0 0;
             .payerImg{
                 border-radius: 50%;
                 width: 4rem;
@@ -125,6 +125,7 @@
             }
         }
         .receiver{
+            margin-top:10px;
             font-size: 1.7rem;
             color: #ebe7ee;
             letter-spacing: 2px;
@@ -230,7 +231,7 @@
 .popupAddMember{
 
     .box{
-        
+        width: 30rem;
         color: rgb(165, 163, 163);
         font-size: 1.2rem;
         text-align: center;
@@ -275,14 +276,6 @@
         }
         .emailAddress::placeholder{
             font-size: 1rem;
-        }
-        
-        .bottomImg{
-            height: 5rem;
-            width: 35.5rem;
-            margin-top: 3.1rem;
-            margin-bottom: 0;
-            overflow: none;
         }
         
     }

@@ -10,6 +10,8 @@ import {LottieAnimation2} from "../../../Constants/Lotties/lottie"
 import HowMuchPaid from "./HowMuchPaid";
 import HowMuchSplits from "./HowMuchSplits";
 import "../popups.scss";
+const Backend="https://split-check.herokuapp.com"
+
 
 const AddExpense=(props)=>{
     
@@ -48,7 +50,7 @@ const AddExpense=(props)=>{
 
     useEffect(()=>{
       setLoading(true);
-      setTimeout(() =>setLoading(false), 1000);
+      setTimeout(() =>setLoading(false), 1500);
     },[]) // eslint-disable-line react-hooks/exhaustive-deps
   
     const handlePaidByChange=async(e)=>{
@@ -111,7 +113,7 @@ const AddExpense=(props)=>{
     
     const PostData=()=>{
         const user_name=props.user_name;
-        axios.post("/group/"+props.group_id+"/addExpense",{expense,
+        axios.post(Backend+"/group/"+props.group_id+"/addExpense",{expense,
                                                            paidBy,
                                                            paidTo,
                                                            TotalCurrPaidBy,

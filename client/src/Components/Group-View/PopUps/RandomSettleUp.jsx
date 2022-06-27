@@ -1,4 +1,5 @@
 import React, { useState ,useEffect} from "react";
+import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
 import axios from "axios";
 import CancelIcon from '@mui/icons-material/Cancel';
 import {Button}  from "../../Constants/Buttons/Button";
@@ -7,13 +8,13 @@ import ImgSrc from "./Split-Check.png"
 import {LottieAnimation2} from "../../Constants/Lotties/lottie"
 const Backend="https://split-check.herokuapp.com"
 
-const PopupSettleUp=(props)=>{
+const RandomSettleUp=(props)=>{
 
     const [loading,setLoading]=useState(false);
     const [payment,setPayment]=useState({
-                             payer:props.payer,
-                             receiver:props.receiver,
-                             amount:Math.abs(!props.payer.amount?props.receiver.amount:props.payer.amount).toFixed(2)
+                             payer:0,
+                             receiver:0,
+                             amount:0
                           });
 
     useEffect(()=>{
@@ -28,13 +29,17 @@ const PopupSettleUp=(props)=>{
     
     const PostData=()=>{
           console.log(props.group_id);
-          axios.post(Backend+"/group/"+props.group_id+"/settleDebt",payment)
+          axios.post(Backend+"/group/"+props.group_id+"/settleDebt",
+                                            {payer:props.members[payment.payer],
+                                             receiver:props.members[payment.receiver],
+                                             amount:payment.amount})
                .then((res)=>{
                    axios.get(Backend+"/group/"+props.group_id+"/removeZeroPayments");
                    window.alert(res.data);
                    window.location.reload();
                })
                .catch((err)=>{
+                   window.alert(err.response.data);
                    console.error(err);
                })
     }
@@ -57,10 +62,26 @@ const PopupSettleUp=(props)=>{
                        className="payerImg"
                   />  
                   <div className="payerName">
-                        {props.payer.user_name}
+                    <FormControl >
+                      <InputLabel id="demo-simple-select-label" sx={{color:"white"}}>Payer</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        value={payment.payer}
+                        sx={{color:"white"}}
+                        label="Payer"
+                        onChange={(e)=>setPayment({...payment,payer:e.target.value})}
+                      >
+                        {
+                            props.members.map((member,ind)=>
+                                <MenuItem value={ind}>
+                                     {member.user_name}
+                                </MenuItem>
+                            )
+                        }
+                      </Select>
+                    </FormControl>
                   </div>
               </div>
-              paid
               <div className="howMuch">
                    ₹
                   <input type="number" 
@@ -69,9 +90,25 @@ const PopupSettleUp=(props)=>{
                          onChange={handleChange} 
                          className="InputMoney" />
               </div>
-              to
               <div className="receiver">
-                   {props.receiver.user_name}
+                  <FormControl >
+                      <InputLabel id="demo-simple-select-label" sx={{color:"white"}}>Receiver</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        value={payment.receiver}
+                        sx={{color:"white"}}
+                        label="Payer"
+                        onChange={(e)=>setPayment({...payment,receiver:e.target.value})}
+                      >
+                        {
+                            props.members.map((member,ind)=>
+                                <MenuItem value={ind}>
+                                     {member.user_name}
+                                </MenuItem>
+                            )
+                        }
+                      </Select>
+                  </FormControl>
               </div>
               <Button bgColor="green" 
                       className="submitBtn"
@@ -84,4 +121,4 @@ const PopupSettleUp=(props)=>{
       </div>
     )
 }
-export default PopupSettleUp;
+export default RandomSettleUp;

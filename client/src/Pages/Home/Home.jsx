@@ -1,16 +1,16 @@
 import React from "react";
-import Logout from "../../Components/SignIn/logout";
 import { Button } from "../../Components/Constants/Buttons/Button";
 import NavBar from "../../Components/Navbar/NavBar";
 import "./Home.scss"
 
+import AllGroup from "../../Components/AllGroups/groupList";
+
 
 function Home()
 {
-  // const {user}=useContext(AuthContext);
-  
+ 
   const HandleAddGroup=()=>{
-       window.location.href="http://localhost:3000/new-group";
+       window.location.href="https://split-check.netlify.app/new-group";
   };
 
 
@@ -20,10 +20,20 @@ function Home()
       <NavBar />
 
       <div className="Home">
-        <h1>Welcome to Home</h1>
-        <Button onClick={HandleAddGroup}>Add Group</Button> 
+        <h1 className="welcome">Welcome to Split-Check</h1>
+        <div className="yourGroups">
+            <h1 >Your Groups</h1>
+
+            <div className="groupList">
+              <AllGroup/>
+            </div>
+            <div className="AddGroup">
+              <Button onClick={HandleAddGroup} bgColor="Green">
+                Add Group
+              </Button>
+            </div> 
+        </div>
         <br/>                   
-        <Logout />
       </div>
       
     </>

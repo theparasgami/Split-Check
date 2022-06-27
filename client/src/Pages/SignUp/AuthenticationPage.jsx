@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ParticlesBg from "particles-bg"  
 
 import Login from "../../Components/SignIn/login";
 import Register from "../../Components/SignIn/register";
@@ -13,6 +14,7 @@ const AuthenticationPage =()=>{
 
     return (
        <> 
+          <ParticlesBg num={100} type="square"  bg={true}  />
          {currPageLogin ? <Login Register={handleChangePage}/>
                         : <Register Login={handleChangePage} 
                                     openpage={currPageLogin} 

@@ -8,11 +8,9 @@ import regImg from "./register.jpg";
 import "./style.scss";
 import axios from "axios";
 
+const Backend="https://split-check.herokuapp.com"
 
-function emailCheck(email){
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-}
+
 
 
 function Register(props)
@@ -32,24 +30,14 @@ function Register(props)
   
   const googleLogin = async (e) => {
     e.preventDefault();
-    const LoginUrl = "http://localhost:8000/auth/google";
+    const LoginUrl = "http://split-check.herokuapp.com/auth/google";
     window.location.href = LoginUrl;
   };
 
    
-  const PostDatas= (e)=>{
-    
-    e.preventDefault();
-    if(!emailCheck(user.email)){
-      window.alert("Invalid Email ID");
-      return;
-    }
-    if(user.password!==user.cpassword){
-      window.alert("Confirm Your Password");
-      return;
-    }
+  const PostDatas= ()=>{
 
-    ( axios.post("/register",user))
+    ( axios.post(Backend+"/register",user))
            .then((res)=>{
                   console.log(res);
                   if(res){
@@ -61,7 +49,7 @@ function Register(props)
                   if(err.response){
                      window.alert(err.response.data.error);
                   }
-                  window.location.reload();
+                 
            });
   }
 
@@ -145,7 +133,7 @@ function Register(props)
               <h3> Already Registered 
                    <span onClick={props.Login} 
                          className="link">    
-                         Login here 
+                         &nbsp;Login here
                    </span>
               </h3> 
 

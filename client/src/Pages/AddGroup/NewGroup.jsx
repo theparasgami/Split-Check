@@ -9,9 +9,10 @@ import ImageUpload from "../../Components/Constants/Buttons/ImageUpload";
 import NewMember from "../../Components/NewMember/NewMember";
 import axios from "axios";
 import NavBar from "../../Components/Navbar/NavBar";
-import { rootShouldForwardProp } from "@mui/material/styles/styled";
 
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
+const Backend="https://split-check.herokuapp.com"
+
 
 
 function NewGroup(){
@@ -103,7 +104,7 @@ function NewGroup(){
   
   useEffect(()=>{
       if(group.groupMembers.length){
-               axios.post("/saveGroup",{group,user})
+               axios.post(Backend+"/saveGroup",{group,user})
                .then((res)=>{
                    console.log("User:",res.data.ourUser);
                    window.alert("Group Saved");

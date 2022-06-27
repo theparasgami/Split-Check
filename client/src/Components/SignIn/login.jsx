@@ -6,15 +6,17 @@ import Logo from  "./Split-Check-black.png"
 import loginImg from "./login3.jpg";
 import PasswordInput from "../Constants/Inputs/PasswordInput";
 import "./style.scss";
-import {LottieAnimation2}  from "../Constants/Lotties/lottie";
+import {LottieAnimation3}  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+
+const Backend="https://split-check.herokuapp.com"
 
 function Login(props)
 {
  
   const [loading,setLoading]=useState(true);
-  setTimeout(async()=>setLoading(false),100);
+  setTimeout(async()=>setLoading(false),4500);
 
   const [user,setValues]=useState({
     email:"",password:""
@@ -29,7 +31,7 @@ function Login(props)
 
   const fetchAuthUser = async ()=>{
       console.log("Hi fetchAuthUSer");
-      await axios.get("https://split-check.herokuapp.com/user")
+      await axios.get(Backend+"/user")
           .then((res)=>{
               console.log(res.data);
               dispatch({type:"SUCCESS",payload:res.data});
@@ -57,7 +59,7 @@ function Login(props)
   const PostData=async (e)=>{
       
       e.preventDefault();
-      axios.post("/login",{username:user.email,password:user.password})
+      axios.post(Backend+"/login",{username:user.email,password:user.password})
         .then((res)=>{
           console.log(res);
            if(res)
@@ -128,7 +130,7 @@ function Login(props)
                         </form>
 
                         <div className="orGoogle">
-                             Or
+                           Or 
                         </div>
                             
                         <button type="button" 
@@ -140,7 +142,7 @@ function Login(props)
                         <h3>New to Split-Check,
                             <span className="link" 
                                   onClick={props.Register}> 
-                                  Register 
+                                  &nbsp;Register&nbsp; 
                             </span>
                             here
                         </h3>
@@ -151,7 +153,7 @@ function Login(props)
 
           </div>)
           :( 
-            <LottieAnimation2/>  
+            <LottieAnimation3/>  
           )
      }
     </>

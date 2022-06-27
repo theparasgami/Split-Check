@@ -3,13 +3,14 @@ import {Button} from "../Constants/Buttons/Button"
 import axios from "axios"
     
 
+const Backend="https://split-check.herokuapp.com"
 
 function Logout(){                  
 
     const postData=async(e)=>{
       e.preventDefault();
       sessionStorage.removeItem("user");
-      axios.post("/logout")
+      axios.post(Backend+"/logout")
       .then((res)=>{
           if(res)
           window.alert("Logout Success");

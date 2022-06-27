@@ -65,23 +65,17 @@
             }
         }
     }
-
     .Viewgroups{
+    
         .heading{
             font-size: 2.5rem;
         }
+    }
 
-        .Allgroups{ 
-            margin:auto;
-            width: 60%;
-            .List{
-                 width:100%;
-                 max-width: 360;
-                 background-color:'background.paper'; 
-            }
-            .Divider{
-                background-color: black;
-            }
-        }                                                                                                                                                                   
+    .create-grp-btn{
+        position: fixed;
+        margin: auto;
+        bottom: 3rem;
+        left: 45%;
     }
 }

@@ -1,20 +1,25 @@
 
-import React, {  useState } from "react";
+import React, {  useState , useEffect } from "react";
 import axios from "axios";
 import CancelIcon from '@mui/icons-material/Cancel';
 import {Button}  from "../../Constants/Buttons/Button";
 import "./popups.scss";
-import bottomImg from "./art.png"
-
+import {LottieAnimation2} from "../../Constants/Lotties/lottie"
+const Backend="https://split-check.herokuapp.com"
 
 const AddMember=(props)=>{
   
     const [email,setEmail]=useState("");
-    
+    const [loading,setLoading]=useState(false);
+    useEffect(()=>{
+      setLoading(true);
+      setTimeout(() =>setLoading(false), 1500);
+    },[]) // eslint-disable-line react-hooks/exhaustive-deps
+
     const saveMember=async()=>{
-      await axios.get ("/verifyMember/"+email)
+      await axios.get (Backend+"/verifyMember/"+email)
       .then(async(res)=>{
-            await axios.post("/group/"+props.group_id+"/addMember",
+            await axios.post(Backend+"/group/"+props.group_id+"/addMember",
                            {user:res.data}
                  ).then((res)=>{
                      window.alert(res.data);
@@ -32,7 +37,7 @@ const AddMember=(props)=>{
     return (
       <div className="popup-box popupAddMember">
           <div className="box">
-  
+          {loading?<LottieAnimation2/> :<>
             <CancelIcon className="close-icon" onClick={props.cross} />
             
             <div className="head">Add a Member</div>
@@ -49,11 +54,8 @@ const AddMember=(props)=>{
             <Button onClick={saveMember} >
                     Add
             </Button>
-  
-            <img src={bottomImg} 
-                 className="bottomImg"
-                 alt="hi"
-            />
+           </>}
+            
           </div>
       </div>
     )

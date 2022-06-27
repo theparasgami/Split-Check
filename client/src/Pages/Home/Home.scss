@@ -4,4 +4,28 @@
     margin-top: 5rem;
     justify-content:center;
     text-align: center;
+
+    .welcome{
+        font-size: 4rem;
+        margin-top:8rem;
+        color: darkslategray;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+    .yourGroups{
+        width: 60%;
+        margin: auto;
+        h1{
+            color: rgb(10, 63, 45);
+        }
+        .groupList{
+            min-height: 50vh;
+            max-height: 50vh;
+            overflow: auto;
+        }
+        .addGroup{
+            position: fixed;
+            margin: auto;
+            bottom: 3rem;
+        }
+    }
 }

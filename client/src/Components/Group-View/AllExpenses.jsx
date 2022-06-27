@@ -8,6 +8,7 @@ import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import bill from "./billl.jpg"
 const months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+const Backend="https://split-check.herokuapp.com"
 
 
 const AllExpenses=(props)=>{
@@ -18,7 +19,7 @@ const AllExpenses=(props)=>{
     
     useEffect(()=>{
         setLoading(true);
-        axios.get("/group/"+props.group_id+"/getExpenses")
+        axios.get(Backend+"/group/"+props.group_id+"/getExpenses")
                   .then(res=>setExpenses(res.data))
                   .catch((err)=>{
                       console.log(err);

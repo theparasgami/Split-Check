@@ -17,6 +17,7 @@ import { AuthContext } from '../../Context/AuthContext';
 
 const pages = [['Dashboard',''], ['Profile','profile']];
 const settings = [['Profile','profile'],['Create-Group','new-group'], ['Dashboard',''],['Logout','logout']];
+const Backend="https://split-check.herokuapp.com"
 
 const NavBar = () => {
 
@@ -37,7 +38,7 @@ const NavBar = () => {
       }
       else{
         sessionStorage.removeItem("user");  
-        axios.post("/logout")
+        axios.post(Backend+"/logout")
         .then((res)=>{
             if(res)
             window.alert("Logout Success");

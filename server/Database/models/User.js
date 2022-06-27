@@ -32,6 +32,10 @@ const userSchema=new mongoose.Schema({
     googleId:{
         type: String,
         default:"No-GoogleID"
+    },
+    verified:{
+        type:Boolean,
+        default:false  
     }
 });
 

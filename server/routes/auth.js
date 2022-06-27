@@ -2,10 +2,16 @@ const express=require("express");
 const router =express.Router();
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const crypto = require("crypto");
+
+const sendEmail = require("../Utils/sendEmail");
+
+const Token = require("../Database/models/Token");
+const User  = require("../Database/models/User");
 
 
-const User  = require("../Database/models/UserSchema");
 
+let UserProfile=null;
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -24,7 +30,7 @@ passport.use(new GoogleStrategy({
   async (request,accessToken, refreshToken, profile, done) => {
     // console.log(profile);
     User.findOne({googleId: profile.id},
-        function (err, user){
+         (err, user)=>{
             if (err) {
                 console.log("Error in Finding uSer");
                 return done(err);
@@ -35,14 +41,17 @@ passport.use(new GoogleStrategy({
                     name: profile.displayName,
                     googleId: profile.id,
                     profilePicture: profile.photos[0].value,
+                    verified:true
                 });
                 console.log("Registering ",user);
-                user.save(function (err) {
+                user.save( (err)=> {
                     if (err) console.log(err);
+                    UserProfile=user;
                     return done(err, user);
                 });
             } else {
                console.log(" User is already present , signing in...");
+               UserProfile=user;
                return done(err, user);
             }
         }  
@@ -72,85 +81,62 @@ router.post("/login", function(req, res, next) {
     
     console.log(req.body);
 
-    passport.authenticate("local", function(err, user, info) {
+    passport.authenticate("local", async(err, user, info)=> {
       if (err) { return next(err); }
-      if (!user) { return res.status(422).json({error:"User Not Found"}); }
-  
-      req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        return res.status(201).json({message:" Login Success",user});
-      })
+      else if (!user) { return res.status(422).json({error:"Wrong Credentials"}); }
+      else if (!(user.verified)) {
+      
+        let token = await Token.findOne({ user_id: user._id });
+       
+        if (!token) {
+          const token =  new Token({
+            user_id: user._id,
+            token: crypto.randomBytes(32).toString("hex"),
+          });
+          await token.save(()=>{
+            const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+            sendEmail(user.username, 
+              "Verify Email to contiue with Split-Check.", 
+              " This link will expired after 5 minutes. Click on the link to verify your email."+url);
+          });
+        } 
+
+        return res.status(400)
+          .json({ error: "An Email sent to your account please verify" });
+      }
+      else{
+        console.log(user);
+        req.logIn(user, (err)=> {
+          if (err) { return next(err); }
+          console.log(user);
+          return res.status(201).json({message:" Login Success",user});
+        })
+      } 
     })(req, res, next);
 });
 
-router.post("/register",async(req,res)=>{
-    
-   console.log("Register ");
-   const {name,email,phone,password,cpassword}=req.body;
-   const user = new User({username: email, phone:phone,name:name });
 
-   User.register(user, password, (err, user) => {
-    if (err) {
-      console.log(err); 
-      return res.status(422).json({error:Object.values(err)[0] });
-    } else {
-      return  res.status(201).json({message:"Successfully Registered",user});
-    }
-  });
-    
-});
+
 
 router.post("/logout",(req,res)=>{
    console.log("Bye-Bye");
+   UserProfile=null;
    req.logOut();
    res.clearCookie("connect.sid");
    res.status(201).json({message: "User logged out successfully" });
    
 });
 
-router.post("/updateprofile",(req,res)=>{
 
-  const {name,username,phone,password,profilePicture}=req.body;
-  const updateValues={name:name,username:username,profilePicture:profilePicture};
-  if(phone!=="XXXXXXXXXX")updateValues["phone"]=phone;
-  
-  User.updateOne({_id:req.body.user_id},  
-      updateValues,  (err, userv)=> { 
-      if (err){ 
-          console.log(err);
-          return res.status(422).json(err); 
-      } 
-      else{ 
-          // console.log("Updated Profile : ", userv);
-          User.findOne({_id:req.body.user_id},(err,user)=>{
-            if(err){
-              console.log(err);
-              return res.statusMessage(422).json(err);
-            }
-            if(password!=="") {
-                    user.setPassword(password,async(err)=>{
-                      if(err){console.log(err);return res.status(422).json(err);}
-                      user.save();
-                      console.log(user);
-                      return res.status(200).json(user);
-                  });
-            }
-            else return res.status(200).json(user);
-          });
-      } 
-  }); 
-}); 
-
-
-router.get("/user", (req, res, next) => {
-  if (req.user) {
-    next();
+router.get("/user", (req, res) => {
+  if (UserProfile) {
+    return res.json(UserProfile);
   } else {
     res.status(422).send("You must login first");
   }
-}, (req, res) => {
-  res.json(req.user);
 });
+
+
 
 
 module.exports=router;

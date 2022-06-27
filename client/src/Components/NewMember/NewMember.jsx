@@ -9,7 +9,8 @@ function emailCheck(email){
    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
    return re.test(String(email).toLowerCase());
 }
- 
+const Backend="https://split-check.herokuapp.com"
+
 const NewMember=(props)=>{
   
    const {user}=useContext(AuthContext);
@@ -17,7 +18,7 @@ const NewMember=(props)=>{
 
    const verifyUsername=async()=>{
          if(emailCheck(props.username)){
-            axios.get("/verifyMember/"+props.username)
+            axios.get(Backend+"/verifyMember/"+props.username)
             .then((res)=>{
                console.log("Email Verified", props.username);
                setVerified(res);

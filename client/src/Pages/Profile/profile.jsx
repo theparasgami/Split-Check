@@ -1,24 +1,21 @@
 import React, { useState,useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { LottieAnimation1 } from "../../Components/Constants/Lotties/lottie";
 import  axios from "axios";
 import EditIcon from '@mui/icons-material/Edit';
-import {List,ListItem,Divider,ListItemText,ListItemAvatar,Avatar,Typography} from '@mui/material';
 
 import ImageUpload from "../../Components/Constants/Buttons/ImageUpload";
 import NavBar from "../../Components/Navbar/NavBar";
 import { AuthContext } from "../../Context/AuthContext";
 import "./profile.scss"
 import {Button} from "../../Components/Constants/Buttons/Button"
-import { LottieAnimation1 } from "../../Components/Constants/Lotties/lottie";
+import AllGroups from "../../Components/AllGroups/groupList"
 
-
+const Backend="https://split-check.herokuapp.com"
 
 var cnfPswrdD={display:"none"};
 
-function emailCheck(email){
-   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-   return re.test(String(email).toLowerCase());
- }
+
 
 const Profile=()=>{
 
@@ -42,7 +39,6 @@ const Profile=()=>{
      
     const [editICon,setEdit]=useState({
                                   name:false,
-                                  username:false,
                                   phone:false,
                                   password:false
                                   });
@@ -66,10 +62,7 @@ const Profile=()=>{
     const updateChange=(e)=>{
                
          e.preventDefault();
-         if(!emailCheck(profileValues.username)){
-           window.alert("Invalid Email ID");
-           return;
-         }
+         
          if(profileValues.password!==profileValues.cnfpasswrd){
              window.alert("Password Not Matched");
              return;
@@ -82,7 +75,7 @@ const Profile=()=>{
                             profilePicture:imgSrc,
                             user_id:user._id
                            }
-         axios.post("/updateprofile",sendingValue)
+         axios.post(Backend+"/updateprofile",sendingValue)
          .then((res)=>{
            
             window.alert("User Value Updated Successfully");
@@ -92,33 +85,22 @@ const Profile=()=>{
          })
          .catch((err)=>{
             console.log(err);
-            window.alert(err);
+            window.alert(err.response.data);
          })
 
     }
 
 
 
-    // Groups
-    const [groups,setGroups]=useState([]);
-    const [loading,setLoading]=useState(false);
-
-    const getGroups=()=>{
-      setLoading(true);
-      axios.get("/getGroups/"+user._id)
-           .then(res=>setGroups(res.data))
-           .catch((err)=>{
-               window.alert(err);
-           });
-       setTimeout(()=>setLoading(false),1500);
-    }
-    useEffect(()=>{getGroups()},[]);// eslint-disable-line react-hooks/exhaustive-deps
+    const [loading,setLoading]=useState(true);
+    useEffect(()=>{setTimeout(()=>setLoading(false),1500)},[]);// eslint-disable-line react-hooks/exhaustive-deps
   
 
 
     return (
       <>
         <NavBar/>
+  
         <div className="profile">
            
            <div className="AccountSection">
@@ -160,20 +142,9 @@ const Profile=()=>{
                            <li className="listrows">
                              <div className="listHeads">Email</div>
                              <div className="listContentData">
-                                 {editICon.username?
-                                       <input type="text" 
-                                              className="inputData" 
-                                              onChange={handlevalueChange} 
-                                              value={profileValues.username} 
-                                              name="username" 
-                                       />:
-                                       <>
-                                          <div >{user.username}</div>
-                                          <EditIcon onClick={()=>OnEditClick("username") } 
-                                                    className="EditIcon"
-                                          />
-                                       </>
-                                 }
+                               
+                                  <div >{user.username}</div>
+                                  
                              </div>
                            </li>
 
@@ -244,60 +215,18 @@ const Profile=()=>{
 
                 </div>
            </div>
-
-           <div className="Viewgroups">
-
-                  <h3 className="heading">Your Groups</h3>
-
-                  <div className="Allgroups">
-
-                   {loading?<LottieAnimation1/>:<>
-                    <List className="List">
-                      
-                       {groups.map((gdata,index)=>(
-                         <div key={index}>
-                          <ListItem alignItems="flex-start">
-                              
-                              <ListItemAvatar>
-                                <Link to={"../group/"+gdata.group._id}>
-                                    <Avatar alt="GG" 
-                                            src={gdata.group.groupImage} 
-                                     />
-                                </Link>
-                              </ListItemAvatar>
-
-                              <ListItemText
-                                primary={gdata.group.groupName}
-                                secondary={
-                                  <React.Fragment>
-                                    <Typography
-                                      sx={{ display: 'inline' }}
-                                      color="text.primary"
-                                    >
-                                      ₹ {Math.abs(gdata.totAmnt).toFixed(2)} 
-                                    </Typography>
-                                    <div className="oweDatail">
-                                      {gdata.totAmnt===0&&"All Settle up"}
-                                      {gdata.totAmnt<0&&"You Owe Money from others"}
-                                      {gdata.totAmnt>0&&"Yow Should pay"}
-                                    </div>
-                                  </React.Fragment>
-                                }
-                              />
-                          </ListItem>
-                          <Divider className="Divider" 
-                                   variant="inset" 
-                                   component="div" 
-                          />
-                         </div>
-                       ))
-                     }
-                      
-                    </List>
-                   </>}
-                  </div>
-
-           </div>
+            <div className="Viewgroups">
+              <h3 className="heading">Your Groups</h3>
+              {loading?<LottieAnimation1/>:<>
+                <AllGroups/>
+                <Link to="/new-group">
+                    <Button bgColor="#bf2d9a" className="create-grp-btn">
+                    Create-Group
+                    </Button>
+                </Link>
+              </>}
+            </div>
+         
         </div>
      </>
     )

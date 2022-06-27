@@ -1,8 +1,8 @@
 const express=require("express")
 const router =express.Router();
 
-const Group=require("../Database/models/GroupSchema");
-const User=require("../Database/models/UserSchema");
+const Group=require("../Database/models/Group");
+const User=require("../Database/models/User");
 
 
 
@@ -417,6 +417,14 @@ router.get("/group/:id/removeZeroPayments",async(req,res)=>{
 
 router.post("/group/:id/settleDebt",async(req,res)=>{
     const {payer,receiver,amount}=req.body;
+    
+    if(payer.user_id===receiver.user_id){
+        return res.status(422).json("Payer and Receiver must not be same");
+    }
+    if(amount===0){
+        return res.status(422).json("Enter a positive amount");
+    }
+
     const group_id=req.params.id;
     console.log(group_id);
     await Group.updateOne({_id:group_id},

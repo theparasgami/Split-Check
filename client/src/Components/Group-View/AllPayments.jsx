@@ -8,6 +8,7 @@ import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 
 import money from "./money.jpg"
+const Backend="https://split-check.herokuapp.com"
 
 
 const AllPayments=(props)=>{
@@ -17,7 +18,7 @@ const AllPayments=(props)=>{
 
        useEffect(() => {
             setLoading(true);
-            axios.get("/group/"+props.group_id+"/"+props.ourUser.user_id+"/getPaymentsofUser")
+            axios.get(Backend+"/group/"+props.group_id+"/"+props.ourUser.user_id+"/getPaymentsofUser")
                  .then((res)=>{
                      setPayments(res.data);
                 }
@@ -27,8 +28,17 @@ const AllPayments=(props)=>{
             }, 1500);
 
        }, []) // eslint-disable-line react-hooks/exhaustive-deps
-       
-
+      
+       const RemindUser=(e)=>{
+           axios.get("/remindPayment",{ params: {
+                                            payer_id:e.payer.user_id,
+                                            receiver_id:e.receiver.user_id,
+                                            amount:e.amount}
+                                        })
+                .then((res)=>window.alert(res.data))
+                .catch((err)=>window.alert(err.response.data));
+       }
+      
        return (
         loading? <div style={{height:"30vh"}}><LottieAnimation1/></div>
         :<>
@@ -65,6 +75,12 @@ const AllPayments=(props)=>{
                                                               {payer:props.ourUser,receiver:payment}
                                                    ))}>
                                 Settle Up..
+                            </Mbutton>
+                            <Mbutton onClick={()=>(RemindUser(payment.amount>0?
+                                                              {payer:payment,receiver:props.ourUser,amount:payment.amount}:
+                                                              {payer:props.ourUser,receiver:payment,amount:-payment.amount}
+                                                   ))}>
+                                Remind
                             </Mbutton>
                         </ListItem>
                         <Divider className="Divider" component="li" />

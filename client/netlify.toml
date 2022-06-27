@@ -2,10 +2,12 @@
   from="/api/*"
   to="https://split-check.herokuapp.com/:splat" 
   status=200
+    
 [[redirects]]
    from ="/*"
    to ="/index.html"
    status=200
+
 [[headers]]
   for = "/*"
   [headers.values]

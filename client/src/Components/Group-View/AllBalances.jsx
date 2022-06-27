@@ -7,6 +7,7 @@ import {List,ListItem,Divider,Typography} from '@mui/material';
 import { Accordion,AccordionSummary,AccordionDetails } from "@mui/material";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 import {LottieAnimation1} from "../Constants/Lotties/lottie";
+const Backend="https://split-check.herokuapp.com"
 
 const AllBalances=(props)=>{
     
@@ -17,7 +18,7 @@ const AllBalances=(props)=>{
 
     useEffect(()=>{
         setLoading(true);
-        axios.get("/group/"+props.group_id+"/getGroupMembers")
+        axios.get(Backend+"/group/"+props.group_id+"/getGroupMembers")
                   .then(res=>setGroupmembers(res.data))
                   .catch((err)=>{
                       console.log(err);
@@ -26,7 +27,16 @@ const AllBalances=(props)=>{
             setLoading(false);
         }, 1500);
     },[])//eslint-disable-line react-hooks/exhaustive-deps
-    
+
+    const RemindUser=(e)=>{
+        axios.get("/remindPayment",{ params: {
+                                         payer_id:e.payer.user_id,
+                                         receiver_id:e.receiver.user_id,
+                                         amount:e.amount}
+                                     })
+             .then((res)=>window.alert(res.data))
+             .catch((err)=>window.alert(err.response.data));
+    }
     
     return(
       loading? <div style={{height:"30vh"}}><LottieAnimation1/></div>
@@ -77,6 +87,12 @@ const AllBalances=(props)=>{
                                                onClick={()=>setPopupSettleUp({payer:member,receiver:payment})} >
                                                Settle Up
                                           </Mbutton>
+                                          <Mbutton className="SettleUpBtn" 
+                                               onClick={()=>RemindUser({payer:member,
+                                                                              receiver:payment,
+                                                                              amount:Math.abs(payment.amount).toFixed(2)})} >
+                                               Remind
+                                          </Mbutton>
                                       </>)} 
                                       {payment.amount>0&&(<>
                                          <b>{payment.user_name}</b>
@@ -87,6 +103,12 @@ const AllBalances=(props)=>{
                                          <Mbutton className="SettleUpBtn" 
                                                onClick={()=>setPopupSettleUp({payer:payment,receiver:member})} >
                                                Settle Up
+                                         </Mbutton>
+                                         <Mbutton className="SettleUpBtn" 
+                                               onClick={()=>RemindUser({payer:payment,
+                                                                              receiver:member,
+                                                                              amount:Math.abs(payment.amount).toFixed(2)})} >
+                                               Remind
                                          </Mbutton>
                                       </>)} 
                                       
