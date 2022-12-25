@@ -22,10 +22,30 @@
             max-height: 50vh;
             overflow: auto;
         }
-        .addGroup{
+        .AddGroup{
             position: fixed;
+            bottom: 7rem;
             margin: auto;
-            bottom: 3rem;
+            margin-left: 25%;
+        }
+    }
+    @media only screen  and (max-device-width:500px) {
+        .welcome{
+            font-size: 5    rem;
+        }
+        .yourGroups{
+            width: 100%;
+            h1{
+                font-size: 4rem;
+            }
+        }
+        .AddGroup{
+            margin-top: 4rem;
+
+            button{
+                height: 10rem;
+                width: 10rem;
+            }
         }
     }
 }

@@ -11,7 +11,8 @@ import "./profile.scss"
 import {Button} from "../../Components/Constants/Buttons/Button"
 import AllGroups from "../../Components/AllGroups/groupList"
 
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 var cnfPswrdD={display:"none"};
 

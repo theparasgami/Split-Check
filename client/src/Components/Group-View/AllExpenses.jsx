@@ -8,7 +8,8 @@ import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import bill from "./billl.jpg"
 const months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 
 const AllExpenses=(props)=>{

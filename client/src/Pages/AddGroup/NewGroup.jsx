@@ -11,7 +11,8 @@ import axios from "axios";
 import NavBar from "../../Components/Navbar/NavBar";
 
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 
 

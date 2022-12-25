@@ -7,7 +7,9 @@ import {List,ListItem,Divider,Typography} from '@mui/material';
 import { Accordion,AccordionSummary,AccordionDetails } from "@mui/material";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 import {LottieAnimation1} from "../Constants/Lotties/lottie";
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
+
 
 const AllBalances=(props)=>{
     

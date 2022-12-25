@@ -6,7 +6,8 @@ import {Button}  from "../../Constants/Buttons/Button";
 import "./popups.scss";
 import ImgSrc from "./Split-Check.png"
 import {LottieAnimation2} from "../../Constants/Lotties/lottie"
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 const RandomSettleUp=(props)=>{
 
