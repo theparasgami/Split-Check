@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": split-check",
+  "name": "split-check-backend",
   "builds": [
     { "src": "script.js", "use": "@vercel/node" }
   ],
