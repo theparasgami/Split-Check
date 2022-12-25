@@ -25,4 +25,3 @@ https://split-check.netlify.app
   **Create-Group**<br/>
   **Add Expenses and Settle Expenses**<br/>
   **Record of Payments**<br/>
-
