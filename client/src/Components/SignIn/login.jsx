@@ -10,7 +10,6 @@ import {LottieAnimation3}  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 
-// const Backend="https://split-check.herokuapp.com"
 const Backend="https://split-check-vhbp.vercel.app"
 // const Backend="http://localhost:8000"
 
@@ -50,7 +49,6 @@ function Login(props)
 
   const googleLogin = async (e) => {
            e.preventDefault();
-          //  const LoginUrl= "http://split-check.herokuapp.com/auth/google"
           //  const LoginUrl = "http://localhost:8000/auth/google";
     const LoginUrl = "https://split-check-vhbp.vercel.app/auth/google";
            window.location.href = LoginUrl;

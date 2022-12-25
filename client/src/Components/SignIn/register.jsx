@@ -8,8 +8,8 @@ import regImg from "./register.jpg";
 import "./style.scss";
 import axios from "axios";
 
-// const Backend="https://split-check.herokuapp.com"
-const Backend = "http://localhost:8000"
+const Backend = "https://split-check-vhbp.vercel.app";
+// const Backend = "http://localhost:8000"
 
 
 
@@ -31,8 +31,8 @@ function Register(props)
   
   const googleLogin = async (e) => {
     e.preventDefault();
-    // const LoginUrl = "http://split-check.herokuapp.com/auth/google";
-    const LoginUrl = "http://localhost:8000/auth/google"
+    const LoginUrl = "https://split-check-vhbp.vercel.app/auth/google";
+    // const LoginUrl = "http://localhost:8000/auth/google"
 
     window.location.href = LoginUrl;
   };

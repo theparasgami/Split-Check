@@ -6,13 +6,12 @@ import "./groupList.scss"
 
 import { AuthContext } from "../../Context/AuthContext";
 
-// const Backend="https://split-check.herokuapp.com"
-const Backend = "http://localhost:8000"
+// const Backend = "http://localhost:8000"
+const Backend = "https://split-check-vhbp.vercel.app";
 
 const AllGroup = ()=>{
    
    const {user}=useContext(AuthContext);    
-   console.log(user);
     // Groups
     const [groups,setGroups]=useState([]);
 

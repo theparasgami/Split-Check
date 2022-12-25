@@ -17,8 +17,8 @@ import { AuthContext } from '../../Context/AuthContext';
 
 const pages = [['Dashboard',''], ['Profile','profile']];
 const settings = [['Profile','profile'],['Create-Group','new-group'], ['Dashboard',''],['Logout','logout']];
-// const Backend="https://split-check.herokuapp.com"
-const Backend = "http://localhost:8000"
+const Backend = "https://split-check-vhbp.vercel.app";
+// const Backend = "http://localhost:8000"
 
 const NavBar = () => {
 
