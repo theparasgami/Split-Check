@@ -1,4 +1,5 @@
 .navbar{
+   
     .appbar{
         position: fixed;
         top:0;
@@ -30,5 +31,34 @@
             letter-spacing: .1rem;
             color:white;
             text-decoration: none;
+    }
+
+   
+}
+@media only screen and (max-device-width:500px) {
+        
+    .navbar{
+       .appbar{
+         min-height: 6rem;
+         margin: auto;
+       }
+       .logoName{
+          font-size: 2.5rem;
+       }
+       .logojpg{
+           width: 4rem;
+           height: 4rem;
+       }
+       button{
+           font-size: 1.4rem;
+       }
+       .MuiAvatar-root{
+           width: 4rem;
+           height:4rem;
+       }
+       .MuiTypography-body1{
+           display: none;
+       }
+       
     }
 }

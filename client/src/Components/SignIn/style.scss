@@ -2,7 +2,6 @@
 
 .register , .login{
     font-family: 'Baloo Bhaijaan 2', cursive;
-
     display: flex;
     justify-content: center;
     align-items:center;
@@ -60,52 +59,99 @@
     }
     @media only screen and ( max-device-width:500px) { 
         .loginImg{
-            margin-top: 5%;
-            max-height:40rem;
-            max-width: 30rem;
+            display: none;
         }
         .paper{
-            width: 80%;
-            height: 60rem;
+            width: 100%;
+            height: 100%;
         }
         .form{
             max-width: 40rem; 
+            font-size: 3rem;
+            max-width: 40rem; 
+            .MuiAvatar-root{
+                width: 5rem;
+                height:5rem;
+            }
+            svg{
+                font-size: 4rem;
+            }
+            .MuiInputLabel-root{
+                font-size: 2rem;
+            }
+            .MuiInput-root{
+                margin: 0;
+                width: 120%;
+                font-size: 4rem;
+            }
+            button{
+                 width: 10rem;
+                 min-height:5rem;
+                 font-size: 2rem;
+            }
+            .login-with-google-btn{
+                width:30rem;
+                height: 5rem;
+                font-size: 2rem;
+                background-size:3.5rem;
+            }
         }
 
 
     }
-    @media only screen and (min-device-width: 500px) {
+    @media only screen and (min-device-width: 500px) and(max-device-width:750px) {
         .loginImg{
             margin-top: 5%;
             max-height:30rem;
             max-width: 20rem;
         } 
         .paper{
-            min-width: 60%;
-            max-width: 80%;
+            min-width: 90%;
+            max-width: 100%;
         }
         .form{
             max-width: 40rem;
+            .MuiAvatar-root{
+                width: 5rem;
+                height:5rem;
+            }
+            svg{
+                font-size: 4rem;
+            }
+            .MuiInputLabel-root{
+                font-size: 2rem;
+            }
+            .MuiInput-root{
+                margin: 0;
+                width: 120%;
+                font-size: 4rem;
+            }
         }    
     }
-    @media only screen and (min-device-width: 750px) {
+    @media only screen and (min-device-width: 750px) and (max-device-width:1000px) {
         .loginImg{
             max-height:20rem;
             max-width: 40rem;
         }   
         .form{
             max-width: 40rem;
+            margin: 1rem;
         }    
     }
     @media only screen and (min-device-width: 1000px) { 
         .blocks{
             display: flex;
         }
+        .paper{
+           margin: 0;
+        }
         .loginImg{
-            max-height:30rem;
+            
+            max-height:20rem;
             max-width: 50rem;
         }
         .form{
+            margin:auto 2rem;
             max-width: 30rem;
         }  
     }
@@ -136,39 +182,93 @@
         }
     }
     @media only screen and ( max-device-width:500px) { 
+        .Logo{
+            width: 20rem;
+            height: 20rem;
+        }
         .loginImg{
-            margin-top: 5%;
-            max-height:40rem;
-            max-width: 30rem;
+            display: none;
         }
         .paper{
-            width: 10%;
-            height: 80rem;
+            width: 100%;
+            height: 85%;
         }
         .form{
+            font-size: 3rem;
             max-width: 40rem; 
+            .MuiAvatar-root{
+                width: 5rem;
+                height:5rem;
+            }
+            svg{
+                font-size: 4rem;
+            }
+            .MuiInputLabel-root{
+                font-size: 2rem;
+            }
+            .MuiInput-root{
+                width: 120%;
+                font-size: 4rem;
+            }
+            button{
+                 width: 10rem;
+                 min-height:5rem;
+                 font-size: 2rem;
+            }
+            .login-with-google-btn{
+                width:30rem;
+                height: 5rem;
+                font-size: 2rem;
+                background-size:3.5rem;
+            }
         }
 
-
     }
-    @media only screen and (min-device-width: 500px) {
+    @media only screen and (min-device-width: 500px) and(max-device-width:750px) {
         .loginImg{
-            max-height:30rem;
-            max-width: 20rem;
+            max-height:40rem;
+            max-width: 30rem;
         } 
         .paper{
-            min-width: 60%;
+            min-width: 80%;
         }
         .form{
             max-width: 40rem;
+            font-size: 2rem;
+            .MuiAvatar-root{
+                width: 5rem;
+                height:5rem;
+            }
+            svg{
+                font-size: 4rem;
+            }
+            .MuiInputLabel-root{
+                font-size: 2rem;
+            }
+            .MuiInput-root{
+                width: 120%;
+                font-size: 4rem;
+            }
+            button{
+                width: 10rem;
+                min-height:5rem;
+                font-size: 2rem;
+           }
+           .login-with-google-btn{
+               width:30rem;
+               height: 5rem;
+               font-size: 2rem;
+               background-size:3.5rem;
+           }
         }    
     }
-    @media only screen and (min-device-width: 750px) {
+    @media only screen and ( 750px) {
         .loginImg{
             max-height:20rem;
             max-width: 40rem;
         }   
         .form{
+            margin: 2rem;
             max-width: 40rem;
         }    
     }

@@ -31,7 +31,8 @@ const LottieAnimation2=()=>{
 const LottieAnimation3=()=>{
     const styles={
         height:500,
-        width:500
+        width:500,
+        marginTop:"10%"
     }
     return (
        <div className="lottie3">

@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom";
 import axios from "axios"
 import imgSrc from "./verified.png"
 
-const Backend="https://split-check.herokuapp.com"
+const Backend="https://localhost:8000"
 
 const Verified=()=>{
     const params=useParams();

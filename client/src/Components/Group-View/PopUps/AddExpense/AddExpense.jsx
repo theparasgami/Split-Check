@@ -10,7 +10,8 @@ import {LottieAnimation2} from "../../../Constants/Lotties/lottie"
 import HowMuchPaid from "./HowMuchPaid";
 import HowMuchSplits from "./HowMuchSplits";
 import "../popups.scss";
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 
 const AddExpense=(props)=>{

@@ -23,8 +23,8 @@ const GOOGLE_CLIENT_SECRET=process.env.CLIENT_SECRET;
 passport.use(new GoogleStrategy({
     clientID:GOOGLE_CLIENT_ID , 
     clientSecret: GOOGLE_CLIENT_SECRET,
-    // callbackURL: "http://localhost:8000/auth/google/split-check",
-    callbackURL: "http://split-check.herokuapp.com/auth/google/split-check",
+    callbackURL: "http://localhost:8000/auth/google/split-check",
+    // callbackURL: "http://split-check.herokuapp.com/auth/google/split-check",
     passReqToCallback:true
   },
   async (request,accessToken, refreshToken, profile, done) => {

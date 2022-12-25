@@ -8,7 +8,8 @@ import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 
 import money from "./money.jpg"
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 
 const AllPayments=(props)=>{

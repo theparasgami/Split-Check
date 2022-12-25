@@ -3,7 +3,8 @@ import {Button} from "../Constants/Buttons/Button"
 import axios from "axios"
     
 
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 function Logout(){                  
 
