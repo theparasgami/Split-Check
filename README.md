@@ -14,8 +14,6 @@ In this app a person can send reminder to the person who owes money to him/her. 
 ![NPM](https://img.shields.io/badge/-NPM-brightgreen?color=DC2C34&style=for-the-badge&logo=NPM&logoColor=white&logoWidth=20)
 ![MongoDB](https://img.shields.io/badge/-mongoDb-orange?color=green&style=for-the-badge&logo=mongoDB&logoColor=white&logoWidth=20)
 
-## Deployed Link
-https://split-check.netlify.app
 
 ## Key Features
   **Email Verification**<br/>

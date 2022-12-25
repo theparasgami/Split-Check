@@ -50,7 +50,7 @@ passport.use(new GoogleStrategy({
                     return done(err, user);
                 });
             } else {
-               console.log(" User is already present , signing in...");
+               console.log("User is already present , signing in...");
                UserProfile=user;
                return done(err, user);
             }
@@ -65,16 +65,17 @@ router.get("/auth/google",
     passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-router.get("/auth/google/split-check", 
-                  passport.authenticate("google",
-                                        { failureRedirect: "https://split-check.netlify.app/" }
-                                       ),
-                  (req, res) =>{
-                       console.log(res);
-                      // Successful authentication, redirect home.
-                      res.redirect("https://split-check.netlify.app/");
-                      // res.redirect("http://localhost:3000/");
-                  }
+router.get(
+  "/auth/google/split-check",
+  passport.authenticate("google", {
+    failureRedirect: "http://localhost:3000/",
+  }),
+  (req, res) => {
+    //  console.log(res);
+    // Successful authentication, redirect home.
+    // res.redirect("https://split-check.netlify.app/");
+    res.redirect("http://localhost:3000/");
+  }
 );
 
 router.post("/login", function(req, res, next) {
