@@ -6,7 +6,8 @@ import "./groupList.scss"
 
 import { AuthContext } from "../../Context/AuthContext";
 
-const Backend="https://split-check.herokuapp.com"
+// const Backend="https://split-check.herokuapp.com"
+const Backend = "http://localhost:8000"
 
 const AllGroup = ()=>{
    
