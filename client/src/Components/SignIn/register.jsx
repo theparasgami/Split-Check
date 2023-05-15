@@ -7,10 +7,7 @@ import PasswordInput from "../Constants/Inputs/PasswordInput"
 import regImg from "./register.jpg";
 import "./style.scss";
 import axios from "axios";
-
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
-
+import { backendUrl } from "../../env_prod";
 
 
 
@@ -40,7 +37,7 @@ function Register(props)
    
   const PostDatas= ()=>{
 
-    ( axios.post(Backend+"/register",user))
+    ( axios.post(backendUrl+"/register",user))
            .then((res)=>{
                   console.log(res);
                   if(res){

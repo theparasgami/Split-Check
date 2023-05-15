@@ -8,9 +8,7 @@ import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 
 import money from "./money.jpg"
-
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
+import { backendUrl } from "../../env_prod";
 
 
 const AllPayments=(props)=>{
@@ -20,7 +18,7 @@ const AllPayments=(props)=>{
 
        useEffect(() => {
             setLoading(true);
-            axios.get(Backend+"/group/"+props.group_id+"/"+props.ourUser.user_id+"/getPaymentsofUser")
+            axios.get(backendUrl+"/group/"+props.group_id+"/"+props.ourUser.user_id+"/getPaymentsofUser")
                  .then((res)=>{
                      setPayments(res.data);
                 }
@@ -32,7 +30,7 @@ const AllPayments=(props)=>{
        }, []) // eslint-disable-line react-hooks/exhaustive-deps
       
        const RemindUser=(e)=>{
-           axios.get(Backend+"/remindPayment",{ params: {
+           axios.get(backendUrl+"/remindPayment",{ params: {
                                             payer_id:e.payer.user_id,
                                             receiver_id:e.receiver.user_id,
                                             amount:e.amount}

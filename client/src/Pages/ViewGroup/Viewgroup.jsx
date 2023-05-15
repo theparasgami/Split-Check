@@ -18,11 +18,10 @@ import AllExpenses from "../../Components/Group-View/AllExpenses";
 import AllPayments from "../../Components/Group-View/AllPayments";
 import AllBalances from "../../Components/Group-View/AllBalances";
 import RecentPayment from "../../Components/Group-View/RecentPayment";
+import { backendUrl } from "../../env_prod";
 
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 
 const ViewGroup=()=>{
@@ -34,22 +33,26 @@ const ViewGroup=()=>{
    const [userAndGroupspend,setUserandGroupSpend]=useState(false);
 
    useEffect(()=>{
+       axios.get(backendUrl + "/group/" + params.id + "/distributeAmount")
+           .then((response) => {
+               axios.get(backendUrl + "/group/" + params.id + "/removeZeroPayments")
+                   .then(() => {
+                       axios.get(backendUrl + "/getGroup/" + params.id + "/" + user._id)
+                           .then((res) => {
+                               setData({ group: res.data.group, user: res.data.userData });
+                               if (!res.data.group) {
+                                   window.location.href = "/";
+                               }
+                           })
+                           .catch((err) => {
+                               window.location.href = "/";
+                           });
+                   });
+           })
+           .catch((err) => {
+               window.location.href = "/";
+           });
 
-       axios.get(Backend+"/group/"+params.id+"/distributeAmount")
-            .then((response)=>{
-              axios.get(Backend+"/group/"+params.id+"/removeZeroPayments");
-              axios.get(( Backend+"/getGroup/"+params.id+"/"+user._id))
-                   .then((res)=>{
-                       setData({group:res.data.group,user:res.data.userData});
-                   })
-                   .catch((err)=>{
-                       window.alert("No Such Group");
-                       window.location.href="/";
-                   })
-            })
-            .catch((err)=>{
-                window.alert(err.response.data);
-            })  
   
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     
@@ -61,13 +64,13 @@ const ViewGroup=()=>{
   
     const getGroupMembers=()=>{
         
-        axios.get(Backend+"/group/"+params.id+"/getGroupMembers")
+        axios.get(backendUrl+"/group/"+params.id+"/getGroupMembers")
              .then((res)=>setAddExpense(res.data));
     
     }
     const getGroupMembersForSettleUp=()=>{
         
-        axios.get(Backend+"/group/"+params.id+"/getGroupMembers")
+        axios.get(backendUrl+"/group/"+params.id+"/getGroupMembers")
              .then((res)=>{
                  setSettleUp(res.data.map((member)=>({user_id:member.user_id,
                                                       user_name:member.user_name})

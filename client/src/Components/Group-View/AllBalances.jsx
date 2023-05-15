@@ -7,9 +7,8 @@ import {List,ListItem,Divider,Typography} from '@mui/material';
 import { Accordion,AccordionSummary,AccordionDetails } from "@mui/material";
 import PopupSettleUp  from "./PopUps/PopupSettleUp";
 import { LottieAnimation1 } from "../Constants/Lotties/lottie";
+import { backendUrl } from "../../env_prod";
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 
 const AllBalances=(props)=>{
@@ -21,7 +20,7 @@ const AllBalances=(props)=>{
 
     useEffect(()=>{
         setLoading(true);
-        axios.get(Backend+"/group/"+props.group_id+"/getGroupMembers")
+        axios.get(backendUrl+"/group/"+props.group_id+"/getGroupMembers")
                   .then(res=>setGroupmembers(res.data))
                   .catch((err)=>{
                       console.log(err);
@@ -32,7 +31,7 @@ const AllBalances=(props)=>{
     },[])//eslint-disable-line react-hooks/exhaustive-deps
 
     const RemindUser=(e)=>{
-        axios.get(Backend+"/remindPayment",{ params: {
+        axios.get(backendUrl+"/remindPayment",{ params: {
                                          payer_id:e.payer.user_id,
                                          receiver_id:e.receiver.user_id,
                                          amount:e.amount}

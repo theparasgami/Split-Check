@@ -27,11 +27,6 @@ function Home()
             <div className="groupList">
               <AllGroup/>
             </div>
-            <div className="AddGroup">
-              <Button onClick={HandleAddGroup} bgColor="Green">
-                Add Group
-              </Button>
-            </div> 
         </div>
         <br/>                   
       </div>

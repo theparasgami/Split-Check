@@ -1,6 +1,4 @@
 import React, { useState,useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { LottieAnimation1 } from "../../Components/Constants/Lotties/lottie";
 import  axios from "axios";
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -9,10 +7,8 @@ import NavBar from "../../Components/Navbar/NavBar";
 import { AuthContext } from "../../Context/AuthContext";
 import "./profile.scss"
 import {Button} from "../../Components/Constants/Buttons/Button"
-import AllGroups from "../../Components/AllGroups/groupList"
+import { backendUrl } from "../../env_prod";
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 var cnfPswrdD={display:"none"};
 
@@ -76,7 +72,7 @@ const Profile=()=>{
                             profilePicture:imgSrc,
                             user_id:user._id
                            }
-         axios.post(Backend+"/updateprofile",sendingValue)
+         axios.post(backendUrl+"/updateprofile",sendingValue)
          .then((res)=>{
            
             window.alert("User Value Updated Successfully");
@@ -216,18 +212,6 @@ const Profile=()=>{
 
                 </div>
            </div>
-            <div className="Viewgroups">
-              <h3 className="heading">Your Groups</h3>
-              {loading?<LottieAnimation1/>:<>
-                <AllGroups/>
-                <Link to="/new-group">
-                    <Button bgColor="#bf2d9a" className="create-grp-btn">
-                    Create-Group
-                    </Button>
-                </Link>
-              </>}
-            </div>
-         
         </div>
      </>
     )

@@ -1,17 +1,16 @@
 import React from "react";
 import {Button} from "../Constants/Buttons/Button"
 import axios from "axios"
+import { backendUrl } from "../../env_prod";
     
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 function Logout(){                  
 
     const postData=async(e)=>{
       e.preventDefault();
       sessionStorage.removeItem("user");
-      axios.post(Backend+"/logout")
+      axios.post(backendUrl+"/logout")
       .then((res)=>{
           if(res)
           window.alert("Logout Success");

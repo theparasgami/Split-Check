@@ -14,17 +14,16 @@ import MenuItem from '@mui/material/MenuItem';
 import "./navbar.scss"
 import LogoImg from "./Split-Check-transparent.png"
 import { AuthContext } from '../../Context/AuthContext';
+import { backendUrl } from '../../env_prod';
 
-const pages = [['Dashboard',''], ['Profile','profile']];
+const pages = [['Dashboard', ''], ['New Group', 'new-group'], ['Profile', 'profile']];
 const settings = [['Profile','profile'],['Create-Group','new-group'], ['Dashboard',''],['Logout','logout']];
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 const NavBar = () => {
 
   const {user}=React.useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const currentButton = window.location.href.split('/')[3];
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -39,7 +38,7 @@ const NavBar = () => {
       }
       else{
         sessionStorage.removeItem("user");  
-        axios.post(Backend+"/logout")
+        axios.post(backendUrl+"/logout")
         .then((res)=>{
             if(res)
             window.alert("Logout Success");
@@ -79,7 +78,10 @@ const NavBar = () => {
                           {pages.map((page) => (
                               <Button
                                   key={page[0]}
-                                  sx={{ my: 2,mx:2, color: 'white', display: 'block' }}
+                                  sx={{
+                                      my: 2, mx: 2, color: page[1] === currentButton ? 'white' : '#707682', display: 'block', '&:hover': {
+                                          color: 'white',
+                                      }, }}
                                   onClick={()=>{HandlePageChange(page[1])}}
                               >
                                   {page[0]}

@@ -6,10 +6,9 @@ import PopupTransaction  from "./PopUps/PopupTransaction";
 import {LottieAnimation1} from "../Constants/Lotties/lottie";
 
 import bill from "./billl.jpg"
+import { backendUrl } from "../../env_prod";
 const months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 
 const AllExpenses=(props)=>{
@@ -20,7 +19,7 @@ const AllExpenses=(props)=>{
     
     useEffect(()=>{
         setLoading(true);
-        axios.get(Backend+"/group/"+props.group_id+"/getExpenses")
+        axios.get(backendUrl+"/group/"+props.group_id+"/getExpenses")
                   .then(res=>setExpenses(res.data))
                   .catch((err)=>{
                       console.log(err);

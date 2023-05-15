@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { backendUrl} from "../../env_prod"
 import axios from "axios"
 import { Link } from "react-router-dom";
 import {List,ListItem,Divider,ListItemText,ListItemAvatar,Avatar,Typography} from '@mui/material';
@@ -6,8 +7,6 @@ import "./groupList.scss"
 
 import { AuthContext } from "../../Context/AuthContext";
 
-// const Backend = "http://localhost:8000"
-const Backend = "https://split-check-vhbp.vercel.app";
 
 const AllGroup = ()=>{
    
@@ -17,7 +16,7 @@ const AllGroup = ()=>{
 
     const getGroups=()=>{
       
-      axios.get(Backend+"/getGroups/"+user._id)
+        axios.get(backendUrl +"/getGroups/"+user._id)
            .then(res=>setGroups(res.data))
            .catch((err)=>{
                window.alert(err);   

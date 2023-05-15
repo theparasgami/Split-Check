@@ -3,11 +3,10 @@ import axios from "axios";
 import {List,ListItem,Divider,ListItemText,ListItemAvatar,Avatar} from '@mui/material';
 import {LottieAnimation1} from "../Constants/Lotties/lottie";
 import bill from "./billl.jpg"
+import { backendUrl } from "../../env_prod";
 
 const months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 
 const RecentPayment=(props)=>{
@@ -17,7 +16,7 @@ const RecentPayment=(props)=>{
 
     useEffect(() => {
         setLoading(true);
-        axios.get(Backend+"/group/"+props.group_id+"/recentPayments")
+        axios.get(backendUrl+"/group/"+props.group_id+"/recentPayments")
              .then(res=>setRecents(res.data));
         setTimeout(()=>setLoading(false),1500);
     }, [])// eslint-disable-line react-hooks/exhaustive-deps

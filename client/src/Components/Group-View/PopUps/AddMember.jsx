@@ -5,9 +5,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import {Button}  from "../../Constants/Buttons/Button";
 import "./popups.scss";
 import {LottieAnimation2} from "../../Constants/Lotties/lottie"
+import { backendUrl } from "../../../env_prod";
 
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 const AddMember=(props)=>{
   
@@ -19,9 +18,9 @@ const AddMember=(props)=>{
     },[]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const saveMember=async()=>{
-      await axios.get (Backend+"/verifyMember/"+email)
+      await axios.get (backendUrl+"/verifyMember/"+email)
       .then(async(res)=>{
-            await axios.post(Backend+"/group/"+props.group_id+"/addMember",
+            await axios.post(backendUrl+"/group/"+props.group_id+"/addMember",
                            {user:res.data}
                  ).then((res)=>{
                      window.alert(res.data);

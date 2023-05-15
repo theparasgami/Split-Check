@@ -9,9 +9,8 @@ import "./style.scss";
 import {LottieAnimation3}  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { backendUrl } from "../../env_prod";
 
-const Backend="https://split-check-vhbp.vercel.app"
-// const Backend="http://localhost:8000"
 
 function Login(props)
 {
@@ -31,7 +30,7 @@ function Login(props)
   const {dispatch} = useContext(AuthContext);
 
   const fetchAuthUser = async ()=>{
-      await axios.get(Backend+"/user")
+      await axios.get(backendUrl+"/user")
           .then((res)=>{
               console.log(res.data);
               dispatch({type:"SUCCESS",payload:res.data});
@@ -59,7 +58,7 @@ function Login(props)
   const PostData=async (e)=>{
       
       e.preventDefault();
-      axios.post(Backend+"/login",{username:user.email,password:user.password})
+      axios.post(backendUrl+"/login",{username:user.email,password:user.password})
         .then((res)=>{
            if(res){
              window.alert('Login Success')

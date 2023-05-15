@@ -10,9 +10,7 @@ import {LottieAnimation2} from "../../../Constants/Lotties/lottie"
 import HowMuchPaid from "./HowMuchPaid";
 import HowMuchSplits from "./HowMuchSplits";
 import "../popups.scss";
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
-
+import { backendUrl } from "../../../../env_prod";
 
 const AddExpense=(props)=>{
     
@@ -114,7 +112,7 @@ const AddExpense=(props)=>{
     
     const PostData=()=>{
         const user_name=props.user_name;
-        axios.post(Backend+"/group/"+props.group_id+"/addExpense",{expense,
+        axios.post(backendUrl+"/group/"+props.group_id+"/addExpense",{expense,
                                                            paidBy,
                                                            paidTo,
                                                            TotalCurrPaidBy,

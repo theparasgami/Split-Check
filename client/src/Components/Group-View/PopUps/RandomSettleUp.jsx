@@ -6,9 +6,7 @@ import {Button}  from "../../Constants/Buttons/Button";
 import "./popups.scss";
 import ImgSrc from "./Split-Check.png"
 import {LottieAnimation2} from "../../Constants/Lotties/lottie"
-
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
+import { backendUrl } from "../../../env_prod";
 
 const RandomSettleUp=(props)=>{
 
@@ -31,12 +29,12 @@ const RandomSettleUp=(props)=>{
     
     const PostData=()=>{
           console.log(props.group_id);
-          axios.post(Backend+"/group/"+props.group_id+"/settleDebt",
+          axios.post(backendUrl+"/group/"+props.group_id+"/settleDebt",
                                             {payer:props.members[payment.payer],
                                              receiver:props.members[payment.receiver],
                                              amount:payment.amount})
                .then((res)=>{
-                   axios.get(Backend+"/group/"+props.group_id+"/removeZeroPayments");
+                   axios.get(backendUrl+"/group/"+props.group_id+"/removeZeroPayments");
                    window.alert(res.data);
                    window.location.reload();
                })

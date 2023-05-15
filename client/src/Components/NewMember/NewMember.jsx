@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import ClearIcon from "@mui/icons-material/Clear";
 import { AuthContext } from "../../Context/AuthContext";
+import { backendUrl } from "../../env_prod";
 const defaultProfile="https://wc.wallpaperuse.com/wallp/77-777508_s.jpg";
 
 
@@ -9,8 +10,6 @@ function emailCheck(email){
    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
    return re.test(String(email).toLowerCase());
 }
-const Backend = "https://split-check-vhbp.vercel.app";
-// const Backend = "http://localhost:8000"
 
 const NewMember=(props)=>{
   
@@ -19,7 +18,7 @@ const NewMember=(props)=>{
 
    const verifyUsername=async()=>{
          if(emailCheck(props.username)){
-            axios.get(Backend+"/verifyMember/"+props.username)
+            axios.get(backendUrl+"/verifyMember/"+props.username)
             .then((res)=>{
                console.log("Email Verified", props.username);
                setVerified(res);
