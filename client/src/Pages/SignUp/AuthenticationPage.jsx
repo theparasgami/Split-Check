@@ -14,7 +14,6 @@ const AuthenticationPage =()=>{
 
     return (
        <> 
-          <ParticlesBg num={100} type="square"  bg={true}  />
          {currPageLogin ? <Login Register={handleChangePage}/>
                         : <Register Login={handleChangePage} 
                                     openpage={currPageLogin} 

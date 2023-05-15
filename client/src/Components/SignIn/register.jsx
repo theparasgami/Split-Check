@@ -58,10 +58,10 @@ function Register(props)
 
   
   return (
-    <div className="register">
+    <div>
       <Paper elevation={10} 
             sx={ { paddingRight:5} }
-            className="paper"
+        className="register paper"
       >
         <div className="blocks">
 

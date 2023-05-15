@@ -6,7 +6,7 @@
     justify-content: center;
     align-items:center;
     text-align: center;
-    min-height:  98vh;
+    min-height:  100vh;
     
     
     .form{  
@@ -262,7 +262,7 @@
            }
         }    
     }
-    @media only screen and ( 750px) {
+    @media only screen and (min-device-width: 750px) {
         .loginImg{
             max-height:20rem;
             max-width: 40rem;

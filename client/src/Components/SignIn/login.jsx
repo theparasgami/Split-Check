@@ -31,7 +31,6 @@ function Login(props)
   const {dispatch} = useContext(AuthContext);
 
   const fetchAuthUser = async ()=>{
-      console.log("Hi fetchAuthUSer");
       await axios.get(Backend+"/user")
           .then((res)=>{
               console.log(res.data);
@@ -62,15 +61,11 @@ function Login(props)
       e.preventDefault();
       axios.post(Backend+"/login",{username:user.email,password:user.password})
         .then((res)=>{
-          console.log(res);
-           if(res)
-           {
-             console.log("Login Succesfull",res.data.user);
+           if(res){
              window.alert('Login Success')
              dispatch({type:"SUCCESS",payload:res.data.user});
            }
         }).catch((err)=>{
-            console.log(err);
             if(err.response)
             {
               window.alert(err.response.data.error);
@@ -82,11 +77,11 @@ function Login(props)
     <>
      {!loading?
           (
-          <div className="login">
+          <div >
 
-            <Paper elevation={10}
+            <Paper elevation={0}
                    sx={ {paddingRight:10} }
-                   className="paper"
+                   className="login paper"
             >      
                 <img src={Logo} 
                      className="Logo" 
