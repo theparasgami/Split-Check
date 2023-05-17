@@ -57,8 +57,8 @@ const NavBar = () => {
 
 
   return (
-   <div className="navbar navbar-default navbar-static-top">
-          <AppBar position="static" className="appbar" >
+   <div className="navbar navbar-default ">
+          <AppBar  className="appbar" >
               <Container maxWidth="xl">
                   <Toolbar disableGutters>
                       {/* Logo */}
@@ -79,7 +79,7 @@ const NavBar = () => {
                               <Button
                                   key={page[0]}
                                   sx={{
-                                      my: 2, mx: 2, color: page[1] === currentButton ? 'white' : '#707682', display: 'block', '&:hover': {
+                                      my: 2, mx: 2, color: page[1] === currentButton ? 'white' : '#a9b5ce', display: 'block', '&:hover': {
                                           color: 'white',
                                       }, }}
                                   onClick={()=>{HandlePageChange(page[1])}}

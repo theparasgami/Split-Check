@@ -88,12 +88,6 @@ const Profile=()=>{
     }
 
 
-
-    const [loading,setLoading]=useState(true);
-    useEffect(()=>{setTimeout(()=>setLoading(false),1500)},[]);// eslint-disable-line react-hooks/exhaustive-deps
-  
-
-
     return (
       <>
         <NavBar/>
@@ -201,7 +195,7 @@ const Profile=()=>{
                          </ul>
 
                          <div className="saveBtn">
-                            <Button bgColor={"rgb(232, 39, 39)"} 
+                  <Button bgColor={"#F45050"} 
                                     onClick={updateChange}>
                                     Save
                             </Button>
