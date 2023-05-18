@@ -1,51 +1,31 @@
 
 .Home{
     margin: auto;
-    margin-top: 5rem;
     justify-content:center;
     text-align: center;
 
     .welcome{
-        font-size: 4rem;
         margin-top:8rem;
-        color: darkslategray;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        color: #394867;
     }
     .yourGroups{
-        width: 60%;
         margin: auto;
+        margin-top:3rem ;
+        padding: 1rem 0;
         h1{
-            color: rgb(10, 63, 45);
+            color: #394867;
         }
+        background-color: #f0f0f0;
+        border-radius: 2%;
+        width: 30%;
         .groupList{
-            min-height: 50vh;
-            max-height: 50vh;
+            min-height: 30vh;
+            max-height: 60vh;
             overflow: auto;
-        }
-        .AddGroup{
-            position: fixed;
-            bottom: 7rem;
             margin: auto;
-            margin-left: 25%;
         }
-    }
-    @media only screen  and (max-device-width:500px) {
-        .welcome{
-            font-size: 5    rem;
-        }
-        .yourGroups{
-            width: 100%;
-            h1{
-                font-size: 4rem;
-            }
-        }
-        .AddGroup{
-            margin-top: 4rem;
-
-            button{
-                height: 10rem;
-                width: 10rem;
-            }
-        }
+        // ::-webkit-scrollbar{
+        //     width: 10px;
+        // }
     }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Lottie from "lottie-react"
-import animationData1 from "./94412-gsa-node-transparent.json";
+import animationData1 from "./144368-loading.json";
 import animationData2 from "./4945-three-eyed-alien.json";
 import animationData3 from "./97611-smartphone-money-green.json"
 import "./style.scss"
@@ -8,8 +8,8 @@ import "./style.scss"
 
 const LottieAnimation1=()=>{
     const styles={
-        height:300,
-        width:300
+        height:150,
+        width:150
     }
     return (
        <div className="lottie">

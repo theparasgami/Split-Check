@@ -1,8 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500&display=swap');
-
+::-webkit-scrollbar {
+    width: 0px;
+}
 .ViewGroup {
     font-family: monospace;
     margin-top: 68.5px;
+    
 
     .detailsSection {
         height: auto;
@@ -75,6 +78,7 @@
     }
 
     .RequiredList {
+        
         width: 100%;
         margin: 1.5rem 0 10rem 0;
 
@@ -138,12 +142,13 @@
 
 
         .AllBalances {
+
             .accordion {
                 background: none;
                 width: 100%;
 
                 .AccordionDetails {
-                    background-color: #beced8;
+                    background-color: #F0F0F0;
                     max-height: 30rem;
                     overflow: auto;
 

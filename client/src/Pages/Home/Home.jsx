@@ -1,31 +1,27 @@
-import React from "react";
+import { React, useContext, useState } from "react";
 import { Button } from "../../Components/Constants/Buttons/Button";
 import NavBar from "../../Components/Navbar/NavBar";
 import "./Home.scss"
 
 import AllGroup from "../../Components/AllGroups/groupList";
+import { AuthContext } from "../../Context/AuthContext";
 
 
 function Home()
 {
- 
-  const HandleAddGroup=()=>{
-       window.location.href="https://split-check.netlify.app/new-group";
-  };
-
-
-
+  const { user } = useContext(AuthContext);
+  
   return (
     <>
       <NavBar />
 
       <div className="Home">
-        <h1 className="welcome">Welcome to Split-Check</h1>
+        <h1 className="welcome">Hi, {user.name.toUpperCase()}</h1>
         <div className="yourGroups">
             <h1 >Your Groups</h1>
 
             <div className="groupList">
-              <AllGroup/>
+              <AllGroup />
             </div>
         </div>
         <br/>                   

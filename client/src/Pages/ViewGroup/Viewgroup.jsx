@@ -159,7 +159,7 @@ const ViewGroup = () => {
                         </Tabs>
                     </div>
                     <section className="RequiredList">
-                        <Paper elevation={10} className="paper">
+                        <Paper elevation={2} className="paper">
                             <Collapse in={currList === "Expenses"} timeout={2000}>
                                 {currList === "Expenses" &&
                                     <AllExpenses group_id={params.id}
