@@ -1,17 +1,16 @@
 const mongoose =require("mongoose");
-const User = require("./User");
 
 const memberSchema = {
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true,
   },
   payments: [
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User',
         required: true,
       },
       amount: {
