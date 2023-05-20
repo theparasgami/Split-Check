@@ -35,22 +35,28 @@ function Register(props)
   };
 
    
-  const PostDatas= ()=>{
-
-    ( axios.post(backendUrl+"/register",user))
-           .then((res)=>{
-                  console.log(res);
-                  if(res){
-                    window.alert(res.data.message);
-                  }
-                  window.location.reload();
-           }).catch((err)=>{
-                  console.log(err);
-                  if(err.response){
-                     window.alert(err.response.data.error);
-                  }
-                 
-           });
+  const PostDatas= async()=>{
+    if (user.password != user.cpassword) {
+      window.alert("Confirm your password.")
+    }
+    else {
+      try {
+        const res = await axios.post(backendUrl + "/register", user);
+        console.log(res);
+        // if (res) {
+        //   window.alert(res.data.message);
+        // }
+        // window.addEventListener('alertclose', () => {
+        //   window.location.reload();
+        // }); 
+      }
+      catch (err) {
+        console.error(err);
+        if (err.response) {
+          window.alert(err.response.data.error);
+        }
+      }
+    }
   }
 
   
