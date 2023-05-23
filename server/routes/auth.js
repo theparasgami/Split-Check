@@ -121,9 +121,9 @@ function Login(req, res, next) {
   })(req, res, next);
 };
 
-function LogOut(req, res){
-  req.logout(); // Log out the user
-  res.clearCookie("connect.sid"); // Clear the session cookie
+async function LogOut(req, res){
+  await req.logout(); // Log out the user
+  await res.clearCookie("connect.sid"); // Clear the session cookie
   req.session.destroy(function (err) {
     res
       .status(200)
@@ -133,7 +133,7 @@ function LogOut(req, res){
 
 
 
-function SetUser(req, res) {
+async function SetUser(req, res) {
   if (req.isAuthenticated()) {
     return res.json(req.user);
   } else {

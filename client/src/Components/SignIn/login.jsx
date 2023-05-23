@@ -36,6 +36,7 @@ function Login(props)
         dispatch({ type: "SUCCESS", payload: res.data });
       }
     } catch (err) {
+      dispatch({ type: "SUCCESS", payload: null });
       console.error(err);
     }
   }

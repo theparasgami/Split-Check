@@ -21,7 +21,7 @@ const settings = [['Profile','profile'],['Create-Group','new-group'], ['Dashboar
 
 const NavBar = () => {
     
-  const {user}=React.useContext(AuthContext);
+  const {user,dispatch}=React.useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const currentButton = window.location.href.split('/')[3];
   const handleOpenUserMenu = (event) => {
@@ -32,21 +32,22 @@ const NavBar = () => {
     setAnchorElUser(null);
   };
   
-  const handleClickMenu =(link)=>{
+  const handleClickMenu =async(link)=>{
       if(link!=="logout"){
           window.location.href=("/"+link);
       }
       else{
-        localStorage.removeItem("user");  
-        axios.post(backendUrl+"/logout")
-        .then((res)=>{
-            if (res) window.alert("Logout Success");
-            window.location.href="/";
-        })
-        .catch((err)=>{
-            window.alert(err);
-            window.location.reload();
-        })
+          try {
+             localStorage.removeItem("user");
+              await axios.post(backendUrl + "/logout").then(() => {
+                      window.alert("Logout Success");
+                      window.location.href="/";
+              })
+          }
+          catch (err) {
+              console.error(err);
+              window.alert(err);
+          }
       }
   };
 

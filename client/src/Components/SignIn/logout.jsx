@@ -11,19 +11,17 @@ function Logout(){
 
     const postData=async(e)=>{
       e.preventDefault();
-      await axios.post(backendUrl+"/logout")
-      .then((res)=>{
-          if(res)window.alert("Logout Success");
-          localStorage.removeItem("user");
-          console.log(localStorage.getItem("user"));
-         dispatch({ type: "SUCCESS", payload:null });
-        //   window.location.href="/";
-      })
-      .catch((err)=>{
-          window.alert(err);
-        //   window.location.reload();
-      })
-
+      try {
+        localStorage.removeItem("user");
+        await axios.post(backendUrl + "/logout").then(() => {
+          window.alert("Logout Success");
+          window.location.href = "/";
+        })
+      }
+      catch (err) {
+        console.error(err);
+        window.alert(err);
+      }
     }
     
 
