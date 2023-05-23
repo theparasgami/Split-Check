@@ -9,7 +9,7 @@ import "./style.scss";
 import {LottieAnimation3}  from "../Constants/Lotties/lottie";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
-import { backendUrl } from "../../env_prod";
+import env_prod, { backendUrl } from "../../env_prod";
 
 
 function Login(props)
@@ -29,15 +29,15 @@ function Login(props)
 
   const {dispatch} = useContext(AuthContext);
 
-  const fetchAuthUser = async ()=>{
-      await axios.get(backendUrl+"/user")
-          .then((res)=>{
-              console.log(res.data);
-              dispatch({type:"SUCCESS",payload:res.data});
-          })
-          .catch((err)=>{
-              console.log(err);
-          })
+  const fetchAuthUser = async () => {
+    try {
+      const res = await axios.get(backendUrl + "/user", { withCredentials: true });
+      if(res){
+        dispatch({ type: "SUCCESS", payload: res.data });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(()=>{
@@ -46,10 +46,8 @@ function Login(props)
 
 
   const googleLogin = async (e) => {
-           e.preventDefault();
-          //  const LoginUrl = "http://localhost:8000/auth/google";
-    const LoginUrl = "https://split-check-vhbp.vercel.app/auth/google";
-           window.location.href = LoginUrl;
+    e.preventDefault();
+    window.location.href = env_prod.GoogleLoginUrl;
   };
 
   

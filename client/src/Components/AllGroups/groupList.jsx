@@ -15,15 +15,16 @@ const AllGroup = () => {
     const [groups, setGroups] = useState([]);
     const [loadingGroup, setGroupLoading] = useState(true);
 
-    const getGroups = () => {
-
-        axios.get(backendUrl + "/getGroups/" + user._id)
-            .then((res) => setGroups(()=>res.data))
-            .then(() => setGroupLoading(false))
-            .catch((err) => {
-                window.alert(err);
-            });
-
+    const getGroups = async () => {
+        try {
+            const groupList = await axios.get(backendUrl + "/getGroups/" + user._id);
+            setGroups(() => groupList.data);
+            setGroupLoading(false)
+        }
+        catch (err) {
+            console.error(err);
+            window.alert(err);
+        }
     }
     useEffect(() => { getGroups() }, []);// eslint-disable-line react-hooks/exhaustive-deps
 

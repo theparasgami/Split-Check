@@ -17,26 +17,26 @@ const toolTipText="This setting automatically combines debts to reduce the total
 
 function NewGroup(){
   
-  const {user}=useContext(AuthContext);
+  const { user, dispatch }= useContext(AuthContext);
 
   // For Adding  a Member
-  const [member,setMember]=useState([{userd:user,named:user.username},
-                                     {userd:null,named:""},
-                                     {userd:null,named:""},
-                                     {userd:null,named:""}
-                                    ]);
+  const [member, setMember] = useState([]);
+  
      //check the input of member name
-  const memberInputChnage=(e,ind)=>{
-        setMember(member.map((data,index)=>{
-           return ind===index?{userd:data.userd,named:e.target.value}:data;
-        }))
-  }
-  const removeMember=(ind)=>{
-         setMember(member.filter((data,index)=>(index!==ind)));
-  }
-  const addMember=()=>{
-         setMember([...member,{userd:null,named:""}]);
-  }
+  const memberInputChange = (e, ind) => {
+    setMember((prevMember) =>
+      prevMember.map((data, index) =>
+        index === ind ? { ...data, named: e.target.value } : data
+      )
+    );
+  };
+  const removeMember = (ind) => {
+    setMember((prevMember) => prevMember.filter((data, index) => index !== ind));
+  };
+
+  const addMember = () => {
+    setMember((prevMember) => [...prevMember, { userd: null, named: "" }]);
+  };
      // Now if a valid mail id found the it will update the member array by that user
   const updateMember=(ind,val)=>{ 
     var ourCurrMember={userd:val,named:val.username};
@@ -73,11 +73,13 @@ function NewGroup(){
   });
 
   //if a entry is there for a groupName then the hidden attribute will be removed 
-  useEffect(()=>{
-    group.groupName.length&&document.querySelector(".hiddenDiv").removeAttribute("hidden");
+  useEffect(() => {
+    group.groupName.length && document.querySelector(".hiddenDiv").removeAttribute("hidden");
+    setMember((prev)=>[{userd:user,named:user}]);
+    console.log(user.username,member);
   },[group.groupName]);// eslint-disable-line react-hooks/exhaustive-deps
  
-
+  
   const handleChange=(event)=>{
     const {name,value}=event.target;
     setGroupData({...group,[name]:value});
@@ -100,7 +102,6 @@ function NewGroup(){
   //Now if save button is pressed then post request {useEffect worl because 
   //if save button is pressed the group member should update}
   
-  const {dispatch}=useContext(AuthContext);
   
   useEffect(()=>{
       if(group.groupMembers.length){
@@ -132,7 +133,6 @@ function NewGroup(){
   },[imgSrc])// eslint-disable-line react-hooks/exhaustive-deps
   
   /*----------------------------------------------------------------*/
-
 
 
 
@@ -174,7 +174,7 @@ function NewGroup(){
                     member.map((data,index)=> < NewMember 
                                                  userr={data.userd} 
                                                  username={data.named} 
-                                                 onmemberInput={memberInputChnage}
+                                                 onmemberInput={memberInputChange}
                                                  id={index} 
                                                  oncancel={removeMember} 
                                                  onVerified={updateMember}

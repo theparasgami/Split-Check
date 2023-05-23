@@ -21,12 +21,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  password: {
-    type: String,
-    required: function () {
-      return this.googleId === "No-GoogleID"; // Require password if not using Google authentication
-    },
-  },
   profilePicture: {
     type: String,
     default:

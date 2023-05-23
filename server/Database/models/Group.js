@@ -1,16 +1,24 @@
-const mongoose =require("mongoose");
+const mongoose = require("mongoose");
 
 const memberSchema = {
-  user: {
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
+    required: true,
+  },
+  userName: {
+    type: String,
     required: true,
   },
   payments: [
     {
-      user: {
+      user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
+        required: true,
+      },
+      userName: {
+        type: String,
         required: true,
       },
       amount: {
@@ -38,8 +46,6 @@ const memberSchema = {
     default: 0,
   },
 };
-
-   
 
 const groupSchema = new mongoose.Schema({
   groupName: {

@@ -1,167 +1,317 @@
-const express=require("express")
-const router =express.Router();
-const Group=require("../Database/models/Group");
-const User=require("../Database/models/User");
+const express = require("express");
+const router = express.Router();
+const Group = require("../Database/models/Group");
+const User = require("../Database/models/User");
+const { isValidObjectId } = require("mongoose");
 
-
-
+//routes
+router.get("/verifyMember/:email", VerifyMember);
+router.post("/saveGroup", SaveGroup);
+router.get("/getGroups/:userId", GroupsListForUser);
+router.get("/getGroup/:group_id/:user_id", UserDetailsForAGroup);
+router.post("/group/:group_id/addMember", AddMemberInGroup);
+router.delete("/group/:group_id/deleteMember/:user_id", DeleteMember); 
+router.get("/group/:group_id/:user_id/getPaymentsofUser", PaymentsOfUser);
+router.get("/group/:id/getGroupMembers", GetGroupMembers);
+router.get("/group/:id/recentPayments", GetRecentPayments);
 // For Groups
 
-router.get("/verifyMember/:email",(req,res)=>{
-   
-    const userName=req.params.email;
-    console.log(userName); 
+async function VerifyMember(req, res) {
+  try {
+    const userName = req.params.email;
 
-    User.findOne({username:userName},(err,response)=>{
-          if(response)return res.status(201).json(response);
-    });
-    return res.status(422);
-})
+    const user = await User.findOne({ username: userName }, { _id: 1 });
 
+    if (user) {
+      return res.status(201).json(user);
+    } else {
+      return res.status(422).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
 
-router.post("/saveGroup",async(req,res)=>{
-    const {group,user}=req.body;
-    
-    console.log(group)
+async function SaveGroup(req, res) {
+  try {
+    const { group, user } = req.body;
 
-    const newGroup=new Group(group);
+    // Input validation
+    if (!group || !user) {
+      return res.status(400).json({ error: "Invalid request body" });
+    }
+
+    const newGroup = new Group(group);
     await newGroup.save();
 
-    await group.groupMembers.forEach(async(data) => {
-        await User.updateOne({_id:data.user_id},
-                             {$push:{"groups":{$each:[newGroup._id.toString()],$position:0}}});
-    });
+    const userIDs = group.groupMembers.map((data) => data.user);
 
-    const ourUser=await User.findOne({_id:user._id});
-    console.log(ourUser); 
-    if(ourUser) return res.status(201).json({id:newGroup._id,ourUser});
-    
-    return res.status(422);
-});
+    await User.updateMany(
+      { _id: { $in: userIDs } },
+      { $push: { groups: { $each: [newGroup._id.toString()], $position: 0 } } }
+    );
 
+    const ourUser = await User.findOne({ _id: user._id }, projection);
+    if (ourUser) {
+      return res.status(201).json({ id: newGroup._id, ourUser });
+    } else {
+      return res.status(422).json({ error: "Failed to retrieve user" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
 
-router.get("/getGroups/:id",async(req,res)=>{
-    const user_id=req.params.id;
-   
-    var response=[];
-    try{
-        const user = await User.findOne({_id:user_id});
-        user.groups.forEach(e=>{
-           
-              Group.findOne({_id:e},(err,group)=>{
-                     group.groupMembers.forEach(member=>{
-                         if(member.user_id===user_id){
-                                 (response.push(
-                                     {   group:{_id:group._id,groupName:group.groupName,groupImage:group.groupImage},
-                                         totAmnt:member.TotalExpense
-                                     }
-                                 ));
-                         }
-                     })
-              });
+async function GroupsListForUser(req, res) {
+  try {
+    const user_id = req.params.userId;
+    if (!isValidObjectId(user_id)) {
+      return res.status(400).json({ error: "User Id is not valid" });
+    }
+
+    const user = await User.findOne({ _id: user_id }, { groups: 1 });
+    if (!user) {
+      return res.status(422).json({ error: "Failed to retrieve user" });
+    }
+
+    let response = [];
+
+    for (const group_id of user.groups) {
+      const projection = {
+        groupName: 1,
+        groupImage: 1,
+        "groupMembers.$": {
+          user: user_id,
+          totalExpense: 1,
+        },
+      };
+
+      const group = await Group.findOne({ _id: group_id }, projection);
+      if (group && group.groupMembers.length>0) {
+        response.push({
+          group: {
+            _id: group._id,
+            groupName: group.groupName,
+            groupImage: group.groupImage,
+          },
+          totAmnt: groupMembers[0].TotalExpense,
         });
-        
+      }
+    }
 
-        setTimeout(() => {
-            return res.status(201).json(response);
-        }, 1000);
-    }
-    catch(err){
-        console.log(err);
-        return res.status(422).json(err);
-    }
-});
+    return res.status(201).json(response);
+  } catch (err) {
+    console.error(err);
+    return res.status(422).json(err);
+  }
+}
 
-router.get("/getGroup/:id/:user_id",(req,res)=>{
-    const groupID=req.params.id;
-    const uID=req.params.user_id;
-    console.log("request for group ",groupID);
-    try{
-    Group.findById(groupID,(err,group)=>{
-       
-        if(err)return res.status(422).json(err);
-        group.groupMembers.forEach((userData)=>{
-            if(userData.user_id===uID)return res.status(201).json(
-                                   {
-                                       group:{
-                                           groupName:group.groupName,
-                                           groupImage:group.groupImage,
-                                           simplifyDebts:group.simplifyDebts,
-                                           totalGroupExpense:group.totalGroupExpense
-                                       },
-                                       userData:{
-                                           TotalExpense:userData.TotalExpense,
-                                           TotalAllTimeExpense:userData.TotalAllTimeExpense,
-                                           TotalYouPaid:userData.TotalYouPaid
-                                       }
-                                   });
-        }) 
-    });
-    }
-    catch(err){
-        console.log(err);
-    }
-});
+async function UserDetailsForAGroup(req, res) {
+  const groupID = req.params.id;
+  const uID = req.params.user_id;
 
-router.post("/group/:group_id/addMember",async(req,res)=>{
-   const {user}=req.body;
-   const group = await Group.findOne({_id:req.params.group_id});
-   const member={
-       user_id:user._id,
-       user_name:user.name,         
-       expenses:[]
-   }
-   try{
-        var flag=false;
-        await group.groupMembers.forEach((data)=>{
-            if(data.user_id===user._id){
-                flag=true;
-                console.log(data.user_id);
-                return res.status(422).json({error:"Already a Group Member"});
-            }
-        });
-        if(!flag){
-            await Group.updateOne({_id:group._id},
-                            {$push:{"groupMembers":member}},
-                            );
-            await User.updateOne({_id:user._id},
-                            {$push:{"groups":req.params.group_id}},
-                            );
-            
-            return  res.status(200).json("Successfully added member");
+  try {
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group Id is not valid" });
+    }
+    if (!isValidObjectId(uID)) {
+      return res.status(400).json({ error: "User Id is not valid" });
+    }
+
+    const projection = {
+      groupName: 1,
+      groupImage: 1,
+      simplifyDebts: 1,
+      totalGroupExpense: 1,
+      "groupMembers.$": {
+        user: uID,
+        TotalExpense: 1,
+        TotalAllTimeExpense: 1,
+        TotalYouPaid: 1,
+      },
+    };
+
+    const group = await Group.findById(groupID, projection);
+    if (group && group.groupMembers.length > 0) {
+      const response = {
+        group: {
+          groupName: group.groupName,
+          groupImage: group.groupImage,
+          simplifyDebts: group.simplifyDebts,
+          totalGroupExpense: group.totalGroupExpense,
+        },
+        userData: {
+          TotalExpense: group.groupMembers[0].TotalExpense,
+          TotalAllTimeExpense: group.groupMembers[0].TotalAllTimeExpense,
+          TotalYouPaid: group.groupMembers[0].TotalYouPaid,
+        },
+      };
+      return res.status(200).json(response);
+    } else {
+      return res.status(404).json({ error: "No such Group user present" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+async function AddMemberInGroup(req, res) {
+  const { user } = req.body;
+  const groupID = req.params.group_id;
+
+  try {
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group Id is not valid" });
+    }
+    const projection = {
+        "groupMembers.$": {
+            user:user._id
         }
-   }
-   catch(err){
-       console.log(err);
-       return  res.status(422).json("Can't Add");
-   }
+    }
+    const group = await Group.findOne({ _id: groupID },projection);
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
 
-});
+    if (group.groupMembers.length>0) {
+      return res.status(422).json({ error: "Already a Group Member" });
+    }
 
-router.get("/group/:id/getExpenses",async(req,res)=>{
-    console.log('GetExpense ');
-    const group = await Group.findOne({_id:req.params.id});
-    return res.status(201).json(group.expenses);
-});
+    const newMember = {
+        user: user._id,
+        userName: user.name
+    };
 
-router.get("/group/:group_id/:user_id/getPaymentsofUser",async(req,res)=>{
-    console.log("getPaymentsofUser");
-    const group=await Group.findOne({_id:req.params.group_id});
-    const response=group.groupMembers.find((member)=>member.user_id===req.params.user_id).payments;
-    return res.status(200).json(response);
-});
+    const updateGroup = await Group.updateOne(
+      { _id: group._id },
+      { $push: { groupMembers: newMember } }
+    );
+    const updateUser = await User.updateOne(
+      { _id: user._id },
+      { $push: { groups: group._id } }
+    );
 
-router.get("/group/:id/getGroupMembers",async(req,res)=>{
-    console.log('GetGroupMembers ');
-    const group = await Group.findOne({_id:req.params.id});
-    // console.log(group.groupMembers);
-    return res.status(201).json(group.groupMembers);
-});
+    if (updateGroup.ok === 1 && updateUser.ok === 1) {
+      return res.status(200).json("Successfully added member");
+    } else {
+      return res.status(500).json({ error: "Failed to add member" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
 
-router.get("/group/:id/recentPayments",async(req,res)=>{
-    console.log('Recent Payment ');
-    const group = await Group.findOne({_id:req.params.id});
-    return res.status(201).json(group.recentPayments);
-});
+async function DeleteMember(req, res) {
+  const groupID = req.params.group_id;
+  const userID = req.params.user_id;
 
-module.exports=router;
+  try {
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group ID is not valid" });
+    }
+    if (!isValidObjectId(userID)) {
+      return res.status(400).json({ error: "User ID is not valid" });
+    }
+
+    const group = await Group.findOne({ _id: groupID });
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+
+     const updateGroup = await Group.updateOne(
+       { _id: groupID },
+       { $pull: { groupMembers: { user: userID } } }
+     );
+
+     const updateUser = await User.updateOne(
+       { _id: userID },
+       { $pull: { groups: groupID } }
+     );
+
+     if (updateGroup.ok === 1 && updateUser.ok === 1) {
+       return res.status(200).json({ message: "Member successfully deleted" });
+     } else {
+       return res.status(500).json({ error: "Failed to delete member" });
+     }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+async function PaymentsOfUser(req, res) {
+    try {
+      const groupID = req.params.group_id;
+      const userID = req.params.user_id;
+
+      if (!isValidObjectId(groupID)) {
+        return res.status(400).json({ error: "Group ID is not valid" });
+      }
+      if (!isValidObjectId(userID)) {
+        return res.status(400).json({ error: "User ID is not valid" });
+      }
+        const projection = {
+            "groupMembers.$": {
+                user: userID,
+                payments:1
+            }
+        }
+        const group = await Group.findOne({ _id: groupID },projection);
+        if (!group) {
+          return res.status(404).json({ error: "Group not found" });
+        }
+        if (!group.groupMembers.length) {
+          return res.status(404).json({ error: "Member not found" });
+        }
+        const payments = group.groupMembers[0].payments || [];
+        return res.status(200).json(payments);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+async function GetGroupMembers(req, res){
+  try {
+    const groupId = req.params.id;
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group ID is not valid" });
+    }
+    const group = await Group.findOne({ _id: groupId },{groupMembers:1});
+
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+
+    return res.status(200).json(group.groupMembers);
+  } catch (error) {
+    console.error("Error retrieving group members:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+async function GetRecentPayments(req, res) {
+  try {
+    const groupId = req.params.id;
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group ID is not valid" });
+    }
+    const group = await Group.findOne({ _id: groupId }, { recentPayments: 1 });
+
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+
+    return res.status(200).json(group.recentPayments);
+  } catch (error) {
+    console.error("Error retrieving group members:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = router;

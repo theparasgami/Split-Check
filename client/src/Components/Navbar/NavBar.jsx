@@ -20,7 +20,7 @@ const pages = [['Dashboard', ''], ['New Group', 'new-group'], ['Profile', 'profi
 const settings = [['Profile','profile'],['Create-Group','new-group'], ['Dashboard',''],['Logout','logout']];
 
 const NavBar = () => {
-
+    
   const {user}=React.useContext(AuthContext);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const currentButton = window.location.href.split('/')[3];
@@ -37,11 +37,10 @@ const NavBar = () => {
           window.location.href=("/"+link);
       }
       else{
-        sessionStorage.removeItem("user");  
+        localStorage.removeItem("user");  
         axios.post(backendUrl+"/logout")
         .then((res)=>{
-            if(res)
-            window.alert("Logout Success");
+            if (res) window.alert("Logout Success");
             window.location.href="/";
         })
         .catch((err)=>{

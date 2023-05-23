@@ -7,7 +7,7 @@ import PasswordInput from "../Constants/Inputs/PasswordInput"
 import regImg from "./register.jpg";
 import "./style.scss";
 import axios from "axios";
-import { backendUrl } from "../../env_prod";
+import env_prod, { backendUrl } from "../../env_prod";
 
 
 
@@ -28,27 +28,24 @@ function Register(props)
   
   const googleLogin = async (e) => {
     e.preventDefault();
-    const LoginUrl = "https://split-check-vhbp.vercel.app/auth/google";
-    // const LoginUrl = "http://localhost:8000/auth/google"
-
-    window.location.href = LoginUrl;
+    window.location.href = env_prod.GoogleLoginUrl;
   };
 
    
-  const PostDatas= async()=>{
+  const triggerRegister = async (e) => {
+    e.preventDefault();
     if (user.password != user.cpassword) {
       window.alert("Confirm your password.")
     }
     else {
       try {
         const res = await axios.post(backendUrl + "/register", user);
-        console.log(res);
-        // if (res) {
-        //   window.alert(res.data.message);
-        // }
-        // window.addEventListener('alertclose', () => {
-        //   window.location.reload();
-        // }); 
+        if (res) {
+          window.alert(res.data.message);
+        }
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
       catch (err) {
         console.error(err);
@@ -123,7 +120,7 @@ function Register(props)
                                  onChange={handleInputs} 
                                  placeholder="Confirm Password"
                   />   
-                  <Button onClick={PostDatas} >
+              <Button onClick={triggerRegister} >
                           <span>Register</span>
                   </Button>
               </form>

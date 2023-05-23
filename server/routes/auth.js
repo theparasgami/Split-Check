@@ -3,13 +3,12 @@ const router = express.Router();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const crypto = require("crypto");
-
+const session = require("express-session");
 const sendEmail = require("../Utils/sendEmail");
 
 const Token = require("../Database/models/Token");
 const User = require("../Database/models/User");
 
-let UserProfile = null;
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -18,6 +17,13 @@ const GOOGLE_CLIENT_ID = process.env.CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.CLIENT_SECRET;
 const callbackURL = process.env.GOOGLE_CALLBACK_URL;
 const redirectURL = process.env.FRONTEND_URL;
+//Check if user is authenticated
+
+
+//routes
+router.post("/login", Login);
+router.post("/logout", LogOut);
+router.get("/user",  SetUser);
 
 passport.use(
   new GoogleStrategy(
@@ -61,13 +67,15 @@ router.get(
   "/auth/google/split-check",
   passport.authenticate("google", {
     failureRedirect: redirectURL,
+    session: true,
   }),
   (req, res) => {
-    res.redirect(redirectURL);
+      // Redirect the user to the desired page or send a response
+      return res.redirect(redirectURL); 
   }
 );
 
-router.post("/login", function (req, res, next) {
+function Login(req, res, next) {
   passport.authenticate("local", async (err, user, info) => {
     try {
       if (err) {
@@ -111,21 +119,26 @@ router.post("/login", function (req, res, next) {
       return next(err);
     }
   })(req, res, next);
-});
+};
 
-router.post("/logout", (req, res) => {
-  UserProfile = null;
-  req.logout();
-  res.clearCookie("connect.sid");
-  res.status(200).json({ message: "User logged out successfully" });
-});
+function LogOut(req, res){
+  req.logout(); // Log out the user
+  res.clearCookie("connect.sid"); // Clear the session cookie
+  req.session.destroy(function (err) {
+    res
+      .status(200)
+      .json({ success: true, message: "User logged out successfully" });
+  });
+};
 
-router.get("/user", (req, res) => {
-  if (UserProfile) {
-    return res.json(UserProfile);
+
+
+function SetUser(req, res) {
+  if (req.isAuthenticated()) {
+    return res.json(req.user);
   } else {
-    res.status(401).send("You must be logged in to access this resource");
+    res.status(476).send("You must login first");
   }
-});
+};
 
 module.exports = router;
