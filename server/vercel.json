@@ -2,9 +2,9 @@
   "version": 2,
   "name": "split-check-vhbp",
   "builds": [
-    { "src": "app.js", "use": "@vercel/node" }
+    { "src": "app.mjs", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "app.js" }
+    { "src": "/(.*)", "dest": "app.mjs" }
   ]
 }
