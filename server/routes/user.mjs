@@ -1,13 +1,17 @@
-const express = require("express");
-const router = express.Router();
-const Token = require("../Database/models/Token");
-const crypto = require("crypto");
-const sendEmail = require("../Utils/sendEmail");
-const emailCheck = require("../Utils/checkEmail");
+import { Router } from "express";
+import Token from "../Database/models/Token.mjs";
+import crypto from "crypto";
+import sendEmail from "../Utils/sendEmail.mjs";
+import emailCheck from "../Utils/checkEmail.mjs";
+import User from "../Database/models/User.mjs";
+import { requestMoneyMessage } from "../Utils/emailMessage.mjs";
+import {
+  convertBlobToBinary,
+  convertBinaryToBlob,
+  convertImageToBinary,
+} from "../Utils/imageConversion.mjs";
 
-
-const User = require("../Database/models/User");
-const { requestMoneyMessage } = require("../Utils/emailMessage");
+const router = Router();
 
 //routs
 router.post("/register", Register);
@@ -15,7 +19,7 @@ router.post("/updateprofile", UpdateProfile);
 router.get("/users/:id/verify/:token", ValidateToken);
 router.get("/remindPayment", PaymentReminder);
 
-async function Register(req, res){
+async function Register(req, res) {
   try {
     const { name, email, phone, password } = req.body;
 
@@ -23,16 +27,17 @@ async function Register(req, res){
       return res.status(400).json({ error: "Invalid Email ID" });
     }
 
-    const existingUser = await User.findOne({ username:email }, { _id: 1 });
+    const existingUser = await User.findOne({ username: email }, { _id: 1 });
 
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
     }
-
+    const profileInBinary = await convertImageToBinary('../public/images/pic.png');
     const user = new User({
       username: email,
       phone: phone,
       name: name,
+      profilePicture: profileInBinary,
     });
     await user.setPassword(password);
     await user.save();
@@ -56,40 +61,54 @@ async function Register(req, res){
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
-};
+}
 
-async function UpdateProfile(req, res){
+async function UpdateProfile(req, res) {
   try {
-    const { name, username, phone, password, profilePicture, user_id } =
-      req.body;
-    const updateValues = { name, username, profilePicture };
-
-    if (phone !== "XXXXXXXXXX") updateValues["phone"] = phone;
-
-    await User.updateOne({ _id: user_id }, updateValues);
-
-    const user = await User.findOne({ _id: user_id }, { _id: 1 });
-    if (!user) return res.status(400).send({ message: "Invalid User id" });
-
-    if (password !== "") {
-      await user.setPassword(password);
-      await user.save();
+    let {updateValues,userID} = req.body;
+    if ( !userID||!updateValues) {
+      return res.status(400).json({ error: "Invalid request body" });
     }
+    if ('profilePicture' in updateValues) {
+      updateValues.profilePicture = await convertBlobToBinary(updateValues.profilePicture);
+    }
+    let newPassword=null;
+    if ("password" in updateValues) {
+      newPassword = updateValues.password;
+      delete updateValues.password;
+    }
+    await User.updateOne({ _id: userID }, updateValues);
+
+    const user1 = await User.findOne({ _id: userID });
+    if (!user1) return res.status(400).send({ message: "Invalid User id" });
+
+    if (newPassword) {
+      await user1.setPassword(newPassword);
+      await user1.save();
+    }
+    const profilePicture = await convertBinaryToBlob(user1.profilePicture);
+    const user = {
+      _id: user1._id,
+      username: user1.username,
+      phone: user1.phone,
+      name: user1.name,
+      profilePicture: profilePicture,
+    };
 
     return res.status(200).json(user);
   } catch (err) {
     console.error(err);
     return res.status(422).json(err);
   }
-};
+}
 
-async function ValidateToken(req, res){
+async function ValidateToken(req, res) {
   try {
-    const user = await User.findOne({_id:req.params.id}, { _id: 1 });
+    const user = await User.findOne({ _id: req.params.id }, { _id: 1 });
     if (!user) return res.status(400).send({ message: "Invalid link" });
-  
+
     const token = await Token.findOne({
-      user_id: (user._id),
+      user_id: user._id,
       token: req.params.token,
     });
     if (!token) return res.status(400).send({ message: "Invalid link" });
@@ -97,14 +116,14 @@ async function ValidateToken(req, res){
     await User.updateOne({ _id: user._id }, { verified: true });
     await token.remove();
 
-    return res.status(200).json("Email verified successfully");
+    res.redirect(process.env.FRONTEND_URL);
   } catch (error) {
     console.error(error);
     return res.status(500).josn("Internal Server Error");
   }
-};
+}
 
-async function PaymentReminder(req, res){
+async function PaymentReminder(req, res) {
   try {
     const projection = {
       username: 1,
@@ -132,6 +151,6 @@ async function PaymentReminder(req, res){
     console.error(err);
     return res.status(500).json("Internal Server error");
   }
-};
+}
 
-module.exports = router;
+export default router;

@@ -6,13 +6,13 @@ const ImageUpload=(props)=>{
     const handleUploadChange=(e)=>{
             document.querySelector(".button_outer").classList.add("file_uploading");
             setTimeout(async() => {
-                document.querySelector(".button_outer").classList.add("file_uploaded");
+                // document.querySelector(".button_outer").classList.add("file_uploaded");
                 {props.imageChange(e)};
-            }, 2000);
+            }, 1000);
             setTimeout(()=>{
                 document.querySelector(".button_outer").classList.remove("file_uploaded");
                 document.querySelector(".button_outer").classList.remove("file_uploading");
-            },3000);
+            },2000);
             
     }
 

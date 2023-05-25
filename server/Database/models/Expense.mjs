@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Group = require("./Group");
-const User = require("./User");
+import mongoose from "mongoose";
+import Group from "./Group.mjs";
+import User from "./User.mjs";
 
 const expenseSchema = new mongoose.Schema({
   groupId: {
@@ -40,4 +40,4 @@ const expenseSchema = new mongoose.Schema({
 
 const Expense = mongoose.model("Expense", expenseSchema);
 
-module.exports = Expense;
+export default Expense;

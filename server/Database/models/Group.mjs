@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const memberSchema = {
-  user_id: {
+  userID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -10,23 +10,26 @@ const memberSchema = {
     type: String,
     required: true,
   },
-  payments: [
-    {
-      user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+  payments: {
+    type: [
+      {
+        userID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        userName: {
+          type: String,
+          required: true,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
       },
-      userName: {
-        type: String,
-        required: true,
-      },
-      amount: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+    ],
+    default: [],
+  },
   totalExpense: {
     //It will include all the payments which are splitted currently
     type: Number,
@@ -59,8 +62,7 @@ const groupSchema = new mongoose.Schema({
     default: [],
   },
   groupImage: {
-    type: String,
-    default: "https://wc.wallpaperuse.com/wallp/77-777508_s.jpg",
+    type: Buffer
   },
   simplifyDebts: {
     type: Boolean,
@@ -70,30 +72,32 @@ const groupSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  recentPayments: [
-    {
-      date: {
-        type: Date,
-        required: true,
+  recentPayments: {
+    type: [
+      {
+        date: {
+          type: Date,
+          required: true,
+        },
+        payerName: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        receiverName: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
       },
-      payerName: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      receiverName: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      amount: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+    ],
+    default: [],
+  },
 });
 
 const Group = mongoose.model("Group", groupSchema);
-
-module.exports = Group;
+export default Group;

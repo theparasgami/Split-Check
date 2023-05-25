@@ -1,13 +1,21 @@
-const express = require("express");
-const router = express.Router();
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const crypto = require("crypto");
-const session = require("express-session");
-const sendEmail = require("../Utils/sendEmail");
+import { Router } from "express";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import crypto from "crypto";
+import sendEmail from "../Utils/sendEmail.mjs";
 
-const Token = require("../Database/models/Token");
-const User = require("../Database/models/User");
+import User from "../Database/models/User.mjs";
+import Token from "../Database/models/Token.mjs";
+import { convertBinaryToBlob, convertBlobToBinary } from "../Utils/imageConversion.mjs";
+
+const router = Router();
+
+
+
+//routes
+router.post("/login", Login);
+router.post("/logout", LogOut);
+router.get("/user", SetUser);
 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
@@ -18,12 +26,6 @@ const GOOGLE_CLIENT_SECRET = process.env.CLIENT_SECRET;
 const callbackURL = process.env.GOOGLE_CALLBACK_URL;
 const redirectURL = process.env.FRONTEND_URL;
 //Check if user is authenticated
-
-
-//routes
-router.post("/login", Login);
-router.post("/logout", LogOut);
-router.get("/user",  SetUser);
 
 passport.use(
   new GoogleStrategy(
@@ -38,17 +40,17 @@ passport.use(
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
+          const profilePictureBlob = await convertBlobToBinary(profile.photos[0].value);
           user = new User({
             username: profile.emails[0].value,
             name: profile.displayName,
             googleId: profile.id,
-            profilePicture: profile.photos[0].value,
+            profilePicture: profilePictureBlob,
             verified: true,
           });
 
           await user.save();
         }
-
         return done(null, user);
       } catch (err) {
         console.error("Error in finding or saving user:", err);
@@ -67,16 +69,15 @@ router.get(
   "/auth/google/split-check",
   passport.authenticate("google", {
     failureRedirect: redirectURL,
-    session: true,
   }),
   (req, res) => {
-      // Redirect the user to the desired page or send a response
-      return res.redirect(redirectURL); 
+    // Redirect the user to the desired page or send a response
+    return res.redirect(redirectURL);
   }
 );
 
 function Login(req, res, next) {
-  passport.authenticate("local", async (err, user, info) => {
+  passport.authenticate("local",async (err, user, info) => {
     try {
       if (err) {
         return next(err);
@@ -107,11 +108,19 @@ function Login(req, res, next) {
             "An email has been sent to your account. Please verify your email.",
         });
       } else {
-        req.logIn(user, (err) => {
+        req.logIn(user,async (err) => {
           if (err) {
             return next(err);
           }
-          return res.status(200).json({ message: "Login Success", user });
+          const profilePicture = await convertBinaryToBlob(user.profilePicture);
+          const newUser = {
+            _id: user._id,
+            username: user.username,
+            phone: user.phone,
+            name: user.name,
+            profilePicture: profilePicture,
+          };
+          return res.status(200).json({ message: "Login Success", user:newUser });
         });
       }
     } catch (err) {
@@ -119,26 +128,29 @@ function Login(req, res, next) {
       return next(err);
     }
   })(req, res, next);
-};
+}
 
-async function LogOut(req, res){
+async function LogOut(req, res) {
   await req.logout(); // Log out the user
+  await req.session.destroy(function (err) {});
   await res.clearCookie("connect.sid"); // Clear the session cookie
-  req.session.destroy(function (err) {
-    res
-      .status(200)
-      .json({ success: true, message: "User logged out successfully" });
-  });
-};
-
-
+  res.status(200).json({ success: true, message: "User logged out successfully" });
+}
 
 async function SetUser(req, res) {
   if (req.isAuthenticated()) {
-    return res.json(req.user);
+    const profilePicture = await convertBinaryToBlob(req.user.profilePicture);
+    const user = {
+      _id: req.user._id,
+      username: req.user.username,
+      phone: req.user.phone,
+      name: req.user.name,
+      profilePicture: profilePicture,
+    };
+    return res.json(user);
   } else {
     res.status(476).send("You must login first");
   }
-};
+}
 
-module.exports = router;
+export default  router;

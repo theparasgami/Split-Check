@@ -38,10 +38,11 @@ const NavBar = () => {
       }
       else{
           try {
-             localStorage.removeItem("user");
-              await axios.post(backendUrl + "/logout").then(() => {
-                      window.alert("Logout Success");
-                      window.location.href="/";
+              await axios.post(backendUrl + "/logout",{},{withCredentials:true}).then((res) => {
+                  localStorage.removeItem("user");
+                  dispatch({ type: "SUCCESS", payload: null });
+                  window.alert("Logout Success");
+                  window.location.reload();
               })
           }
           catch (err) {

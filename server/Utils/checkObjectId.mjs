@@ -3,4 +3,4 @@ function isValidObjectId(objectId) {
   return objectIdRegex.test(objectId);
 }
 
-module.exports = isValidObjectId;
+export default isValidObjectId;

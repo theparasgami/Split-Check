@@ -15,4 +15,4 @@ Best regards,
 Your Split-Check Team`;
 };
 
-module.exports = { requestMoneyMessage };
+export { requestMoneyMessage };

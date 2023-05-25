@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
-const Group = require("../Database/models/Group");
-const User = require("../Database/models/User");
-const Expense = require("../Database/models/Expense");
+import Group from "../Database/models/Group.mjs";
+import Expense from "../Database/models/Expense.mjs";
+import isValidObjectId  from "../Utils/checkObjectId.mjs";
 
 router.post("/group/:group_id/addExpense", AddExpense);
 router.get("/group/:group_id/distributeAmount", DistributeAmount);
@@ -140,9 +140,8 @@ async function AddExpense(req, res) {
     // By using Promise.all, all the updates can be executed concurrently, improving performance.
 
     //Now  we only have to arrange the payments which is done in //distributeAmount
-    
+
     return res.status(201).json("Added Succesfully");
-      
   } catch (err) {
     console.error(err);
     return res.status(500).json("Internal Server Error");
@@ -150,23 +149,22 @@ async function AddExpense(req, res) {
 }
 
 async function DistributeAmount(req, res) {
-    const groupId = req.params.group_id;
-    if (!isValidObjectId(groupId)) {
-      return res.status(400).json({ error: "Group ID is not valid" });
-    }
-    
-    const group = await Group.findOne(
-      { _id: groupId },
-      { _id: 1, groupMembers:1 }
-    );
-    if (!group) {
-      return res.status(422).json("No such group");
-    }
+  const groupId = req.params.group_id;
+  if (!isValidObjectId(groupId)) {
+    return res.status(400).json({ error: "Group ID is not valid" });
+  }
 
+  const group = await Group.findOne(
+    { _id: groupId },
+    { _id: 1, groupMembers: 1 }
+  );
+  if (!group) {
+    return res.status(422).json("No such group");
+  }
 
   while (true) {
-      let flag = false;
-      
+    let flag = false;
+
     // if someone who is currently getting but overall he has to pay then we will decrease from his payments first
     for (let index = 0; index < group.groupMembers.length; index++) {
       const moneyOwner = group.groupMembers[index];
@@ -490,7 +488,7 @@ async function RemoveZeroPayments(req, res) {
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
     }
-      
+
     await Group.updateOne(
       { _id: groupID },
       {
@@ -507,73 +505,73 @@ async function RemoveZeroPayments(req, res) {
 }
 
 async function SettleDebts(req, res) {
-    try {
-        const { payer, receiver, amount } = req.body;
-        
-        const groupID = req.params.id;
-        if (!isValidObjectId(groupID)) {
-          return res.status(400).json({ error: "Group ID is not valid" });
-        }
-        if (payer.user_id === receiver.user_id) {
-          return res.status(400).json("Payer and Receiver must not be same");
-        }
-        if (amount === 0) {
-          return res.status(400).json("Enter a positive amount");
-        }
+  try {
+    const { payer, receiver, amount } = req.body;
 
-        await Group.updateOne(
-          { _id: groupID },
-          {
-            $inc: {
-              "groupMembers.$[groupMembers].TotalExpense":
-                -parseFloat(amount).toFixed(2),
-              "groupMembers.$[groupMembers].payments.$[payments].amount":
-                parseFloat(amount).toFixed(2),
-            },
-            $push: {
-              recentPayments: {
-                $each: [
-                  {
-                    date: new Date(),
-                    payerName: payer.user_name,
-                    receiverName: receiver.user_name,
-                    amount: amount,
-                  },
-                ],
-                $position: 0,
-              },
-            },
-          },
-          {
-            arrayFilters: [
-              { "groupMembers.user_id": payer.user_id },
-              { "payments.user_id": receiver.user_id },
-            ],
-          }
-        );
-        await Group.updateOne(
-          { _id: group_id },
-          {
-            $inc: {
-              "groupMembers.$[groupMembers].TotalExpense":
-                parseFloat(amount).toFixed(2),
-              "groupMembers.$[groupMembers].payments.$[payments].amount":
-                -parseFloat(amount).toFixed(2),
-            },
-          },
-          {
-            arrayFilters: [
-              { "groupMembers.user_id": receiver.user_id },
-              { "payments.user_id": payer.user_id },
-            ],
-          }
-        );
-
-        return res.status(200).json("Settlement successful");
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json("Internal Server Error");
+    const groupID = req.params.id;
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group ID is not valid" });
     }
+    if (payer.user_id === receiver.user_id) {
+      return res.status(400).json("Payer and Receiver must not be same");
+    }
+    if (amount === 0) {
+      return res.status(400).json("Enter a positive amount");
+    }
+
+    await Group.updateOne(
+      { _id: groupID },
+      {
+        $inc: {
+          "groupMembers.$[groupMembers].TotalExpense":
+            -parseFloat(amount).toFixed(2),
+          "groupMembers.$[groupMembers].payments.$[payments].amount":
+            parseFloat(amount).toFixed(2),
+        },
+        $push: {
+          recentPayments: {
+            $each: [
+              {
+                date: new Date(),
+                payerName: payer.user_name,
+                receiverName: receiver.user_name,
+                amount: amount,
+              },
+            ],
+            $position: 0,
+          },
+        },
+      },
+      {
+        arrayFilters: [
+          { "groupMembers.user_id": payer.user_id },
+          { "payments.user_id": receiver.user_id },
+        ],
+      }
+    );
+    await Group.updateOne(
+      { _id: group_id },
+      {
+        $inc: {
+          "groupMembers.$[groupMembers].TotalExpense":
+            parseFloat(amount).toFixed(2),
+          "groupMembers.$[groupMembers].payments.$[payments].amount":
+            -parseFloat(amount).toFixed(2),
+        },
+      },
+      {
+        arrayFilters: [
+          { "groupMembers.user_id": receiver.user_id },
+          { "payments.user_id": payer.user_id },
+        ],
+      }
+    );
+
+    return res.status(200).json("Settlement successful");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json("Internal Server Error");
+  }
 }
 
 async function updateGroupAndMembers(
@@ -608,4 +606,4 @@ async function updateGroupAndMembers(
   );
 }
 
-module.exports = router;
+export default router;

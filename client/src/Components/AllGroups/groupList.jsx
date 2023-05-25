@@ -49,18 +49,18 @@ const AllGroup = () => {
 
                         {groups.map((gdata, index) => (
                             <div key={index}>
-                                <ListItem alignItems="flex-start">
+                                <ListItem>
 
-                                    <ListItemAvatar>
-                                        <Link to={"../group/" + gdata.group._id}>
+                                    <ListItemAvatar >
+                                        <Link to={"../group/" + gdata._id}>
                                             <Avatar alt="GG"
-                                                src={gdata.group.groupImage}
+                                                src={gdata.groupImage}
                                             />
                                         </Link>
                                     </ListItemAvatar>
 
                                     <ListItemText
-                                        primary={gdata.group.groupName}
+                                        primary={gdata.groupName}
                                         secondary={
                                             <React.Fragment>
                                                 <div className="oweDatail">

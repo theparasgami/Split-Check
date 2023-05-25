@@ -34,8 +34,11 @@ function Register(props)
    
   const triggerRegister = async (e) => {
     e.preventDefault();
-    if (user.password != user.cpassword) {
+    if (user.password !== user.cpassword) {
       window.alert("Confirm your password.")
+    }
+    else if (user.password && user.password.length < 5) {
+      window.alert("Password should be of atleast 5 length");
     }
     else {
       try {

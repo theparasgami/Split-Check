@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
-const Group = require("./Group"); // Import the GroupSchema
+import mongoose from "mongoose";
+import passportLocalMongoose from "passport-local-mongoose";
+import Group from "./Group.mjs"; // Import the GroupSchema
+
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -22,9 +23,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   profilePicture: {
-    type: String,
-    default:
-      "https://www.unigreet.com/wp-content/uploads/2020/04/Smiley-816x1024.jpg",
+    type: Buffer
   },
   groups: [
     {
@@ -46,4 +45,4 @@ userSchema.plugin(passportLocalMongoose);
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

@@ -13,7 +13,7 @@ function Logout(){
       e.preventDefault();
       try {
         localStorage.removeItem("user");
-        await axios.post(backendUrl + "/logout").then(() => {
+        await axios.post(backendUrl + "/logout",{}, { withCredentials: true }).then(() => {
           window.alert("Logout Success");
           window.location.href = "/";
         })

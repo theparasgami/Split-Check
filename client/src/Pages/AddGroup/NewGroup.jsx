@@ -10,9 +10,11 @@ import NewMember from "../../Components/NewMember/NewMember";
 import axios from "axios";
 import NavBar from "../../Components/Navbar/NavBar";
 import { backendUrl } from "../../env_prod";
-
+import groupImage from "./profile.jpg"
+import getImageInBinary from "../../Components/Constants/getImageInBinary";
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
 
+const blobDefaultImage = new Blob([groupImage], { type: groupImage.type });
 
 
 function NewGroup(){
@@ -20,18 +22,15 @@ function NewGroup(){
   const { user, dispatch }= useContext(AuthContext);
 
   // For Adding  a Member
-  const [member, setMember] = useState([]);
-  
+  const [member, setMember] = useState([{ userd: user, named: user.username }]);
+
      //check the input of member name
   const memberInputChange = (e, ind) => {
-    setMember((prevMember) =>
-      prevMember.map((data, index) =>
-        index === ind ? { ...data, named: e.target.value } : data
-      )
-    );
+    setMember((prevMember) => prevMember.map((data, index) => (index === ind ? { ...data, named: e.target.value } :data )));
   };
+  
   const removeMember = (ind) => {
-    setMember((prevMember) => prevMember.filter((data, index) => index !== ind));
+    setMember((prevMember) => prevMember.filter((_, index) => index !== ind));
   };
 
   const addMember = () => {
@@ -41,16 +40,17 @@ function NewGroup(){
   const updateMember=(ind,val)=>{ 
     var ourCurrMember={userd:val,named:val.username};
 
-    // check if user is already present in member before adding it to member
-    const foundedMember=(member.filter((dataa,index)=>(
-                               index!==ind&&JSON.stringify(ourCurrMember) === JSON.stringify(dataa)
-                               ))
-                        ).length;
-    foundedMember&&(ourCurrMember={userd:null,named:""});
-    foundedMember&&window.alert("Member Already Present");
-
-    setMember(member.map((data,index)=>(ind===index)?ourCurrMember:(data)));
-    
+    const isMemberAlreadyPresent = member.some(
+      (data, index) => index !== ind && JSON.stringify(ourCurrMember) === JSON.stringify(data)
+    );
+    if (isMemberAlreadyPresent) {
+      ourCurrMember.userd = null;
+      ourCurrMember.named = "";
+      window.alert("Member Already Present");
+    }
+    setMember((prevMember) =>
+      prevMember.map((data, index) => (index === ind ? ourCurrMember : data))
+    );
   }
  
   /*----------------------------------------------------------------*/
@@ -66,7 +66,7 @@ function NewGroup(){
 
   
   const [group,setGroupData]=useState({
-      image:"https://wc.wallpaperuse.com/wallp/77-777508_s.jpg",
+     groupImage: getImageInBinary((blobDefaultImage)),
       groupName:"",
       simplifyDebts:false,
       groupMembers:[]
@@ -75,8 +75,6 @@ function NewGroup(){
   //if a entry is there for a groupName then the hidden attribute will be removed 
   useEffect(() => {
     group.groupName.length && document.querySelector(".hiddenDiv").removeAttribute("hidden");
-    setMember((prev)=>[{userd:user,named:user}]);
-    console.log(user.username,member);
   },[group.groupName]);// eslint-disable-line react-hooks/exhaustive-deps
  
   
@@ -86,51 +84,50 @@ function NewGroup(){
   }
   
   // if save button is pressed
-  const handleSave=()=>{
-        setGroupData({...group,
-                       ["simplifyDebts"]:simpledebts,
-                       ["groupMembers"]:(member.filter((dataa)=>(dataa.userd))
-                                               .map((data)=>({user_id:data.userd._id,
-                                                              user_name:data.userd.name,
-                                                             })
-                                                    )
-                                        )
-                     });
-        console.log(group); 
-  }
-  
-  //Now if save button is pressed then post request {useEffect worl because 
-  //if save button is pressed the group member should update}
-  
-  
-  useEffect(()=>{
-      if(group.groupMembers.length){
-               axios.post(backendUrl+"/saveGroup",{group,user})
-               .then((res)=>{
-                   console.log("User:",res.data.ourUser);
-                   window.alert("Group Saved");
-                   dispatch({type:"SUCCESS",payload:res.data.ourUser});
-                   window.location.href="/group/"+res.data.id;
-               })
-               .catch((err)=>{
-                    window.alert(err);
-                    window.location.reload();
-               })
-      }
-  },[group.groupMembers])// eslint-disable-line react-hooks/exhaustive-deps
-  
+  const handleSave = () => {
+    const updatedGroupMembers = member
+      .filter((data) => data.userd)
+      .map((data) => ({
+        userID: data.userd._id,
+        userName: data.userd.username,
+      }));
+
+    const updatedGroup = {
+      ...group,
+      simplifyDebts: simpledebts,
+      groupMembers: updatedGroupMembers,
+    };
+
+    setGroupData(updatedGroup);
+
+    if (updatedGroup.groupMembers.length) {
+      axios
+        .post(backendUrl + "/saveGroup", { group: updatedGroup, user })
+        .then((res) => {
+          window.alert("Group Saved");
+          window.location.href = "/group/" + res.data.id;
+        })
+        .catch((err) => {
+          window.alert(err);
+          window.location.reload();
+        });
+    }
+  };
 /*----------------------------------------------------------------*/
  
   //Image Setting
 
-  const [imgSrc,setImgSrc]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTUZ6_CLreN4emDjtpBDgKw-HPTDxvQBBVKQ&usqp=CAU");
-  const handleImageChange=(event)=>{
-    setImgSrc(()=>URL.createObjectURL(event.target.files[0]));
+  const [imgSrc, setImgSrc] = useState(groupImage);
+  
+  const handleImageChange = async (event) => {
+    setImgSrc(() => URL.createObjectURL(event.target.files[0]));
+    const imageInBlob = await getImageInBinary(event.target.files[0]);
+    setGroupData(() => ({ ...group, groupImage:imageInBlob}));
   }
 
-  useEffect(()=>{
-    setGroupData(()=>({...group,image:imgSrc}));
-  },[imgSrc])// eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(()=>{
+  //   setGroupData(() => ({ ...group, groupImage:imgSrc}));
+  // },[imgSrc])// eslint-disable-line react-hooks/exhaustive-deps
   
   /*----------------------------------------------------------------*/
 
@@ -163,7 +160,7 @@ function NewGroup(){
               <hr className="hr"/>
               
               <div className="hiddenDiv"> 
-                <Collapse in={group.groupName.length} 
+                <Collapse in={group.groupName.length>0} 
                           timeout={1000}
                 >             
                  
@@ -171,7 +168,8 @@ function NewGroup(){
                      Group Members
                   </p>
                   {
-                    member.map((data,index)=> < NewMember 
+                    member.map((data,index)=> < NewMember
+                                                 key={index} 
                                                  userr={data.userd} 
                                                  username={data.named} 
                                                  onmemberInput={memberInputChange}
@@ -186,7 +184,7 @@ function NewGroup(){
                   </button>
                   <hr className="hr" />
                 
-                  <p className="simpleHead" >
+                  <div className="simpleHead debts" >
                      Simplify Group Debts 
                      <Switch checked={simpledebts} 
                              onChange={handleDebts}
@@ -196,7 +194,7 @@ function NewGroup(){
                             title={toolTipText} >
                             <HelpIcon className="HelpIcon" />
                      </BootstrapTooltip>
-                  </p>
+                  </div>
                   <hr className="hr" />
 
                 </Collapse>

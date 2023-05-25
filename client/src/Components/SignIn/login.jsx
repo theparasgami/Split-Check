@@ -57,7 +57,7 @@ function Login(props)
   const PostData=async (e)=>{
       
       e.preventDefault();
-      axios.post(backendUrl+"/login",{username:user.email,password:user.password})
+    axios.post(backendUrl + "/login",{username:user.email,password:user.password})
         .then((res)=>{
            if(res){
              window.alert('Login Success')

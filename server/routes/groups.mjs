@@ -1,8 +1,16 @@
-const express = require("express");
-const router = express.Router();
-const Group = require("../Database/models/Group");
-const User = require("../Database/models/User");
-const { isValidObjectId } = require("mongoose");
+import { Router } from "express";
+import Group from "../Database/models/Group.mjs";
+import User from "../Database/models/User.mjs";
+import isValidObjectId  from "../Utils/checkObjectId.mjs";
+import emailCheck from "../Utils/checkEmail.mjs";
+import {
+  convertBlobToBinary,
+  convertBinaryToBlob,
+} from "../Utils/imageConversion.mjs";
+import mongoose from "mongoose";
+const { ObjectId } = mongoose.Types;
+
+const router = Router();
 
 //routes
 router.get("/verifyMember/:email", VerifyMember);
@@ -10,7 +18,7 @@ router.post("/saveGroup", SaveGroup);
 router.get("/getGroups/:userId", GroupsListForUser);
 router.get("/getGroup/:group_id/:user_id", UserDetailsForAGroup);
 router.post("/group/:group_id/addMember", AddMemberInGroup);
-router.delete("/group/:group_id/deleteMember/:user_id", DeleteMember); 
+router.delete("/group/:group_id/deleteMember/:user_id", DeleteMember);
 router.get("/group/:group_id/:user_id/getPaymentsofUser", PaymentsOfUser);
 router.get("/group/:id/getGroupMembers", GetGroupMembers);
 router.get("/group/:id/recentPayments", GetRecentPayments);
@@ -19,10 +27,22 @@ router.get("/group/:id/recentPayments", GetRecentPayments);
 async function VerifyMember(req, res) {
   try {
     const userName = req.params.email;
+    if (!emailCheck(userName)) {
+      return res.status(400).json({ error: "Invalid request body" });
+    }
+    const user1= await User.findOne(
+      { username: userName },
+      { _id: 1, username: 1, profilePicture: 1 }
+    );
 
-    const user = await User.findOne({ username: userName }, { _id: 1 });
-
-    if (user) {
+    if (user1) {
+      const blobProifle = await convertBinaryToBlob(user1.profilePicture);
+      const user = {
+        _id: user1._id,
+        username: user1.username,
+        profilePicture:blobProifle
+      }
+     
       return res.status(201).json(user);
     } else {
       return res.status(422).json({ error: "User not found" });
@@ -35,26 +55,24 @@ async function VerifyMember(req, res) {
 
 async function SaveGroup(req, res) {
   try {
-    const { group, user } = req.body;
+    let { group, user } = req.body;
 
     // Input validation
     if (!group || !user) {
       return res.status(400).json({ error: "Invalid request body" });
     }
-
+    group.groupImage =await convertBlobToBinary(group.groupImage);
     const newGroup = new Group(group);
     await newGroup.save();
 
-    const userIDs = group.groupMembers.map((data) => data.user);
+    const userIDs = newGroup.groupMembers.map((data) => data.userID);
 
     await User.updateMany(
       { _id: { $in: userIDs } },
-      { $push: { groups: { $each: [newGroup._id.toString()], $position: 0 } } }
+      { $push: { groups: { $each: [newGroup._id], $position: 0 } } }
     );
-
-    const ourUser = await User.findOne({ _id: user._id }, projection);
     if (ourUser) {
-      return res.status(201).json({ id: newGroup._id, ourUser });
+      return res.status(201).json({ id: newGroup._id });
     } else {
       return res.status(422).json({ error: "Failed to retrieve user" });
     }
@@ -66,12 +84,12 @@ async function SaveGroup(req, res) {
 
 async function GroupsListForUser(req, res) {
   try {
-    const user_id = req.params.userId;
-    if (!isValidObjectId(user_id)) {
+    const userID = req.params.userId;
+    if (!isValidObjectId(userID)) {
       return res.status(400).json({ error: "User Id is not valid" });
     }
 
-    const user = await User.findOne({ _id: user_id }, { groups: 1 });
+    const user = await User.findOne({ _id: userID }, { groups: 1 });
     if (!user) {
       return res.status(422).json({ error: "Failed to retrieve user" });
     }
@@ -82,29 +100,25 @@ async function GroupsListForUser(req, res) {
       const projection = {
         groupName: 1,
         groupImage: 1,
-        "groupMembers.$": {
-          user: user_id,
-          totalExpense: 1,
-        },
+        groupMembers: 1,
       };
-
       const group = await Group.findOne({ _id: group_id }, projection);
-      if (group && group.groupMembers.length>0) {
+      const member = group.groupMembers.filter(
+        (member) => String(member.userID) === String(ObjectId(userID))
+      );
+      if (group) {
         response.push({
-          group: {
-            _id: group._id,
-            groupName: group.groupName,
-            groupImage: group.groupImage,
-          },
-          totAmnt: groupMembers[0].TotalExpense,
+          _id: group._id,
+          groupName: group.groupName,
+          groupImage: await convertBinaryToBlob(group.groupImage),
+          totAmnt: member[0].totalExpense,
         });
       }
     }
-
     return res.status(201).json(response);
   } catch (err) {
     console.error(err);
-    return res.status(422).json(err);
+    return res.status(500).json(err);
   }
 }
 
@@ -166,23 +180,26 @@ async function AddMemberInGroup(req, res) {
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group Id is not valid" });
     }
-    const projection = {
-        "groupMembers.$": {
-            user:user._id
-        }
-    }
-    const group = await Group.findOne({ _id: groupID },projection);
+    const filter = {
+      _id: groupID,
+      groupMembers: {
+        $elemMatch: {
+          userID: user._id,
+        },
+      },
+    };
+    const group = await Group.findOne(filter);
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
     }
 
-    if (group.groupMembers.length>0) {
+    if (group.groupMembers.length > 0) {
       return res.status(422).json({ error: "Already a Group Member" });
     }
 
     const newMember = {
-        user: user._id,
-        userName: user.name
+      user: user._id,
+      userName: user.name,
     };
 
     const updateGroup = await Group.updateOne(
@@ -222,67 +239,66 @@ async function DeleteMember(req, res) {
       return res.status(404).json({ error: "Group not found" });
     }
 
-     const updateGroup = await Group.updateOne(
-       { _id: groupID },
-       { $pull: { groupMembers: { user: userID } } }
-     );
+    const updateGroup = await Group.updateOne(
+      { _id: groupID },
+      { $pull: { groupMembers: { user: userID } } }
+    );
 
-     const updateUser = await User.updateOne(
-       { _id: userID },
-       { $pull: { groups: groupID } }
-     );
+    const updateUser = await User.updateOne(
+      { _id: userID },
+      { $pull: { groups: groupID } }
+    );
 
-     if (updateGroup.ok === 1 && updateUser.ok === 1) {
-       return res.status(200).json({ message: "Member successfully deleted" });
-     } else {
-       return res.status(500).json({ error: "Failed to delete member" });
-     }
+    if (updateGroup.ok === 1 && updateUser.ok === 1) {
+      return res.status(200).json({ message: "Member successfully deleted" });
+    } else {
+      return res.status(500).json({ error: "Failed to delete member" });
+    }
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
   }
-};
-
+}
 
 async function PaymentsOfUser(req, res) {
-    try {
-      const groupID = req.params.group_id;
-      const userID = req.params.user_id;
+  try {
+    const groupID = req.params.group_id;
+    const userID = req.params.user_id;
 
-      if (!isValidObjectId(groupID)) {
-        return res.status(400).json({ error: "Group ID is not valid" });
-      }
-      if (!isValidObjectId(userID)) {
-        return res.status(400).json({ error: "User ID is not valid" });
-      }
-        const projection = {
-            "groupMembers.$": {
-                user: userID,
-                payments:1
-            }
-        }
-        const group = await Group.findOne({ _id: groupID },projection);
-        if (!group) {
-          return res.status(404).json({ error: "Group not found" });
-        }
-        if (!group.groupMembers.length) {
-          return res.status(404).json({ error: "Member not found" });
-        }
-        const payments = group.groupMembers[0].payments || [];
-        return res.status(200).json(payments);
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal server error" });
+    if (!isValidObjectId(groupID)) {
+      return res.status(400).json({ error: "Group ID is not valid" });
     }
-};
+    if (!isValidObjectId(userID)) {
+      return res.status(400).json({ error: "User ID is not valid" });
+    }
+    const projection = {
+      "groupMembers.$": {
+        user: userID,
+        payments: 1,
+      },
+    };
+    const group = await Group.findOne({ _id: groupID }, projection);
+    if (!group) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+    if (!group.groupMembers.length) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+    const payments = group.groupMembers[0].payments || [];
+    return res.status(200).json(payments);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
 
-async function GetGroupMembers(req, res){
+async function GetGroupMembers(req, res) {
   try {
     const groupId = req.params.id;
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
     }
-    const group = await Group.findOne({ _id: groupId },{groupMembers:1});
+    const group = await Group.findOne({ _id: groupId }, { groupMembers: 1 });
 
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
@@ -293,7 +309,7 @@ async function GetGroupMembers(req, res){
     console.error("Error retrieving group members:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-};
+}
 
 async function GetRecentPayments(req, res) {
   try {
@@ -312,6 +328,5 @@ async function GetRecentPayments(req, res) {
     console.error("Error retrieving group members:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-};
-
-module.exports = router;
+}
+export default router;
