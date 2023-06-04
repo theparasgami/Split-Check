@@ -84,11 +84,11 @@ function Login(req, res, next) {
       } else if (!user) {
         return res.status(422).json({ error: "Wrong Credentials" });
       } else if (!user.verified) {
-        let token = await Token.findOne({ user_id: user._id });
+        let token = await Token.findOne({ userID: user._id });
 
         if (!token) {
           const newToken = new Token({
-            user_id: user._id,
+            userID: user._id,
             token: crypto.randomBytes(32).toString("hex"),
           });
 
@@ -119,6 +119,7 @@ function Login(req, res, next) {
             phone: user.phone,
             name: user.name,
             profilePicture: profilePicture,
+            googleId:user.googleId
           };
           return res.status(200).json({ message: "Login Success", user:newUser });
         });
@@ -149,7 +150,7 @@ async function SetUser(req, res) {
     };
     return res.json(user);
   } else {
-    res.status(476).send("You must login first");
+    res.status(476).json({error:"You must login first"});
   }
 }
 

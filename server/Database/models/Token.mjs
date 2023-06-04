@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import User from "./User.mjs";
 
 const tokenSchema = new mongoose.Schema({
-  user_id: {
+  userID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: User,
     required: true,

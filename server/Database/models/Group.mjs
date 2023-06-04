@@ -14,8 +14,7 @@ const memberSchema = {
     type: [
       {
         userID: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+          type: String,
           required: true,
         },
         userName: {
@@ -25,6 +24,7 @@ const memberSchema = {
         amount: {
           type: Number,
           required: true,
+          default:0
         },
       },
     ],
@@ -93,6 +93,10 @@ const groupSchema = new mongoose.Schema({
           type: Number,
           required: true,
         },
+        whoAdded:{
+          type: String,
+          trim: true
+        }
       },
     ],
     default: [],

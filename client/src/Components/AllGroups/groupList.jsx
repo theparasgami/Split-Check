@@ -62,12 +62,10 @@ const AllGroup = () => {
                                     <ListItemText
                                         primary={gdata.groupName}
                                         secondary={
-                                            <React.Fragment>
-                                                <div className="oweDatail">
+                                            <React.Fragment >
                                                     {gdata.totAmnt === 0 && "All Settle up"}
                                                     {gdata.totAmnt < 0 && "You Owe Money from others"}
                                                     {gdata.totAmnt > 0 && "Yow Should pay"}
-                                                </div>
                                             </React.Fragment>
                                         }
                                     />

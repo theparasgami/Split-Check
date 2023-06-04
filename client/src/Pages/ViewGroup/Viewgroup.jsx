@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import {  Tab, Tabs, Paper, Collapse } from '@mui/material';
+import { Tab, Tabs, Paper, Collapse } from '@mui/material';
 
-import BootstrapTooltip from "../../Components/Constants/ToolTip/tooltip"
 import { Button } from "../../Components/Constants/Buttons/Button";
 import NavBar from "../../Components/Navbar/NavBar";
 import "./viewGroup.scss";
@@ -11,15 +10,13 @@ import { AuthContext } from "../../Context/AuthContext";
 
 import RandomSettleUp from "../../Components/Group-View/PopUps/RandomSettleUp"
 import AddExpense from "../../Components/Group-View/PopUps/AddExpense/AddExpense"
-import AddMember from "../../Components/Group-View/PopUps/AddMember"
+import ManageMember from "../../Components/Group-View/PopUps/ManageMember"
 import AllExpenses from "../../Components/Group-View/AllExpenses";
 import AllPayments from "../../Components/Group-View/AllPayments";
 import AllBalances from "../../Components/Group-View/AllBalances";
 import RecentPayment from "../../Components/Group-View/RecentPayment";
 import { backendUrl } from "../../env_prod";
-
-const toolTipText = "This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
-
+import PopupStats from "../../Components/Group-View/PopUps/PopupStats";
 
 
 const ViewGroup = () => {
@@ -30,52 +27,62 @@ const ViewGroup = () => {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        axios.get(backendUrl + "/group/" + params.id + "/distributeAmount")
-            .then((response) => {
-                axios.get(backendUrl + "/group/" + params.id + "/removeZeroPayments")
-                    .then(() => {
-                        axios.get(backendUrl + "/getGroup/" + params.id + "/" + user._id)
-                            .then((res) => {
-                                setData({ group: res.data.group, user: res.data.userData });
-                                if (!res.data.group) {
-                                    window.location.href = "/";
-                                }
-                            })
-                            .catch((err) => {
-                                window.alert("No Such Group");
-                                window.location.href = "/";
-                            });
-                    });
-            })
-            .catch((err) => {
+        const fetchData = async () => {
+            try {
+                const res = await axios.get(`${backendUrl}/getGroup/${params.id}/${user._id}`);
+                const { group, userData } = res.data;
+                setData({ group, user: userData });
+                if (!group) {
+                    window.location.href = "/";
+                }
+            } catch (error) {
+                console.error(error.response.data.error)
+                window.alert(error.response.data.error);
                 window.location.href = "/";
-            });
-
-
+            }
+        };
+        fetchData();
     }, [])// eslint-disable-line react-hooks/exhaustive-deps
 
 
 
     const [addExpense, setAddExpense] = useState([]);
     const [settleUp, setSettleUp] = useState([]);
-    const [addMember, setAddMember] = useState(false);
-
-    const getGroupMembers = () => {
-
-        axios.get(backendUrl + "/group/" + params.id + "/getGroupMembers")
-            .then((res) => setAddExpense(res.data));
-
+    const [manageMember, setManageMember] = useState(false);
+    const [statsPopup, setStatsPopup] = useState(false);
+   
+    const getGroupMembers = async () => {
+        try {
+            const groupMembers = await axios.get(backendUrl + "/group/" + params.id + "/getGroupMembers");
+            setAddExpense(groupMembers.data.map((member) => ({
+                userID: member.userID,
+                userName: member.userName
+            })
+            ));
+        }
+        catch (err) {
+            console.error(err);
+            if (err.response) {
+                window.alert(err.response.data.error);
+            }
+        }
     }
-    const getGroupMembersForSettleUp = () => {
 
-        axios.get(backendUrl + "/group/" + params.id + "/getGroupMembers")
-            .then((res) => {
-                setSettleUp(res.data.map((member) => ({
-                    user_id: member.user_id,
-                    user_name: member.user_name
-                })
-                ));
-            });
+    const getGroupMembersForSettleUp = async () => {
+        try {
+            const groupMembers = await axios.get(backendUrl + "/group/" + params.id + "/getGroupMembers");
+            setSettleUp(groupMembers.data.map((member) => ({
+                userID: member.userID,
+                userName: member.userName
+            })
+            ));
+        }
+        catch (err) {
+            console.error(err);
+            if (err.response) {
+                window.alert(err.response.data.error);
+            }
+        }
     }
 
     //For Tabs
@@ -90,7 +97,7 @@ const ViewGroup = () => {
             {
                 Data.group &&
                 (<div className="ViewGroup">
-                    
+
                     <section className="detailsSection">
                         <div className="infoContainer">
                             <div className="groupInfo">
@@ -117,14 +124,6 @@ const ViewGroup = () => {
                             {Data.user.TotalExpense === 0 && "You are settled up"}
                             {Data.user.TotalExpense < 0 && "You Get ₹ " + Math.abs(Data.user.TotalExpense).toFixed(2)}
                             {Data.user.TotalExpense > 0 && "Yow Shoud Pay ₹ " + Math.abs(Data.user.TotalExpense).toFixed(2)}
-                            {/* {userAndGroupspend && (<>
-                                <div className="totalgSpend">Total Group Spendings</div>
-                                <div className="gamount"> ₹ {Data.group.totalGroupExpense.toFixed(2)}</div>
-                                <div className="totalgSpend">Total Your Spendings</div>
-                                <div className="gamount"> ₹ {Data.user.TotalAllTimeExpense.toFixed(2)}</div>
-                                <div className="totalgSpend">Total You Paid</div>
-                                <div className="gamount"> ₹ {Data.user.TotalYouPaid.toFixed(2)}</div>
-                            </>)} */}
                         </div>
                         <div className="buttons">
                             <Button onClick={getGroupMembersForSettleUp}>
@@ -135,16 +134,16 @@ const ViewGroup = () => {
                                 Add Expense
                             </Button>
                             <br />
-                            <Button onClick={() => setAddMember(true)}>
+                            <Button onClick={() => setManageMember(true)}>
                                 Manage Member
                             </Button>
-                            <Button onClick={() => setAddMember(true)}>
+                            <Button onClick={() => setStatsPopup(true)}>
                                 Stats
                             </Button>
                         </div>
                     </section>
                     <div className="separator"></div>
-                    <div className="ListofLinks">
+                    {/* <div className="ListofLinks">
                         <Tabs value={currList}
                             onChange={handlelinksChange}
                             aria-label="Tabs"
@@ -157,20 +156,20 @@ const ViewGroup = () => {
                             <Tab className="Tab" label="Balances" value="Balances" />
                             <Tab className="Tab" label="Recent Payments" value="Recent" />
                         </Tabs>
-                    </div>
-                    <section className="RequiredList">
+                    </div> */}
+                    {/* <section className="RequiredList">
                         <Paper elevation={2} className="paper">
                             <Collapse in={currList === "Expenses"} timeout={2000}>
                                 {currList === "Expenses" &&
                                     <AllExpenses group_id={params.id}
-                                        user_id={user._id}
+                                        userID={user._id}
                                     />
                                 }
                             </Collapse>
                             <Collapse in={currList === "yourPayments"} timeout={2000}>
                                 {currList === "yourPayments" &&
                                     <AllPayments group_id={params.id}
-                                        ourUser={{ user_id: user._id, user_name: user.name }}
+                                        ourUser={{ userID: user._id, userName: user.name }}
                                     />
                                 }
                             </Collapse>
@@ -185,12 +184,12 @@ const ViewGroup = () => {
                             </Collapse>
                         </Paper>
                     </section>
-
+                            */}
                     {addExpense.length !== 0 && (
                         <AddExpense
                             cross={() => setAddExpense([])}
                             group_id={params.id}
-                            user_name={user.name}
+                            userName={user.name}
                             members={addExpense}
                         />
                     )}
@@ -201,10 +200,17 @@ const ViewGroup = () => {
                             members={settleUp}
                         />
                     )}
-                    {addMember && (
-                        <AddMember
-                            cross={() => setAddMember(false)}
+                    {manageMember && (
+                        <ManageMember
+                            cross={() => setManageMember(false)}
                             group_id={params.id}
+                        />
+                    )}
+                    {statsPopup && (
+                        <PopupStats
+                            cross={() => setStatsPopup(false)}
+                            details={Data.user}
+                            totalGroupExpense={Data.group.totalGroupExpense}
                         />
                     )}
 

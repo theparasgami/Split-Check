@@ -1,18 +1,17 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState ,useEffect, useContext} from "react";
 import axios from "axios";
 import CancelIcon from '@mui/icons-material/Cancel';
 import {Button}  from "../../Constants/Buttons/Button";
 import "./popups.scss";
+import { AuthContext } from "../../../Context/AuthContext"
 import ImgSrc from "./Split-Check.png"
 import {LottieAnimation2} from "../../Constants/Lotties/lottie"
 import { backendUrl } from "../../../env_prod";
 
 const PopupSettleUp=(props)=>{
-
+    const user = useContext(AuthContext);
     const [loading,setLoading]=useState(false);
-    const [payment,setPayment]=useState({
-                             payer:props.payer,
-                             receiver:props.receiver,
+    const [payment,setPayment]=useState({payer:props.payer,receiver:props.receiver,
                              amount:Math.abs(!props.payer.amount?props.receiver.amount:props.payer.amount).toFixed(2)
                           });
 
@@ -26,17 +25,20 @@ const PopupSettleUp=(props)=>{
         setPayment({...payment,amount:e.target.value});
     }
     
-    const PostData=()=>{
-          console.log(props.group_id);
-          axios.post(backendUrl+"/group/"+props.group_id+"/settleDebt",payment)
-               .then((res)=>{
-                   axios.get(backendUrl+"/group/"+props.group_id+"/removeZeroPayments");
-                   window.alert(res.data);
-                   window.location.reload();
-               })
-               .catch((err)=>{
-                   console.error(err);
-               })
+    const PostData = async () => {
+        try {
+            const res = await axios.post(backendUrl + "/group/" + props.group_id + "/settleDebt",
+                {
+                    payment,
+                    adder: user.name
+                });
+            window.alert(res.data);
+            window.location.reload();
+        }
+        catch (err) {
+            console.error(err);
+            window.alert(err.response.data.error);
+        }
     }
 
 
@@ -52,17 +54,16 @@ const PopupSettleUp=(props)=>{
               </div>
   
               <div className="payer">
-                  <img src={ImgSrc} 
-                       alt="Hi" 
-                       className="payerImg"
-                  />  
                   <div className="payerName">
-                        {props.payer.user_name}
+                        {props.payer.userName}
                   </div>
               </div>
               paid
               <div className="howMuch">
-                   ₹
+                    <img src={ImgSrc}
+                        alt="Hi"
+                        className="payerImg"
+                    />  
                   <input type="number" 
                          placeholder={0.00}
                          value={payment.amount}
@@ -71,7 +72,7 @@ const PopupSettleUp=(props)=>{
               </div>
               to
               <div className="receiver">
-                   {props.receiver.user_name}
+                   {props.receiver.userName}
               </div>
               <Button bgColor="green" 
                       className="submitBtn"

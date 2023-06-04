@@ -33,10 +33,10 @@ const AllExpenses=(props)=>{
     expenses.forEach((expense)=>{
         let amount1=0,amount2=0;
           expense.paidBy.forEach((payer)=>{
-              if(payer.id===props.user_id)amount1+=parseFloat(payer.amount);
+              if(payer.id===props.userID)amount1+=parseFloat(payer.amount);
           })
           expense.paidTo.forEach((taker)=>{
-              if(taker.id===props.user_id)amount2+=parseFloat(taker.amount);
+              if(taker.id===props.userID)amount2+=parseFloat(taker.amount);
           })
         youPaid.push(amount1.toFixed(2));
         youLent.push(amount2.toFixed(2));

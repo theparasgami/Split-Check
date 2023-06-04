@@ -15,4 +15,6 @@ async function getImageInBinary(file) {
   return res;
 }
 
-export default getImageInBinary;
+
+
+export { getImageInBinary };

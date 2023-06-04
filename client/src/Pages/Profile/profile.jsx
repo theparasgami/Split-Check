@@ -8,7 +8,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import "./profile.scss"
 import { Button } from "../../Components/Constants/Buttons/Button"
 import { backendUrl } from "../../env_prod";
-import getImageInBinary from "../../Components/Constants/getImageInBinary";
+import {getImageInBinary} from "../../Components/Constants/getImageInBinary";
 
 
 var cnfPswrdD = { display: "none" };
@@ -89,7 +89,7 @@ const Profile = () => {
     }
     catch (err) {
       console.error(err);
-      window.alert(err.response.data);
+      window.alert(err.response.data.error);
     }
 
   }

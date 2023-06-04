@@ -6,9 +6,8 @@ import emailCheck from "../Utils/checkEmail.mjs";
 import {
   convertBlobToBinary,
   convertBinaryToBlob,
+  convertImageToBinary,
 } from "../Utils/imageConversion.mjs";
-import mongoose from "mongoose";
-const { ObjectId } = mongoose.Types;
 
 const router = Router();
 
@@ -16,12 +15,12 @@ const router = Router();
 router.get("/verifyMember/:email", VerifyMember);
 router.post("/saveGroup", SaveGroup);
 router.get("/getGroups/:userId", GroupsListForUser);
-router.get("/getGroup/:group_id/:user_id", UserDetailsForAGroup);
+router.get("/getGroup/:group_id/:userID", DetailsForAGroup);
 router.post("/group/:group_id/addMember", AddMemberInGroup);
-router.delete("/group/:group_id/deleteMember/:user_id", DeleteMember);
-router.get("/group/:group_id/:user_id/getPaymentsofUser", PaymentsOfUser);
-router.get("/group/:id/getGroupMembers", GetGroupMembers);
-router.get("/group/:id/recentPayments", GetRecentPayments);
+router.delete("/group/:group_id/deleteMember/:userID", DeleteMember);
+router.get("/group/:group_id/:userID/getPaymentsofUser", PaymentsOfUser);
+router.get("/group/:group_id/getGroupMembers", GetGroupMembers);
+router.get("/group/:group_id/recentPayments", GetRecentPayments);
 // For Groups
 
 async function VerifyMember(req, res) {
@@ -32,13 +31,14 @@ async function VerifyMember(req, res) {
     }
     const user1= await User.findOne(
       { username: userName },
-      { _id: 1, username: 1, profilePicture: 1 }
+      { _id: 1, username: 1,name:1, profilePicture: 1 }
     );
 
     if (user1) {
       const blobProifle = await convertBinaryToBlob(user1.profilePicture);
       const user = {
         _id: user1._id,
+        name:user1.name,
         username: user1.username,
         profilePicture:blobProifle
       }
@@ -61,7 +61,11 @@ async function SaveGroup(req, res) {
     if (!group || !user) {
       return res.status(400).json({ error: "Invalid request body" });
     }
-    group.groupImage =await convertBlobToBinary(group.groupImage);
+    if (!group.groupImage) {
+      group.groupImage = await convertImageToBinary("../public/images/group.jpg");
+    } else {
+      group.groupImage =await convertBlobToBinary(group.groupImage);
+    }
     const newGroup = new Group(group);
     await newGroup.save();
 
@@ -71,11 +75,7 @@ async function SaveGroup(req, res) {
       { _id: { $in: userIDs } },
       { $push: { groups: { $each: [newGroup._id], $position: 0 } } }
     );
-    if (ourUser) {
-      return res.status(201).json({ id: newGroup._id });
-    } else {
-      return res.status(422).json({ error: "Failed to retrieve user" });
-    }
+    return res.status(201).json({ id: newGroup._id });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
@@ -100,18 +100,15 @@ async function GroupsListForUser(req, res) {
       const projection = {
         groupName: 1,
         groupImage: 1,
-        groupMembers: 1,
-      };
-      const group = await Group.findOne({ _id: group_id }, projection);
-      const member = group.groupMembers.filter(
-        (member) => String(member.userID) === String(ObjectId(userID))
-      );
-      if (group) {
+        'groupMembers.$': 1,
+      }; 
+      const group = await Group.findOne({ _id: group_id, 'groupMembers.userID': userID }, projection);
+      if (group && group.groupMembers.length > 0) {
         response.push({
           _id: group._id,
           groupName: group.groupName,
           groupImage: await convertBinaryToBlob(group.groupImage),
-          totAmnt: member[0].totalExpense,
+          totAmnt: group.groupMembers[0].totalExpense,
         });
       }
     }
@@ -122,9 +119,9 @@ async function GroupsListForUser(req, res) {
   }
 }
 
-async function UserDetailsForAGroup(req, res) {
-  const groupID = req.params.id;
-  const uID = req.params.user_id;
+async function DetailsForAGroup(req, res) {
+  const groupID = req.params.group_id;
+  const uID = req.params.userID;
 
   try {
     if (!isValidObjectId(groupID)) {
@@ -139,29 +136,25 @@ async function UserDetailsForAGroup(req, res) {
       groupImage: 1,
       simplifyDebts: 1,
       totalGroupExpense: 1,
-      "groupMembers.$": {
-        user: uID,
-        TotalExpense: 1,
-        TotalAllTimeExpense: 1,
-        TotalYouPaid: 1,
-      },
+      'groupMembers.$':1,
     };
-
-    const group = await Group.findById(groupID, projection);
+    
+    const group = await Group.findOne({ _id: groupID, 'groupMembers.userID': uID }, projection);
     if (group && group.groupMembers.length > 0) {
+      const groupImage = await convertBinaryToBlob(group.groupImage);
       const response = {
         group: {
           groupName: group.groupName,
-          groupImage: group.groupImage,
+          groupImage: groupImage,
           simplifyDebts: group.simplifyDebts,
           totalGroupExpense: group.totalGroupExpense,
         },
         userData: {
-          TotalExpense: group.groupMembers[0].TotalExpense,
-          TotalAllTimeExpense: group.groupMembers[0].TotalAllTimeExpense,
-          TotalYouPaid: group.groupMembers[0].TotalYouPaid,
+          TotalExpense: group.groupMembers[0].totalExpense,
+          TotalAllTimeExpense: group.groupMembers[0].totalAllTimeExpense,
+          TotalYouPaid: group.groupMembers[0].totalYouPaid,
         },
-      };
+      };  
       return res.status(200).json(response);
     } else {
       return res.status(404).json({ error: "No such Group user present" });
@@ -180,42 +173,29 @@ async function AddMemberInGroup(req, res) {
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group Id is not valid" });
     }
-    const filter = {
-      _id: groupID,
-      groupMembers: {
-        $elemMatch: {
-          userID: user._id,
-        },
-      },
-    };
-    const group = await Group.findOne(filter);
-    if (!group) {
-      return res.status(404).json({ error: "Group not found" });
-    }
-
-    if (group.groupMembers.length > 0) {
+   
+    const group = await Group.findOne(
+      { _id: groupID, "groupMembers.userID": user._id },
+      {"groupMembers.userID": 1}
+    );
+    if (group) {
       return res.status(422).json({ error: "Already a Group Member" });
     }
-
     const newMember = {
-      user: user._id,
+      userID: user._id,
       userName: user.name,
     };
 
     const updateGroup = await Group.updateOne(
-      { _id: group._id },
+      { _id: groupID },
       { $push: { groupMembers: newMember } }
     );
     const updateUser = await User.updateOne(
       { _id: user._id },
-      { $push: { groups: group._id } }
+      { $push: { groups: groupID } }
     );
 
-    if (updateGroup.ok === 1 && updateUser.ok === 1) {
-      return res.status(200).json("Successfully added member");
-    } else {
-      return res.status(500).json({ error: "Failed to add member" });
-    }
+    return res.status(200).json("Successfully added member");
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal server error" });
@@ -224,7 +204,7 @@ async function AddMemberInGroup(req, res) {
 
 async function DeleteMember(req, res) {
   const groupID = req.params.group_id;
-  const userID = req.params.user_id;
+  const userID = req.params.userID;
 
   try {
     if (!isValidObjectId(groupID)) {
@@ -234,26 +214,24 @@ async function DeleteMember(req, res) {
       return res.status(400).json({ error: "User ID is not valid" });
     }
 
-    const group = await Group.findOne({ _id: groupID });
+    const group = await Group.findOne(
+      { _id: groupID, "groupMembers.userID": userID },
+      { _id: 1 }
+    );
     if (!group) {
-      return res.status(404).json({ error: "Group not found" });
+      return res.status(404).json({ error: "Member not found" });
     }
-
-    const updateGroup = await Group.updateOne(
+   
+    await Group.updateOne(  
       { _id: groupID },
       { $pull: { groupMembers: { user: userID } } }
     );
-
-    const updateUser = await User.updateOne(
+    await User.updateOne(
       { _id: userID },
       { $pull: { groups: groupID } }
     );
 
-    if (updateGroup.ok === 1 && updateUser.ok === 1) {
-      return res.status(200).json({ message: "Member successfully deleted" });
-    } else {
-      return res.status(500).json({ error: "Failed to delete member" });
-    }
+    return res.status(200).json({ message: "Member successfully deleted" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
@@ -263,7 +241,7 @@ async function DeleteMember(req, res) {
 async function PaymentsOfUser(req, res) {
   try {
     const groupID = req.params.group_id;
-    const userID = req.params.user_id;
+    const userID = req.params.userID;
 
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
@@ -294,11 +272,14 @@ async function PaymentsOfUser(req, res) {
 
 async function GetGroupMembers(req, res) {
   try {
-    const groupId = req.params.id;
+    const groupID = req.params.group_id;
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
     }
-    const group = await Group.findOne({ _id: groupId }, { groupMembers: 1 });
+    const group = await Group.findOne(
+      { _id: groupID },
+      { "groupMembers.userID": 1, "groupMembers.userName": 1 }
+    );
 
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
@@ -313,11 +294,11 @@ async function GetGroupMembers(req, res) {
 
 async function GetRecentPayments(req, res) {
   try {
-    const groupId = req.params.id;
+    const groupID = req.params.group_id;
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
     }
-    const group = await Group.findOne({ _id: groupId }, { recentPayments: 1 });
+    const group = await Group.findOne({ _id: groupID }, { recentPayments: 1 });
 
     if (!group) {
       return res.status(404).json({ error: "Group not found" });

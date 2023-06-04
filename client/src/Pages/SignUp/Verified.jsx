@@ -9,7 +9,7 @@ const Verified=()=>{
     const params=useParams();
     useEffect(() => {
        axios.get(backendUrl+"/users/"+params.id+"/verify/"+params.token)
-             .catch((err)=>{window.alert(err.response.data);window.close()}); 
+           .catch((err) => { window.alert(err.response.data.error);window.close()}); 
        setTimeout(()=>window.close(),10000);
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

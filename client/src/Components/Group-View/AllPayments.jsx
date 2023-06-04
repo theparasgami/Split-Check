@@ -18,7 +18,7 @@ const AllPayments=(props)=>{
 
        useEffect(() => {
             setLoading(true);
-            axios.get(backendUrl+"/group/"+props.group_id+"/"+props.ourUser.user_id+"/getPaymentsofUser")
+            axios.get(backendUrl+"/group/"+props.group_id+"/"+props.ourUser.userID+"/getPaymentsofUser")
                  .then((res)=>{
                      setPayments(res.data);
                 }
@@ -31,12 +31,12 @@ const AllPayments=(props)=>{
       
        const RemindUser=(e)=>{
            axios.get(backendUrl+"/remindPayment",{ params: {
-                                            payer_id:e.payer.user_id,
-                                            receiver_id:e.receiver.user_id,
+                                            payer_id:e.payer.userID,
+                                            receiver_id:e.receiver.userID,
                                             amount:e.amount}
                                         })
                 .then((res)=>window.alert(res.data))
-                .catch((err)=>window.alert(err.response.data));
+                .catch((err)=>window.alert(err.response.data.error));
        }
       
        return (
@@ -57,17 +57,17 @@ const AllPayments=(props)=>{
                             </ListItemAvatar>
                             <ListItemText className="statement">
                                {payment.amount>0?<> 
-                                  {payment.user_name} owes
+                                  {payment.userName} owes
                                   <span className="amount"> 
                                      &nbsp;  ₹ {payment.amount.toFixed(2)} &nbsp;
                                   </span>
-                                  to {props.ourUser.user_name} 
+                                  to {props.ourUser.userName} 
                                 </>:<>
-                                  {props.ourUser.user_name} owes
+                                  {props.ourUser.userName} owes
                                   <span className="amount"> 
                                      &nbsp;  ₹ {-payment.amount.toFixed(2)} &nbsp;
                                   </span>
-                                  to {payment.user_name}
+                                  to {payment.userName}
                                 </>} 
                             </ListItemText>
                             <Mbutton onClick={()=>(setPopUpPayment(()=>payment.amount>0?

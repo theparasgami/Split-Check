@@ -32,12 +32,12 @@ const AllBalances=(props)=>{
 
     const RemindUser=(e)=>{
         axios.get(backendUrl+"/remindPayment",{ params: {
-                                         payer_id:e.payer.user_id,
-                                         receiver_id:e.receiver.user_id,
+                                         payer_id:e.payer.userID,
+                                         receiver_id:e.receiver.userID,
                                          amount:e.amount}
                                      })
              .then((res)=>window.alert(res.data))
-             .catch((err)=>window.alert(err.response.data));
+             .catch((err)=>window.alert(err.response.data.error));
     }
     
     return(
@@ -56,18 +56,18 @@ const AllBalances=(props)=>{
                          >
                             <Typography >
                                  {(member.TotalExpense>(-0.99)&&member.TotalExpense<0.01)&&(<>
-                                      <b>{member.user_name}</b>
+                                      <b>{member.userName}</b>
                                       &nbsp;is all settled Up.
                                  </>)}
                                  {(member.TotalExpense<=(-0.99))&&(<>
-                                         <b>{member.user_name}</b> 
+                                         <b>{member.userName}</b> 
                                          &nbsp;gets back 
                                          <b className="priceg0">
                                              &nbsp; ₹ {-member.TotalExpense.toFixed(2)} &nbsp;
                                          </b> in Total.
                                  </>)}
                                  {(member.TotalExpense>=0.01)&&(<>
-                                             <b>{member.user_name}</b> owes
+                                             <b>{member.userName}</b> owes
                                              <b className="pricel0">
                                                  &nbsp; ₹ {member.TotalExpense.toFixed(2)} &nbsp;
                                              </b> in Total.
@@ -80,11 +80,11 @@ const AllBalances=(props)=>{
                                   <Typography className="typography">
                                    
                                       {payment.amount<0&&(<>
-                                         <b>{member.user_name}</b>
+                                         <b>{member.userName}</b>
                                          &nbsp; owes ₹&nbsp; 
                                          {Math.abs(payment.amount).toFixed(2)} 
                                          &nbsp; to &nbsp; 
-                                         <b>{payment.user_name}</b>
+                                         <b>{payment.userName}</b>
                                          <Mbutton className="SettleUpBtn" 
                                                onClick={()=>setPopupSettleUp({payer:member,receiver:payment})} >
                                                Settle Up
@@ -97,11 +97,11 @@ const AllBalances=(props)=>{
                                           </Mbutton>
                                       </>)} 
                                       {payment.amount>0&&(<>
-                                         <b>{payment.user_name}</b>
+                                         <b>{payment.userName}</b>
                                          &nbsp; owes ₹ &nbsp; 
                                          {Math.abs(payment.amount).toFixed(2)}
                                          &nbsp;to &nbsp; 
-                                         <b> {member.user_name}</b>
+                                         <b> {member.userName}</b>
                                          <Mbutton className="SettleUpBtn" 
                                                onClick={()=>setPopupSettleUp({payer:payment,receiver:member})} >
                                                Settle Up

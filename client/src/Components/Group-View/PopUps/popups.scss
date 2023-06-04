@@ -1,17 +1,17 @@
-.popup-box{
+.popup-box {
     position: fixed;
     background: #00000050;
     width: 100%;
     height: 100vh;
     font-family: 'Baloo Bhaijaan 2', cursive;
     z-index: 10;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
 
-    .box{
-        background: #0b2741;//#1C1F59;
+    .box {
+        background: #3C486B; //#1C1F59;
         z-index: 200;
-        position:relative;
+        position: relative;
         width: 30%;
         margin: 0 auto;
         min-height: 45vh;
@@ -21,251 +21,322 @@
         top: 50%;
         transform: translateY(-50%);
 
-    }    
-    .close-icon{
+    }
+
+    .close-icon {
         cursor: pointer;
-        position:fixed;
+        position: fixed;
         width: 35px;
         height: 35px;
         color: white;
     }
 }
-.popupTransaction{
-    .box{
+
+.popupTransaction {
+    .box {
         width: 25%;
-       
-        .close-icon{
+
+        .close-icon {
             right: 0;
         }
-        .head{
+
+        .head {
             font-size: 1.5rem;
             text-align: center;
             letter-spacing: 1.3px;
             font-weight: 600;
             color: #ebe7ee;
-            margin:1rem 0 0 0;
+            margin: 1rem 0 0 0;
         }
-        .amount{
+
+        .amount {
             font-size: 2rem;
             text-align: center;
             font-weight: 600;
             color: #ebe7ee;
         }
-        .description{
+
+        .description {
             text-align: center;
             font-size: 1.2rem;
             color: rgb(165, 163, 163);
         }
-        .payers,.allSplitting{
-             word-spacing: 10px;
-             text-align: center;
-             margin-top: 1rem;
-             color: #edf1f7;
-             font-size: 1.3rem;
+
+        .payers,
+        .allSplitting {
+            word-spacing: 10px;
+            text-align: center;
+            margin-top: 1rem;
+            color: #edf1f7;
+            font-size: 1.3rem;
         }
-        .allSplitting{
-            margin-bottom:1rem;
+
+        .allSplitting {
+            margin-bottom: 1rem;
         }
-        hr{
+
+        hr {
             opacity: 0.8;
             margin: 1rem 5rem;
         }
     }
 }
-.popupSettleUp{
-    .box{
+
+.popupSettleUp {
+    .box {
         text-align: center;
         width: 25%;
         color: rgb(165, 163, 163);
-        .close-icon{
-           right: 0;
+
+        .close-icon {
+            right: 0;
         }
-        .head{
+
+        .head {
             font-size: 1.5rem;
             letter-spacing: 4px;
             text-align: center;
             font-weight: 600;
             color: #ebe7ee;
-            margin:2rem 0 0 0;
+            margin: 2rem 0 0 0;
         }
-        .payer{
+
+        .payer {
             display: flex;
             justify-content: center;
             padding: 20px 0 0 0;
-            .payerImg{
-                border-radius: 50%;
-                width: 4rem;
-                height: 4rem;
-            }
-            .payerName{
+
+            
+            .payerName {
                 letter-spacing: 2px;
                 font-size: 1.7rem;
                 padding: 10px;
                 color: #D9E4F3;
             }
         }
-        .howMuch{
+        
+        .splitImg {
+            border-radius: 50%;
+            width: 4rem;
+            height: 4rem;
+        }
+        .howMuch {
             color: #edf1f7;
             font-size: 2rem;
             padding: 10px;
-            .InputMoney{
-                margin-left:10px ;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .InputMoney {
+                margin-left: 10px;
                 border: 1px solid orange;
                 color: whitesmoke;
                 font-size: 2rem;
-                background:none;
+                background: none;
                 height: 3.5rem;
                 padding: 20px;
-                width:7rem;
+                width: 7rem;
             }
+
             .InputMoney::-webkit-outer-spin-button,
             .InputMoney::-webkit-inner-spin-button {
-              -webkit-appearance: none;
-               margin: 0;
+                -webkit-appearance: none;
+                margin: 0;
             }
         }
-        .receiver{
-            margin-top:10px;
+
+        .receiver {
+            margin-top: 10px;
             font-size: 1.7rem;
             color: #ebe7ee;
             letter-spacing: 2px;
         }
-        .submitBtn{margin-bottom: 10px;}
+
+        .submitBtn {
+            margin-bottom: 10px;
+        }
     }
 }
 
-.popupAddExpense{
+.popupStats {
+    .box {
+        text-align: center;
+        width: 25%;
+        color: rgb(255, 254, 254);
 
-    .box{
+        .close-icon {
+            right: 0;
+        }
+
+        .head {
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 2rem 0;
+        }
+        .statsHead{
+            font-size: 1.2rem;
+        }
+        .gamount{
+            font-size: 2rem;
+        }
+    }
+}
+
+.popupAddExpense {
+
+    .box {
         min-height: 45vh;
         max-height: 60vh;
         color: rgb(165, 163, 163);
         font-size: 1.2rem;
         text-align: center;
-        .close-icon{
-            left:0;
+
+        .close-icon {
+            left: 0;
         }
-        .close-icon:hover{
+
+        .close-icon:hover {
             width: 37px;
             height: 37px;
         }
-        .save-icon{
+
+        .save-icon {
             cursor: pointer;
-            position:fixed;
+            position: fixed;
             width: 35px;
             height: 35px;
             color: white;
             right: 1px;
         }
-        .save-icon:hover{
+
+        .save-icon:hover {
             width: 37px;
             height: 37px;
         }
-        .head{
+
+        .head {
             font-size: 1.5rem;
             letter-spacing: 4px;
             text-align: center;
             font-weight: 600;
             color: #ebe7ee;
-            margin:2rem 0 0 0;
+            margin: 2rem 0 0 0;
         }
-        .description{
+
+        .description {
             margin: 2rem 0 0 0;
             display: flex;
             justify-content: center;
-            .billIcon{
+
+            .billIcon {
                 background-color: #2b4062;
                 width: 50px;
-                height:50px;
-                border:1px solid white;
+                height: 50px;
+                border: 1px solid white;
                 color: white;
             }
-            .inputDescr{
-               background: none;
-               border: none;
-               width: 15rem;
-               border-bottom: 2px solid rgb(82, 226, 82);
-               margin:0 0 0 20px ;
-               font-size:1.5rem;
-               color: white;
-               outline: none;
-               height: 3rem;
+
+            .inputDescr {
+                background: none;
+                border: none;
+                width: 15rem;
+                border-bottom: 2px solid rgb(82, 226, 82);
+                margin: 0 0 0 20px;
+                font-size: 1.5rem;
+                color: white;
+                outline: none;
+                height: 3rem;
             }
-            .inputDescr::placeholder{
+
+            .inputDescr::placeholder {
                 color: #DAE5F3;
                 font-size: 1rem;
             }
+
             .inputDescr::-webkit-outer-spin-button,
             .inputDescr::-webkit-inner-spin-button {
-             -webkit-appearance: none;
-              margin: 0;
-            } 
+                -webkit-appearance: none;
+                margin: 0;
+            }
         }
-        .payment{
+
+        .payment {
             display: flex;
             justify-content: center;
             margin-top: 2rem;
             color: whitesmoke;
-            .text{
+
+            .text {
                 margin-top: 7px;
             }
-            .accords{
+
+            .accords {
                 margin: 0.5rem 1.5rem;
                 height: 2rem;
                 min-width: 4rem;
                 max-width: 7rem;
-                padding:0 5px;
+                padding: 0 5px;
                 border-radius: 10%;
                 color: black;
                 cursor: pointer;
-                background-color:rgb(255, 255, 255);
+                background-color: rgb(255, 255, 255);
 
             }
         }
-        .AddBtn{
+
+        .AddBtn {
             margin: 0 0 10px 0;
             background-color: #4c9536;
         }
     }
 }
-.popupAddMember{
 
-    .box{
+.popupAddMember {
+
+    .box {
         width: 30rem;
         color: rgb(165, 163, 163);
         font-size: 1.2rem;
         text-align: center;
 
-        .close-icon{
-            left:0;
+        .close-icon {
+            left: 0;
         }
-        .close-icon:hover{
+
+        .close-icon:hover {
             width: 37px;
             height: 37px;
         }
-        .save-icon{
+
+        .save-icon {
             cursor: pointer;
-            position:fixed;
+            position: fixed;
             width: 35px;
             height: 35px;
             color: white;
             right: 1px;
-            
+
         }
-        .save-icon:hover{
+
+        .save-icon:hover {
             width: 37px;
             height: 37px;
         }
-        .head{
+
+        .head {
             font-size: 1.5rem;
             text-align: center;
             font-weight: 600;
             color: #ebe7ee;
-            margin:4rem 0 0 0;
+            margin: 2rem 0 0 0;
             letter-spacing: 1.6px;
         }
 
-        .emailAddress{
+        .emailAddress {
             height: 3rem;
             width: 20rem;
             margin: 2rem;
@@ -274,141 +345,166 @@
             padding: 10px;
             text-align: center;
         }
-        .emailAddress::placeholder{
+
+        .emailAddress::placeholder {
             font-size: 1rem;
         }
-        
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+
     }
 }
 
-.popupHowMuchPaid{
+.popupHowMuchPaid {
     background: #000000c5;
     z-index: 1000;
-    
-    .box{
+
+    .box {
         width: 20%;
         background: white;
         min-height: auto;
-        .close-icon{
+
+        .close-icon {
             color: black;
-            top:1px
+            top: 1px
         }
-        .save-icon{
+
+        .save-icon {
             cursor: pointer;
-            position:fixed;
+            position: fixed;
             width: 35px;
             height: 35px;
             color: black;
             right: 1px;
         }
-        .heading{
+
+        .heading {
             color: #2b4062;
             font-size: 1.5rem;
             margin: 1rem 0;
         }
-        .members{
+
+        .members {
             color: #0b2741;
-            margin:1rem 1rem 2rem 0;
-            
-            .member{
-                display:flex;
+            margin: 1rem 1rem 2rem 0;
+
+            .member {
+                display: flex;
                 height: 2rem;
-                
-                .userName{ 
-                   width: 60%;
-                   text-align: left;
-                   margin:0px 14px;
-                   overflow:hidden;
+
+                .userName {
+                    width: 60%;
+                    text-align: left;
+                    margin: 0px 14px;
+                    overflow: hidden;
                 }
-                input{
+
+                input {
                     width: 40%;
                     border: none;
                     font-size: 1.5rem;
                     background: rgb(243, 242, 242);
-                    outline: none; 
+                    outline: none;
                 }
+
                 input::-webkit-outer-spin-button,
                 input::-webkit-inner-spin-button {
                     -webkit-appearance: none;
                     margin: 0;
                 }
-                .checkbox{
+
+                .checkbox {
                     margin-left: auto;
                     margin-right: 0;
                 }
             }
-            
+
         }
-        .multiplePayer{
-            color:  #2b4062;
+
+        .multiplePayer {
+            color: #2b4062;
             cursor: pointer;
         }
-        
+
     }
 }
-.popupHowMuchSplits{
+
+.popupHowMuchSplits {
     background: #000000c5;
     z-index: 1000;
-    
-    .box{
+
+    .box {
         width: 20%;
         background: white;
         min-height: auto;
-        .close-icon{
+
+        .close-icon {
             color: black;
-            top:1px
+            top: 1px
         }
-        .save-icon{
+
+        .save-icon {
             cursor: pointer;
-            position:fixed;
+            position: fixed;
             width: 35px;
             height: 35px;
             color: black;
             right: 1px;
         }
-        .Tab{
-           color: black;
+
+        .Tab {
+            color: black;
         }
-        .members{
+
+        .members {
             color: #0b2741;
-            margin:1rem 1rem 2rem 0;
-            
-            .member{
-                display:flex;
+            margin: 1rem 1rem 2rem 0;
+
+            .member {
+                display: flex;
                 height: 2rem;
-                
-                .userName{ 
-                   width: 60%;
-                   text-align: left;
-                   margin:0px 14px;
-                   overflow:hidden;
+
+                .userName {
+                    width: 60%;
+                    text-align: left;
+                    margin: 0px 14px;
+                    overflow: hidden;
                 }
-                input[type="number"]{
+
+                input[type="number"] {
                     width: 40%;
                     border: none;
                     font-size: 1.5rem;
                     background: rgb(243, 242, 242);
-                    outline: none; 
+                    outline: none;
                 }
+
                 input[type="number"]::-webkit-outer-spin-button,
                 input[type="number"]::-webkit-inner-spin-button {
                     -webkit-appearance: none;
                     margin: 0;
                 }
-                .checkbox{
+
+                .checkbox {
                     margin-left: auto;
                     margin-right: 10px;
                     width: 10%;
-                    input{
+
+                    input {
                         width: 100%;
                         cursor: pointer;
                     }
                 }
             }
-            
+
         }
-        .otherDetails{
-            color:  #2b4062;
+
+        .otherDetails {
+            color: #2b4062;
         }
     }
 }

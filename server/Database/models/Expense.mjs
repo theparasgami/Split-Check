@@ -20,20 +20,10 @@ const expenseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  paidBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: User,
-    required: true,
-  },
-  paidTo: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: User,
-    },
-  ],
+  paidBy:[],
+  paidTo: [],
   whoUpdated: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: User,
+    type: String,
     required: true,
   },
 });

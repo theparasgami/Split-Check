@@ -42,7 +42,7 @@ async function Register(req, res) {
     await user.setPassword(password);
     await user.save();
     const token = new Token({
-      user_id: user._id,
+      userID: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     });
     await token.save();
@@ -98,20 +98,20 @@ async function UpdateProfile(req, res) {
     return res.status(200).json(user);
   } catch (err) {
     console.error(err);
-    return res.status(422).json(err);
+    return res.status(422).json({error:"Internal Server Error."});
   }
 }
 
 async function ValidateToken(req, res) {
   try {
     const user = await User.findOne({ _id: req.params.id }, { _id: 1 });
-    if (!user) return res.status(400).send({ message: "Invalid link" });
+    if (!user) return res.status(400).send({ error: "Invalid User Id" });
 
     const token = await Token.findOne({
-      user_id: user._id,
+      userID: user._id,
       token: req.params.token,
     });
-    if (!token) return res.status(400).send({ message: "Invalid link" });
+    if (!token) return res.status(400).send({ error: "Invalid link" });
 
     await User.updateOne({ _id: user._id }, { verified: true });
     await token.remove();
@@ -119,7 +119,7 @@ async function ValidateToken(req, res) {
     res.redirect(process.env.FRONTEND_URL);
   } catch (error) {
     console.error(error);
-    return res.status(500).josn("Internal Server Error");
+    return res.status(500).josn({error:"Internal Server Error"});
   }
 }
 
@@ -135,7 +135,7 @@ async function PaymentReminder(req, res) {
       projection
     );
 
-    if (!payer) return res.status(400).send({ message: "Invalid Payer Id" });
+    if (!payer) return res.status(400).send({ error: "Invalid Payer Id" });
     if (!receiver)
       return res.status(400).send({ message: "Invalid Receiver Id" });
     const emailMessage = requestMoneyMessage(
@@ -149,7 +149,7 @@ async function PaymentReminder(req, res) {
     return res.status(201).json("Email Reminder sent successfully.");
   } catch (err) {
     console.error(err);
-    return res.status(500).json("Internal Server error");
+    return res.status(500).json({error:"Internal Server error"});
   }
 }
 

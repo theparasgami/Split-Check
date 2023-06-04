@@ -10,16 +10,14 @@ import NewMember from "../../Components/NewMember/NewMember";
 import axios from "axios";
 import NavBar from "../../Components/Navbar/NavBar";
 import { backendUrl } from "../../env_prod";
-import groupImage from "./profile.jpg"
-import getImageInBinary from "../../Components/Constants/getImageInBinary";
+import groupImage from "./group.jpg"
+import {getImageInBinary } from "../../Components/Constants/getImageInBinary";
 const toolTipText="This setting automatically combines debts to reduce the total number of repayments between group members. \n For example,\n if you owe Anna $10 and Anna owes Bob $10, a group with simplified debts will tell you to pay Bob $10 directly."
-
-const blobDefaultImage = new Blob([groupImage], { type: groupImage.type });
 
 
 function NewGroup(){
   
-  const { user, dispatch }= useContext(AuthContext);
+  const { user }= useContext(AuthContext);
 
   // For Adding  a Member
   const [member, setMember] = useState([{ userd: user, named: user.username }]);
@@ -64,9 +62,8 @@ function NewGroup(){
 
   /*----------------------------------------------------------------*/
 
-  
   const [group,setGroupData]=useState({
-     groupImage: getImageInBinary((blobDefaultImage)),
+      groupImage: null,
       groupName:"",
       simplifyDebts:false,
       groupMembers:[]
@@ -89,7 +86,7 @@ function NewGroup(){
       .filter((data) => data.userd)
       .map((data) => ({
         userID: data.userd._id,
-        userName: data.userd.username,
+        userName: data.userd.name,
       }));
 
     const updatedGroup = {

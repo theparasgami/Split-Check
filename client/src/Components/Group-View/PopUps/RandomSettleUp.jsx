@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState ,useEffect, useContext} from "react";
 import { FormControl,InputLabel,Select,MenuItem } from "@mui/material";
 import axios from "axios";
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -7,42 +7,41 @@ import "./popups.scss";
 import ImgSrc from "./Split-Check.png"
 import {LottieAnimation2} from "../../Constants/Lotties/lottie"
 import { backendUrl } from "../../../env_prod";
+import { AuthContext } from "../../../Context/AuthContext";
 
 const RandomSettleUp=(props)=>{
 
+  const user = useContext(AuthContext);
     const [loading,setLoading]=useState(false);
-    const [payment,setPayment]=useState({
-                             payer:0,
-                             receiver:0,
-                             amount:0
-                          });
+    const [payment,setPayment]=useState({payer:0,receiver:0,amount:0});
 
     useEffect(()=>{
       setLoading(true);
       setTimeout(() =>setLoading(false), 1500);
     },[]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleChange=(e)=>{
-        e.preventDefault();
-        setPayment({...payment,amount:e.target.value});
-    }
+  const handleChange=(e)=>{
+    e.preventDefault();
+    setPayment({...payment,amount:e.target.value});
+  }
     
-    const PostData=()=>{
-          console.log(props.group_id);
-          axios.post(backendUrl+"/group/"+props.group_id+"/settleDebt",
-                                            {payer:props.members[payment.payer],
-                                             receiver:props.members[payment.receiver],
-                                             amount:payment.amount})
-               .then((res)=>{
-                   axios.get(backendUrl+"/group/"+props.group_id+"/removeZeroPayments");
-                   window.alert(res.data);
-                   window.location.reload();
-               })
-               .catch((err)=>{
-                   window.alert(err.response.data);
-                   console.error(err);
-               })
+  const PostData =async() => {
+    try {
+      const res=await axios.post(backendUrl + "/group/" + props.group_id + "/settleDebt",
+        {
+          payer: props.members[payment.payer],
+          receiver: props.members[payment.receiver],
+          amount: payment.amount,
+          adder: user.name
+        });
+      window.alert(res.data);
+      window.location.reload();
     }
+    catch (err) {
+      console.error(err);
+      window.alert(err.response.data.error);
+    }
+  }
 
 
     return (
@@ -57,10 +56,6 @@ const RandomSettleUp=(props)=>{
               </div>
   
               <div className="payer">
-                  <img src={ImgSrc} 
-                       alt="Hi" 
-                       className="payerImg"
-                  />  
                   <div className="payerName">
                     <FormControl >
                       <InputLabel id="demo-simple-select-label" sx={{color:"white"}}>Payer</InputLabel>
@@ -73,8 +68,8 @@ const RandomSettleUp=(props)=>{
                       >
                         {
                             props.members.map((member,ind)=>
-                                <MenuItem value={ind}>
-                                     {member.user_name}
+                                <MenuItem value={ind} key={ind}>
+                                     {member.userName}
                                 </MenuItem>
                             )
                         }
@@ -83,7 +78,10 @@ const RandomSettleUp=(props)=>{
                   </div>
               </div>
               <div className="howMuch">
-                   ₹
+                  <img src={ImgSrc}
+                    alt="Hi"
+                    className="splitImg"
+                  />  
                   <input type="number" 
                          placeholder={0.00}
                          value={payment.amount}
@@ -103,7 +101,7 @@ const RandomSettleUp=(props)=>{
                         {
                             props.members.map((member,ind)=>
                                 <MenuItem value={ind}>
-                                     {member.user_name}
+                                     {member.userName}
                                 </MenuItem>
                             )
                         }

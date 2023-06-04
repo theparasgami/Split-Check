@@ -43,7 +43,7 @@ const HowMuchSplits=(propss)=>{
                        </div>
                        <CurrencyRupeeIcon/>
                        <input type="number"
-                               onChange={(e)=>propss.handleChange(e)}
+                               onChange={(e)=>propss.handleChange(e,ind)}
                                value={member.amount}
                                name={member.name}
                                placeholder="0.00"

@@ -13,6 +13,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.24.0",
+    "fs": "^0.0.1-security",
     "lottie-react": "^2.2.0",
     "node-sass": "^7.0.1",
     "particle-bg": "^0.5.0",
