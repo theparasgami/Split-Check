@@ -18,26 +18,34 @@ const AllBalances=(props)=>{
     const [groupMembers,setGroupmembers]=useState([]);
     const [loading,setLoading]=useState(false);
 
-    useEffect(()=>{
+    useEffect(async()=>{
         setLoading(true);
-        axios.get(backendUrl+"/group/"+props.group_id+"/getGroupMembers")
-                  .then(res=>setGroupmembers(res.data))
-                  .catch((err)=>{
-                      console.log(err);
-                  }) 
-        setTimeout(() => {
+        try {
+            const res = await axios.get(backendUrl + "/group/" + props.group_id + "/members");
+            setGroupmembers(res.data);
+            console.log(res.data);
             setLoading(false);
-        }, 1500);
+        }
+        catch (err) {
+            console.error(err);
+            window.alert(err.response.data.error);
+        }
     },[])//eslint-disable-line react-hooks/exhaustive-deps
 
-    const RemindUser=(e)=>{
-        axios.get(backendUrl+"/remindPayment",{ params: {
-                                         payer_id:e.payer.userID,
-                                         receiver_id:e.receiver.userID,
-                                         amount:e.amount}
-                                     })
-             .then((res)=>window.alert(res.data))
-             .catch((err)=>window.alert(err.response.data.error));
+    const RemindUser = async(e) => {
+        try {
+            const res = await axios.get(backendUrl + "/remindPayment", {
+                params: {
+                    payer_id: e.payer.userID,
+                    receiver_id: e.receiver.userID,
+                    amount: e.amount
+                }
+            });
+            window.alert(res.data);
+        } catch (err) {
+            console.error(err);
+            window.alert(err.response.data.error);
+        }
     }
     
     return(
@@ -55,21 +63,21 @@ const AllBalances=(props)=>{
                             id="panel1a-header"
                          >
                             <Typography >
-                                 {(member.TotalExpense>(-0.99)&&member.TotalExpense<0.01)&&(<>
+                                 {(member.totalExpense>(-0.99)&&member.totalExpense<0.01)&&(<>
                                       <b>{member.userName}</b>
                                       &nbsp;is all settled Up.
                                  </>)}
-                                 {(member.TotalExpense<=(-0.99))&&(<>
+                                 {(member.totalExpense<=(-0.99))&&(<>
                                          <b>{member.userName}</b> 
                                          &nbsp;gets back 
                                          <b className="priceg0">
-                                             &nbsp; ₹ {-member.TotalExpense.toFixed(2)} &nbsp;
+                                             &nbsp; ₹ {-member.totalExpense.toFixed(2)} &nbsp;
                                          </b> in Total.
                                  </>)}
-                                 {(member.TotalExpense>=0.01)&&(<>
+                                 {(member.totalExpense>=0.01)&&(<>
                                              <b>{member.userName}</b> owes
                                              <b className="pricel0">
-                                                 &nbsp; ₹ {member.TotalExpense.toFixed(2)} &nbsp;
+                                                 &nbsp; ₹ {member.totalExpense.toFixed(2)} &nbsp;
                                              </b> in Total.
                                  </>)}
                             </Typography>

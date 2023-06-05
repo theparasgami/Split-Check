@@ -19,7 +19,7 @@ const ManageMember = (props) => {
 
   const saveMember = async () => {
     try {
-      const res = await axios.get(`${backendUrl}/verifyMember/${email}`);
+      const res = await axios.get(`${backendUrl}/group/verifyMember/${email}`);
       const response = await axios.post(`${backendUrl}/group/${props.group_id}/addMember`, { user: res.data });
       window.alert(response.data);
       window.location.reload();

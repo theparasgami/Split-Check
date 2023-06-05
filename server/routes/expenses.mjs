@@ -6,8 +6,9 @@ import Expense from "../Database/models/Expense.mjs";
 import isValidObjectId from "../Utils/checkObjectId.mjs";
 import { distributeAmount,removeZeroPayments,updatePayment } from "../helpers/expenses.mjs";
 
-router.post("/group/:group_id/addExpense", AddExpense);
-router.post("/group/:id/settleDebt", SettleDebts);
+router.post("/expense/:group_id/addExpense", AddExpense);
+router.post("/expense/:group_id/settleDebt", SettleDebts);
+router.get("/expense/:group_id/getExpenses", GetExpenses);
 
 async function AddExpense(req, res) {
   try {
@@ -131,7 +132,7 @@ async function SettleDebts(req, res) {
   try {
     const { payer, receiver, amount, adder } = req.body;
 
-    const groupID = req.params.id;
+    const groupID = req.params.group_id;
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
     }
@@ -149,6 +150,20 @@ async function SettleDebts(req, res) {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+async function GetExpenses(req, res) {
+  try {
+     const groupID = req.params.group_id;
+     if (!isValidObjectId(groupID)) {
+       return res.status(400).json({ error: "Group ID is not valid" });
+     }
+    const expenses = await Expense.find({ groupId: groupID }).sort({date:-1});
+    return res.status(200).json(expenses);
+  } catch(err) {
+     console.error(err);
+     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
 

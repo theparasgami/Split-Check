@@ -27,9 +27,11 @@ const PopupSettleUp=(props)=>{
     
     const PostData = async () => {
         try {
-            const res = await axios.post(backendUrl + "/group/" + props.group_id + "/settleDebt",
+            const res = await axios.post(backendUrl + "/expense/" + props.group_id + "/settleDebt",
                 {
-                    payment,
+                    payer: payment.payer,
+                    receiver: payment.receiver,
+                    amount: payment.amount,
                     adder: user.name
                 });
             window.alert(res.data);
@@ -62,7 +64,7 @@ const PopupSettleUp=(props)=>{
               <div className="howMuch">
                     <img src={ImgSrc}
                         alt="Hi"
-                        className="payerImg"
+                        className="splitImg"
                     />  
                   <input type="number" 
                          placeholder={0.00}

@@ -12,16 +12,16 @@ import {
 const router = Router();
 
 //routes
-router.get("/verifyMember/:email", VerifyMember);
-router.post("/saveGroup", SaveGroup);
-router.get("/getGroups/:userId", GroupsListForUser);
-router.get("/getGroup/:group_id/:userID", DetailsForAGroup);
+router.get("/group/verifyMember/:email", VerifyMember);
+router.post("/group/saveGroup", SaveGroup);
+router.get("/group/user/:userId", GroupsListForUser);
+router.get("/group/:group_id/user/:userID/details", DetailsForAGroup);
 router.post("/group/:group_id/addMember", AddMemberInGroup);
 router.delete("/group/:group_id/deleteMember/:userID", DeleteMember);
-router.get("/group/:group_id/:userID/getPaymentsofUser", PaymentsOfUser);
-router.get("/group/:group_id/getGroupMembers", GetGroupMembers);
+router.get("/group/:group_id/user/:user_id/payments", PaymentsOfUser);
+router.get("/group/:group_id/members", GetGroupMembers);
 router.get("/group/:group_id/recentPayments", GetRecentPayments);
-// For Groups
+
 
 async function VerifyMember(req, res) {
   try {
@@ -241,7 +241,7 @@ async function DeleteMember(req, res) {
 async function PaymentsOfUser(req, res) {
   try {
     const groupID = req.params.group_id;
-    const userID = req.params.userID;
+    const userID = req.params.user_id;
 
     if (!isValidObjectId(groupID)) {
       return res.status(400).json({ error: "Group ID is not valid" });
@@ -250,12 +250,9 @@ async function PaymentsOfUser(req, res) {
       return res.status(400).json({ error: "User ID is not valid" });
     }
     const projection = {
-      "groupMembers.$": {
-        user: userID,
-        payments: 1,
-      },
+      'groupMembers.$':1
     };
-    const group = await Group.findOne({ _id: groupID }, projection);
+    const group = await Group.findOne({ _id: groupID,'groupMembers.userID':userID}, projection);
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
     }
@@ -278,7 +275,7 @@ async function GetGroupMembers(req, res) {
     }
     const group = await Group.findOne(
       { _id: groupID },
-      { "groupMembers.userID": 1, "groupMembers.userName": 1 }
+      { groupMembers: 1 }
     );
 
     if (!group) {

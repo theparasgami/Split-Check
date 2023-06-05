@@ -30,7 +30,7 @@ async function clearPayments(groupId) {
       whoOwe[0].currTotalExpense
     );
 
-    if (!alreadyPaying(whoGet[0], whoOwe[0])) {
+    if (! await alreadyPaying(whoGet[0], whoOwe[0])) {
       await addMemberinPayments(groupId, whoGet[0], whoOwe[0]);
     }
     await updateExpense(
@@ -44,7 +44,7 @@ async function clearPayments(groupId) {
   }
 }
 
-function alreadyPaying(member1, member2) {
+async function alreadyPaying(member1, member2) {
   for (let i = 0; i < member1.payments.length; i++) {
     if (member2.userID === member1.payments[i].userID) return true;
   }

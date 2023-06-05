@@ -17,16 +17,16 @@ const AllExpenses=(props)=>{
     const [loading,setLoading]=useState(false)
     const [popUpTrans,setPopUpTrans]=useState(null);
     
-    useEffect(()=>{
+    useEffect(async()=>{
         setLoading(true);
-        axios.get(backendUrl+"/group/"+props.group_id+"/getExpenses")
-                  .then(res=>setExpenses(res.data))
-                  .catch((err)=>{
-                      console.log(err);
-                  }) 
-        setTimeout(() => {
+        try {
+            const res = await axios.get(backendUrl + "/expense/" + props.group_id + "/getExpenses");
+            setExpenses(res.data);
             setLoading(false);
-        }, 1500);
+        } catch (err) {
+            console.error(err);
+            window.alert(err.response.data.error);
+        }
     },[])//eslint-disable-line react-hooks/exhaustive-deps
     
     let youPaid=[],youLent=[];

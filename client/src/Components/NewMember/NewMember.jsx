@@ -17,7 +17,7 @@ const NewMember = (props) => {
 
    const verifyUsername = async () => {
       if (emailCheck(props.username)) {
-         axios.get(backendUrl + "/verifyMember/" + props.username)
+         axios.get(backendUrl + "/group/verifyMember/" + props.username)
             .then((res) => {
                setVerified(res);
             })

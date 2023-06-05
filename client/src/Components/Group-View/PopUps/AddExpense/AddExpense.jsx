@@ -103,7 +103,7 @@ const AddExpense = (props) => {
   const PostData = async () => {
     const userName = props.userName;
     try {
-      const res = await axios.post(backendUrl + "/group/" + props.group_id + "/addExpense", {
+      const res = await axios.post(backendUrl + "/expense/" + props.group_id + "/addExpense", {
         expense, paidBy, paidTo, TotalCurrPaidBy, TotalCurrPaidTo, singlePayer, Isequally, equally, countOfequallySplitting, userName
       })
       window.alert(res.data);

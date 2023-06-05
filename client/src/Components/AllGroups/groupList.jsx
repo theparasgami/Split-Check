@@ -17,7 +17,7 @@ const AllGroup = () => {
 
     const getGroups = async () => {
         try {
-            const groupList = await axios.get(backendUrl + "/getGroups/" + user._id);
+            const groupList = await axios.get(backendUrl + "/group/user/" + user._id);
             setGroups(() => groupList.data);
             setGroupLoading(false)
         }

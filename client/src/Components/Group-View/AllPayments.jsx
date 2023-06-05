@@ -12,34 +12,39 @@ import { backendUrl } from "../../env_prod";
 
 
 const AllPayments=(props)=>{
-       const [popUpPayment,setPopUpPayment]=useState({payer:null,receiver:null});
-       const [loading,setLoading]=useState(false);
-       const [payments,setPayments]=useState([]);
-
-       useEffect(() => {
-            setLoading(true);
-            axios.get(backendUrl+"/group/"+props.group_id+"/"+props.ourUser.userID+"/getPaymentsofUser")
-                 .then((res)=>{
-                     setPayments(res.data);
+    const [popUpPayment,setPopUpPayment]=useState({payer:null,receiver:null});
+    const [loading,setLoading]=useState(false);
+    const [payments,setPayments]=useState([]);
+    useEffect(async() => {
+        setLoading(true);
+        try {
+            const res = await axios.get(backendUrl + "/group/" + props.group_id + "/user/" + props.ourUser.userID + "/payments");
+            setPayments(res.data);
+            setLoading(false);
+        }
+        catch (err) {
+            console.error(err);
+            window.alert(err.response.data.error);
+        }
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+      
+    const RemindUser = async(e) => {
+        try {
+            const res = await axios.get(backendUrl + "/remindPayment", {
+                params: {
+                    payer_id: e.payer.userID,
+                    receiver_id: e.receiver.userID,
+                    amount: e.amount
                 }
-            );
-            setTimeout(() => {
-                setLoading(false);
-            }, 1500);
-
-       }, []) // eslint-disable-line react-hooks/exhaustive-deps
+            });
+            window.alert(res.data);
+        } catch (err) {
+            console.error(err);
+            window.alert(err.response.data.error);
+        }
+    }
       
-       const RemindUser=(e)=>{
-           axios.get(backendUrl+"/remindPayment",{ params: {
-                                            payer_id:e.payer.userID,
-                                            receiver_id:e.receiver.userID,
-                                            amount:e.amount}
-                                        })
-                .then((res)=>window.alert(res.data))
-                .catch((err)=>window.alert(err.response.data.error));
-       }
-      
-       return (
+    return (
         loading? <div style={{height:"30vh"}}><LottieAnimation1/></div>
         :<>
            <h1 className="heading">Settle Debts</h1>         
@@ -76,7 +81,7 @@ const AllPayments=(props)=>{
                                                    ))}>
                                 Settle Up..
                             </Mbutton>
-                            <Mbutton onClick={()=>(RemindUser(payment.amount>0?
+                            <Mbutton disabled={payment.amount<0} onClick={()=>(RemindUser(payment.amount>0?
                                                               {payer:payment,receiver:props.ourUser,amount:payment.amount}:
                                                               {payer:props.ourUser,receiver:payment,amount:-payment.amount}
                                                    ))}>
@@ -99,7 +104,7 @@ const AllPayments=(props)=>{
                                         group_id={props.group_id}
                         />)
             }
-       </>)
+    </>)
 }
 
 export default AllPayments;

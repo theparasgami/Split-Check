@@ -29,7 +29,7 @@ const ViewGroup = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`${backendUrl}/getGroup/${params.id}/${user._id}`);
+                const res = await axios.get(`${backendUrl}/group/${params.id}/user/${user._id}/details`);
                 const { group, userData } = res.data;
                 setData({ group, user: userData });
                 if (!group) {
@@ -53,7 +53,7 @@ const ViewGroup = () => {
    
     const getGroupMembers = async () => {
         try {
-            const groupMembers = await axios.get(backendUrl + "/group/" + params.id + "/getGroupMembers");
+            const groupMembers = await axios.get(backendUrl + "/group/" + params.id + "/members");
             setAddExpense(groupMembers.data.map((member) => ({
                 userID: member.userID,
                 userName: member.userName
@@ -70,7 +70,7 @@ const ViewGroup = () => {
 
     const getGroupMembersForSettleUp = async () => {
         try {
-            const groupMembers = await axios.get(backendUrl + "/group/" + params.id + "/getGroupMembers");
+            const groupMembers = await axios.get(backendUrl + "/group/" + params.id + "/members");
             setSettleUp(groupMembers.data.map((member) => ({
                 userID: member.userID,
                 userName: member.userName
@@ -108,16 +108,6 @@ const ViewGroup = () => {
                                 <div className="groupName">
                                     {Data.group.groupName}
                                 </div>
-                                {/* <p className="simplifydebts" >
-                                    Simplify  Debts
-                                    <Switch checked={Data.group.simplifyDebts}
-                                    disabled
-                                    />
-                                    <BootstrapTooltip className="tooltip"
-                                    title={toolTipText} >
-                                    <HelpIcon className="HelpIcon" />
-                                    </BootstrapTooltip>
-                                </p> */}
                             </div>
                         </div>
                         <div className="ourDetails">
@@ -143,7 +133,7 @@ const ViewGroup = () => {
                         </div>
                     </section>
                     <div className="separator"></div>
-                    {/* <div className="ListofLinks">
+                    <div className="ListofLinks">
                         <Tabs value={currList}
                             onChange={handlelinksChange}
                             aria-label="Tabs"
@@ -156,8 +146,8 @@ const ViewGroup = () => {
                             <Tab className="Tab" label="Balances" value="Balances" />
                             <Tab className="Tab" label="Recent Payments" value="Recent" />
                         </Tabs>
-                    </div> */}
-                    {/* <section className="RequiredList">
+                    </div>
+                    <section className="RequiredList">
                         <Paper elevation={2} className="paper">
                             <Collapse in={currList === "Expenses"} timeout={2000}>
                                 {currList === "Expenses" &&
@@ -184,7 +174,7 @@ const ViewGroup = () => {
                             </Collapse>
                         </Paper>
                     </section>
-                            */}
+                           
                     {addExpense.length !== 0 && (
                         <AddExpense
                             cross={() => setAddExpense([])}

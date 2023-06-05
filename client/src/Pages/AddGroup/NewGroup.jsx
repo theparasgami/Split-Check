@@ -99,7 +99,7 @@ function NewGroup(){
 
     if (updatedGroup.groupMembers.length) {
       axios
-        .post(backendUrl + "/saveGroup", { group: updatedGroup, user })
+        .post(backendUrl + "/group/saveGroup", { group: updatedGroup, user })
         .then((res) => {
           window.alert("Group Saved");
           window.location.href = "/group/" + res.data.id;

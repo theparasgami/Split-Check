@@ -27,7 +27,7 @@ const RandomSettleUp=(props)=>{
     
   const PostData =async() => {
     try {
-      const res=await axios.post(backendUrl + "/group/" + props.group_id + "/settleDebt",
+      const res=await axios.post(backendUrl + "/expense/" + props.group_id + "/settleDebt",
         {
           payer: props.members[payment.payer],
           receiver: props.members[payment.receiver],
@@ -100,7 +100,7 @@ const RandomSettleUp=(props)=>{
                       >
                         {
                             props.members.map((member,ind)=>
-                                <MenuItem value={ind}>
+                                <MenuItem value={ind} key={ind}>
                                      {member.userName}
                                 </MenuItem>
                             )

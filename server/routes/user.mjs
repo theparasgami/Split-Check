@@ -130,21 +130,18 @@ async function PaymentReminder(req, res) {
       name: 1,
     };
     const payer = await User.findOne({ _id: req.query.payer_id }, projection);
-    const receiver = await User.findOne(
-      { _id: req.query.receiver_id },
-      projection
-    );
+    const receiver = await User.findOne({ _id: req.query.receiver_id },projection);
 
     if (!payer) return res.status(400).send({ error: "Invalid Payer Id" });
-    if (!receiver)
-      return res.status(400).send({ message: "Invalid Receiver Id" });
+    if (!receiver)return res.status(400).send({ message: "Invalid Receiver Id" });
+    
     const emailMessage = requestMoneyMessage(
       payer.name,
       receiver.name,
       req.query.amount
     );
 
-    await sendEmail(payer.username, emailMessage);
+    await sendEmail(payer.username,"Split-Check Payment Remider", emailMessage);
 
     return res.status(201).json("Email Reminder sent successfully.");
   } catch (err) {
